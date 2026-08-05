@@ -1,6 +1,6 @@
 # Groupify
 
-Erstelle eine Web-App um Studierende zufälligerweise in Gruppen aufzuteilen.
+Erstelle die Web-App **Groupify** um Studierende zufälligerweise in Gruppen aufzuteilen.
 
 
 ## Funktionalität
