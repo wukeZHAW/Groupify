@@ -5,6 +5,8 @@
 const FILE_INPUT = document.getElementById("csv-input");
 const OUTPUT = document.getElementById("student-list");
 const BTN_EINZELN = document.getElementById("btn-aufteilen-einzeln");
+const CONFIG_VALUE = document.getElementById("config-value");
+const GROUPS_CONTAINER = document.getElementById("groups");
 
 let students = [];
 let groups = [];
@@ -13,6 +15,10 @@ let nextIndex = 0;
 
 FILE_INPUT.addEventListener("change", loadFile);
 BTN_EINZELN.addEventListener("click", aufteilenEinzeln);
+CONFIG_VALUE.addEventListener("input", onConfigValueChange);
+
+// beim Start Gruppenkarten aus dem Zahlenfeld bauen
+buildGroupCards();
 
 // read selected CSV file
 function loadFile(event) {
@@ -55,6 +61,7 @@ function loadFile(event) {
 
         console.log(students);
 
+        buildGroupCards();
         shuffleStudents(students);
         createGroups();
     };
@@ -63,8 +70,43 @@ function loadFile(event) {
     reader.readAsText(file);
 }
 
+// Gruppenkarten im HTML neu erzeugen
+function buildGroupCards() {
+    let numberOfGroups = Number(CONFIG_VALUE.value);
+
+    if (numberOfGroups < 1) {
+        numberOfGroups = 1;
+    }
+
+    GROUPS_CONTAINER.innerHTML = "";
+
+    for (let i = 1; i <= numberOfGroups; i++) {
+        let article = document.createElement("article");
+        article.id = "gruppe-" + i;
+
+        let heading = document.createElement("h2");
+        heading.textContent = "Gruppe " + i;
+
+        article.appendChild(heading);
+        GROUPS_CONTAINER.appendChild(article);
+    }
+}
+
+
+
+function onConfigValueChange() {
+    buildGroupCards();
+    // Wenn schon Schüler geladen sind: Gruppen neu berechnen
+    if (students.length > 0) {
+        shuffleStudents(students);
+        createGroups();
+    }
+}
+
+
+
 function createGroups() {
-    let numberOfGroups = Number(document.getElementById("config-value").value);
+    let numberOfGroups = Number(CONFIG_VALUE.value);
     let numberOfStudents = students.length;
 
     // Grundmenge pro Gruppe + Rest, der auf die ersten Gruppen verteilt wird
@@ -101,12 +143,6 @@ function createGroups() {
     nextIndex = 0;
 
     for (let i = 0; i < groups.length; i++) {
-        // Gruppenkarte leeren
-        let article = document.getElementById("gruppe-" + (i + 1));
-        if (article) {
-            article.innerHTML = "<h2>Gruppe " + (i + 1) + "</h2>";
-        }
-
         for (let j = 0; j < groups[i].length; j++) {
             assignments.push({
                 groupNumber: i + 1,
