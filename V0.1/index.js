@@ -4,10 +4,15 @@
 
 const FILE_INPUT = document.getElementById("csv-input");
 const OUTPUT = document.getElementById("student-list");
+const BTN_EINZELN = document.getElementById("btn-aufteilen-einzeln");
 
 let students = [];
+let groups = [];
+let assignments = []; // Warteschlange: ein Eintrag = eine Klick-Zuweisung
+let nextIndex = 0;
 
 FILE_INPUT.addEventListener("change", loadFile);
+BTN_EINZELN.addEventListener("click", aufteilenEinzeln);
 
 // read selected CSV file
 function loadFile(event) {
@@ -51,7 +56,7 @@ function loadFile(event) {
         console.log(students);
 
         shuffleStudents(students);
-        createGroups(); // ← HIER
+        createGroups();
     };
 
     // start reading file
@@ -67,7 +72,7 @@ function createGroups() {
     let studentsPerGroup = Math.floor(numberOfStudents / numberOfGroups);
     let remainingStudents = numberOfStudents % numberOfGroups;
 
-    let groups = [];
+    groups = [];
     let studentIndex = 0;
 
     // aufteilen in gruppen
@@ -81,10 +86,9 @@ function createGroups() {
 
         // gruppe erstellen
         let group = [];
-        
+
         // schüler zur gruppe hinzufügen
         for (let j = 0; j < groupSize; j++) {
-            // schüler zur gruppe hinzufügen
             group.push(students[studentIndex]);
             studentIndex = studentIndex + 1;
         }
@@ -92,12 +96,29 @@ function createGroups() {
         groups.push(group);
     }
 
-    //return groups;
+    // flache Liste für "ein Klick = ein Schüler"
+    assignments = [];
+    nextIndex = 0;
+
+    for (let i = 0; i < groups.length; i++) {
+        // Gruppenkarte leeren
+        let article = document.getElementById("gruppe-" + (i + 1));
+        if (article) {
+            article.innerHTML = "<h2>Gruppe " + (i + 1) + "</h2>";
+        }
+
+        for (let j = 0; j < groups[i].length; j++) {
+            assignments.push({
+                groupNumber: i + 1,
+                student: groups[i][j]
+            });
+        }
+    }
+
     console.log(groups);
 }
 
-
-function shuffleStudents(array){
+function shuffleStudents(array) {
     let lastIndex = array.length - 1;
     while (lastIndex > 0) {
         let randIndex = Math.floor(Math.random() * (lastIndex + 1));
@@ -106,6 +127,22 @@ function shuffleStudents(array){
         array[lastIndex] = array[randIndex];
         array[randIndex] = temp;
 
-        lastIndex --;
+        lastIndex--;
     }
+}
+
+// Ein Klick → ein Schüler erscheint in seiner Gruppe
+function aufteilenEinzeln() {
+    if (nextIndex >= assignments.length) {
+        return;
+    }
+
+    let item = assignments[nextIndex];
+    let article = document.getElementById("gruppe-" + item.groupNumber);
+
+    let paragraph = document.createElement("p");
+    paragraph.textContent = item.student.vorname + " " + item.student.name;
+    article.appendChild(paragraph);
+
+    nextIndex = nextIndex + 1;
 }
