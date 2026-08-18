@@ -1,0 +1,20 @@
+{
+  "name": "groupify",
+  "version": "1.0.0",
+  "description": "Erstelle die Web-App **Groupify** um Studierende zufälligerweise in Gruppen aufzuteilen.",
+  "main": "src/Group.js",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.zhaw.ch/Praktikum/Groupify.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "jest": "^30.4.2"
+  }
+}
