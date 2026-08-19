@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groupify</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <main id="groupify">
+
+        <aside id="controls">
+            <label for="csv-input">CSV-Datei mit Schülerliste importieren</label>
+            <input type="file" id="csv-input" accept=".csv">
+
+            <section id="student-list">
+                <h2>Schülerliste</h2>
+                <!-- Importierte Namen werden hier später angezeigt -->
+            </section>
+
+            <button type="button" id="btn-aufteilen-einzeln">Aufteilen einzeln</button>
+            <button type="button" id="btn-alle-aufteilen">Alle aufteilen</button>
+        </aside>
+
+        <section id="group-config">
+            <label>
+                <input type="checkbox" id="config-mode" hidden>
+                <span id="config-label">Anzahl Gruppen</span>
+            </label>
+            <input type="number" id="config-value" min="1" value="6">
+        </section>
+
+        <section id="groups">
+            <!-- Gruppenkarten werden per JavaScript erzeugt -->
+        </section>
+
+    </main>
+    <script type="module" src="index.js"></script>
+</body>
+</html>
