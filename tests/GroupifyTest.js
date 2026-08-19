@@ -310,6 +310,24 @@ function runTests() {
         "randAssign should throw when no group is available"
     );
 
+    // kleinere Groups werden vor grösseren gewählt
+    const raSmall = new Group("Rand Small", 0, 3);
+    const raBig = new Group("Rand Big", 0, 3);
+    const raFirst = new Student("Ines Klein");
+    const raSecond = new Student("Jonas Klein");
+    const groupifyEven = new Groupify(
+        [raSmall, raBig],
+        [raFirst, raSecond]
+    );
+
+    groupifyEven.allocate(raFirst, raBig);
+    groupifyEven.randAssign(raSecond);
+
+    console.assert(
+        raSmall.length() === 1 && raBig.length() === 1,
+        "randAssign should choose a smallest available group"
+    );
+
 
     // ========================================
     // randAssignAll
@@ -342,6 +360,33 @@ function runTests() {
     console.assert(
         raaGroup1.length() <= 2 && raaGroup2.length() <= 2,
         "randAssignAll should not exceed group max"
+    );
+
+    // Verteilung bleibt gleichmässig (kein 2,2,0)
+    const evenA = new Group("Even A", 1, 2);
+    const evenB = new Group("Even B", 1, 2);
+    const evenC = new Group("Even C", 1, 2);
+    const evenStudents = [
+        new Student("Lisa Lang"),
+        new Student("Mark Kurz"),
+        new Student("Nina Neu"),
+        new Student("Otto Obst")
+    ];
+    const groupifyEvenAll = new Groupify(
+        [evenA, evenB, evenC],
+        evenStudents
+    );
+
+    groupifyEvenAll.randAssignAll();
+
+    const evenSizes = [evenA.length(), evenB.length(), evenC.length()];
+    console.assert(
+        evenSizes[0] + evenSizes[1] + evenSizes[2] === 4,
+        "randAssignAll should assign all students evenly"
+    );
+    console.assert(
+        Math.max(...evenSizes) - Math.min(...evenSizes) <= 1,
+        "randAssignAll should keep group sizes within 1 of each other"
     );
 }
 

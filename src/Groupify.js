@@ -144,11 +144,25 @@ export class Groupify {
             throw new Error("No available groups");
         }
 
+        let smallestSize = availableGroups[0].length();
+        for (const group of availableGroups) {
+            if (group.length() < smallestSize) {
+                smallestSize = group.length();
+            }
+        }
+
+        const candidates = [];
+        for (const group of availableGroups) {
+            if (group.length() === smallestSize) {
+                candidates.push(group);
+            }
+        }
+
         const randomIndex = Math.floor(
-            Math.random() * availableGroups.length
+            Math.random() * candidates.length
         );
 
-        const randomGroup = availableGroups[randomIndex];
+        const randomGroup = candidates[randomIndex];
 
         this.allocate(student, randomGroup);
     }

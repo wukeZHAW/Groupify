@@ -1,7 +1,7 @@
 export class Student {
 
-    static NAME_MIN_LEN = 5;
-    static NAME_MAX_LEN = 20;
+    static NAME_MIN_LEN = 2;
+    static NAME_MAX_LEN = 50;
 
     #name;
 
