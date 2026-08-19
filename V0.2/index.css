@@ -100,8 +100,7 @@ body {
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     padding: 1rem;
-    min-height: 220px;
-    max-height: 320px;
+    height: 320px;
     overflow-y: auto;
 }
 
@@ -127,6 +126,12 @@ body {
 
 #student-list li:last-child {
     border-bottom: none;
+}
+
+#student-list p,
+#groups p {
+    cursor: grab;
+    margin: 0.25rem 0;
 }
 
 /* ----- Buttons ----- */
@@ -253,6 +258,11 @@ body {
     font-size: 1.05rem;
     font-weight: 700;
     color: var(--zhaw-blue);
+}
+
+#groups article.drop-target {
+    outline: 2px solid var(--zhaw-blue);
+    outline-offset: 2px;
 }
 
 /* ----- Responsive ----- */
