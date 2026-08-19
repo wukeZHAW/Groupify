@@ -80,11 +80,83 @@ export class Groupify {
         targetGroup.addStudent(student);
     }
 
-    unallocate(group, student){}
+    unallocate(student, group){
+        if (!(student instanceof Student)) {
+            throw new TypeError("student must be a Student object");
+        }
 
-    move(groupSrc, student, groupTarget){}
+        if (!(group instanceof Group)) {
+            throw new TypeError("Group must be a Group object");
+        }
 
-    randAssign(student){}
+        if (!this.#groups.includes(group)) {
+            throw new Error("Group does not belong to Groupify");
+        }
 
-    randAssignAll(){}
+        // Erst NACH allen Prüfungen Zustand verändern
+        group.removeStudent(student);
+        this.#unallocated.addStudent(student);
+        
+    }
+
+    move(srcGroup, student, targetGroup){
+        if (!(srcGroup instanceof Group)){
+            throw new TypeError("srcGroup must be a Group object");
+        }
+
+        if (!(student instanceof Student)) {
+            throw new TypeError("student must be a Student object");
+        }
+
+        if (!(targetGroup instanceof Group)){
+            throw new TypeError("targetGroup must be a Group object");
+        }
+
+        if (!this.#groups.includes(srcGroup)) {
+            throw new Error("srcGroup does not belong to Groupify");
+        }
+
+        if (!this.#groups.includes(targetGroup)) {
+            throw new Error("targetGroup does not belong to Groupify");
+        }
+
+        if (targetGroup.isFull()) {
+            throw new Error("targetGroup is already full");
+        }
+        srcGroup.removeStudent(student);
+        targetGroup.addStudent(student);
+    }
+
+    randAssign(student){
+        if (!(student instanceof Student)) {
+            throw new TypeError("student must be a Student object");
+        }
+
+        const availableGroups = [];
+
+        for (const group of this.#groups){
+            if (!group.isFull()) {
+                availableGroups.push(group);
+            }
+        }
+
+        if (availableGroups.length === 0) {
+            throw new Error("No available groups");
+        }
+
+        const randomIndex = Math.floor(
+            Math.random() * availableGroups.length
+        );
+
+        const randomGroup = availableGroups[randomIndex];
+
+        this.allocate(student, randomGroup);
+    }
+
+    randAssignAll(){
+        while (this.#unallocated.length() > 0){
+            const student = this.#unallocated.getStudent(0);
+            this.randAssign(student);
+        }
+    }
 }

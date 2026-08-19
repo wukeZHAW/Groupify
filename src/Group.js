@@ -46,6 +46,10 @@ export class Group {
         this.#name = newName;
     }
 
+    getStudent(index){
+        return this.#members[index];
+    }
+
     length() {
         return this.#members.length;
     }
