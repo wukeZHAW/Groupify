@@ -46,6 +46,26 @@ export class Group {
         this.#name = newName;
     }
 
+    get max() {
+        return this.#max;
+    }
+
+    set max(newMax) {
+        if (!Number.isInteger(newMax)) {
+            throw new TypeError("max must be an integer");
+        }
+
+        if (newMax < 1 || this.#min > newMax) {
+            throw new RangeError("min and max must be positive with min >=0, max >= 1 and max >= min");
+        }
+
+        if (this.#members.length > newMax) {
+            throw new RangeError("max must not be below current group size");
+        }
+
+        this.#max = newMax;
+    }
+
     getStudent(index){
         return this.#members[index];
     }

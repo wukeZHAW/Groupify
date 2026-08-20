@@ -57,6 +57,195 @@ function runTests() {
     console.assert(errorThrown instanceof TypeError, "students must contain only Student objects");
 
     // ========================================
+    // constructor: numberOfGroups
+    // ========================================
+
+    const countStudents = [
+        new Student("Anna A"),
+        new Student("Bernd B"),
+        new Student("Clara C"),
+        new Student("Dora D"),
+        new Student("Emil E")
+    ];
+    const groupifyFromCount = new Groupify(2, countStudents);
+
+    console.assert(
+        groupifyFromCount.groups.length === 2,
+        "numberOfGroups constructor should create that many groups"
+    );
+    console.assert(
+        groupifyFromCount.groups[0].name === "Gruppe 1" &&
+            groupifyFromCount.groups[1].name === "Gruppe 2",
+        "numberOfGroups constructor should name groups Gruppe N"
+    );
+    console.assert(
+        groupifyFromCount.unallocated.length() === countStudents.length,
+        "numberOfGroups constructor should put all students in unallocated"
+    );
+
+    // min = floor(5 / 2) = 2
+    groupifyFromCount.allocate(countStudents[0], groupifyFromCount.groups[0]);
+    console.assert(
+        groupifyFromCount.groups[0].isComplete() === false,
+        "group min should be floor(studentCount / numberOfGroups)"
+    );
+    groupifyFromCount.allocate(countStudents[1], groupifyFromCount.groups[0]);
+    console.assert(
+        groupifyFromCount.groups[0].isComplete() === true,
+        "group should be complete once it reaches min"
+    );
+
+    // max = studentCount = 5
+    groupifyFromCount.allocate(countStudents[2], groupifyFromCount.groups[0]);
+    groupifyFromCount.allocate(countStudents[3], groupifyFromCount.groups[0]);
+    console.assert(
+        groupifyFromCount.groups[0].isFull() === false,
+        "group max should be studentCount, not a tight per-group cap"
+    );
+    groupifyFromCount.allocate(countStudents[4], groupifyFromCount.groups[0]);
+    console.assert(
+        groupifyFromCount.groups[0].isFull() === true,
+        "group should be full when it contains all students"
+    );
+
+    errorThrown = null;
+    try {
+        new Groupify(1.5, countStudents);
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof TypeError,
+        "numberOfGroups must be an integer"
+    );
+
+    errorThrown = null;
+    try {
+        new Groupify(0, countStudents);
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof RangeError,
+        "numberOfGroups must be >= 1"
+    );
+
+    const emptyGroupify = new Groupify(3, []);
+    console.assert(
+        emptyGroupify.groups.length === 3,
+        "empty roster should still create the requested groups"
+    );
+    console.assert(
+        emptyGroupify.unallocated.length() === 0 &&
+            emptyGroupify.groups[0].length() === 0 &&
+            emptyGroupify.groups[1].length() === 0 &&
+            emptyGroupify.groups[2].length() === 0,
+        "empty roster should create empty groups and empty unallocated"
+    );
+
+    const lastStudent = new Student("Last One");
+    const groupifyLast = new Groupify(3, [lastStudent]);
+    groupifyLast.removeStudent(lastStudent);
+    console.assert(
+        groupifyLast.groups.length === 3 &&
+            groupifyLast.unallocated.length() === 0,
+        "removing the last student should leave Groupify empty but intact"
+    );
+
+    groupifyLast.setNumberOfGroups(5);
+    console.assert(
+        groupifyLast.groups.length === 5 &&
+            groupifyLast.unallocated.length() === 0,
+        "setNumberOfGroups should work with zero students"
+    );
+
+    groupifyLast.addStudent(new Student("Again Ok"));
+    console.assert(
+        groupifyLast.unallocated.length() === 1,
+        "addStudent should work after Groupify became empty"
+    );
+
+    // ========================================
+    // setNumberOfGroups
+    // ========================================
+
+    const rebuildStudents = [
+        new Student("Finn F"),
+        new Student("Greta G"),
+        new Student("Hugo H")
+    ];
+    const groupifyRebuild = new Groupify(2, rebuildStudents);
+    const oldGroup = groupifyRebuild.groups[0];
+    groupifyRebuild.allocate(rebuildStudents[0], oldGroup);
+    groupifyRebuild.allocate(rebuildStudents[1], groupifyRebuild.groups[1]);
+
+    groupifyRebuild.setNumberOfGroups(3);
+
+    console.assert(
+        groupifyRebuild.groups.length === 3,
+        "setNumberOfGroups should replace groups with the new count"
+    );
+    console.assert(
+        groupifyRebuild.groups[0].name === "Gruppe 1" &&
+            groupifyRebuild.groups[1].name === "Gruppe 2" &&
+            groupifyRebuild.groups[2].name === "Gruppe 3",
+        "setNumberOfGroups should name groups Gruppe N"
+    );
+    console.assert(
+        groupifyRebuild.unallocated.length() === rebuildStudents.length,
+        "setNumberOfGroups should move all students to unallocated"
+    );
+    console.assert(
+        groupifyRebuild.groups.includes(oldGroup) === false,
+        "setNumberOfGroups should replace the previous Group objects"
+    );
+
+    // min = floor(3 / 3) = 1
+    groupifyRebuild.allocate(rebuildStudents[0], groupifyRebuild.groups[0]);
+    console.assert(
+        groupifyRebuild.groups[0].isComplete() === true,
+        "setNumberOfGroups should recompute min from the current roster"
+    );
+
+    errorThrown = null;
+    try {
+        groupifyRebuild.allocate(rebuildStudents[1], oldGroup);
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof Error,
+        "setNumberOfGroups should reject allocate into a replaced group"
+    );
+
+    errorThrown = null;
+    try {
+        groupifyRebuild.setNumberOfGroups(1.5);
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof TypeError,
+        "setNumberOfGroups must receive an integer"
+    );
+    console.assert(
+        groupifyRebuild.groups.length === 3 &&
+            groupifyRebuild.unallocated.length() === 2,
+        "failed setNumberOfGroups should not change membership"
+    );
+
+    errorThrown = null;
+    try {
+        groupifyRebuild.setNumberOfGroups(0);
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof RangeError,
+        "setNumberOfGroups must be >= 1"
+    );
+
+    // ========================================
     // allocate: gültige Zuweisung
     // ========================================
 
@@ -387,6 +576,171 @@ function runTests() {
     console.assert(
         Math.max(...evenSizes) - Math.min(...evenSizes) <= 1,
         "randAssignAll should keep group sizes within 1 of each other"
+    );
+
+
+    // ========================================
+    // addStudent / removeStudent
+    // ========================================
+
+    const addGroup = new Group("Add Group", 0, 3);
+    const addExisting = new Student("Paul Park");
+    const groupifyAdd = new Groupify([addGroup], [addExisting]);
+
+    const addNew = new Student("Rita Reis");
+    groupifyAdd.addStudent(addNew);
+
+    console.assert(
+        groupifyAdd.unallocated.length() === 2,
+        "addStudent should place the student in unallocated"
+    );
+
+    errorThrown = null;
+    try {
+        groupifyAdd.addStudent("Hallo");
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof TypeError,
+        "addStudent should require a Student object"
+    );
+
+    errorThrown = null;
+    try {
+        groupifyAdd.addStudent(addExisting);
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof Error,
+        "addStudent should reject a student already in Groupify"
+    );
+    console.assert(
+        groupifyAdd.unallocated.length() === 2,
+        "failed addStudent should not change membership"
+    );
+
+    errorThrown = null;
+    try {
+        groupifyAdd.addStudent(new Student("paul park"));
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof Error,
+        "addStudent should reject a duplicate name case-insensitively"
+    );
+    console.assert(
+        groupifyAdd.unallocated.length() === 2,
+        "failed duplicate-name addStudent should not change membership"
+    );
+
+    groupifyAdd.allocate(addExisting, addGroup);
+    groupifyAdd.removeStudent(addExisting);
+
+    console.assert(
+        addGroup.length() === 0,
+        "removeStudent should remove an allocated student from the group"
+    );
+    console.assert(
+        groupifyAdd.unallocated.length() === 1,
+        "removeStudent should not leave the student in unallocated"
+    );
+
+    groupifyAdd.removeStudent(addNew);
+
+    console.assert(
+        groupifyAdd.unallocated.length() === 0,
+        "removeStudent should remove an unallocated student"
+    );
+
+    errorThrown = null;
+    try {
+        groupifyAdd.removeStudent(addNew);
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof Error,
+        "removeStudent should reject a student that is not in Groupify"
+    );
+
+    errorThrown = null;
+    try {
+        groupifyAdd.removeStudent("Hallo");
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof TypeError,
+        "removeStudent should require a Student object"
+    );
+
+    // ========================================
+    // addStudent: dynamic capacity
+    // ========================================
+
+    const capFirst = new Student("Cap One");
+    const groupifyCap = new Groupify(3, [capFirst]);
+    groupifyCap.allocate(capFirst, groupifyCap.groups[0]);
+
+    groupifyCap.addStudent(new Student("Cap Two"));
+    groupifyCap.addStudent(new Student("Cap Three"));
+    groupifyCap.addStudent(new Student("Cap Four"));
+    groupifyCap.addStudent(new Student("Cap Five"));
+
+    console.assert(
+        groupifyCap.groups[0].length() === 1 &&
+            groupifyCap.groups[0].getStudent(0) === capFirst,
+        "addStudent should not change existing allocations"
+    );
+
+    groupifyCap.randAssignAll();
+
+    console.assert(
+        groupifyCap.unallocated.length() === 0,
+        "randAssignAll should empty unallocated after dynamic adds"
+    );
+
+    const capSizes = [
+        groupifyCap.groups[0].length(),
+        groupifyCap.groups[1].length(),
+        groupifyCap.groups[2].length()
+    ];
+    console.assert(
+        capSizes[0] + capSizes[1] + capSizes[2] === 5,
+        "randAssignAll should assign all dynamically added students"
+    );
+    console.assert(
+        Math.max(...capSizes) - Math.min(...capSizes) <= 1,
+        "randAssignAll should keep group sizes within 1 after dynamic adds"
+    );
+
+    const groupifyEmptyCap = new Groupify(3, []);
+    groupifyEmptyCap.addStudent(new Student("Empty A"));
+    groupifyEmptyCap.addStudent(new Student("Empty B"));
+    groupifyEmptyCap.addStudent(new Student("Empty C"));
+    groupifyEmptyCap.addStudent(new Student("Empty D"));
+    groupifyEmptyCap.randAssignAll();
+
+    console.assert(
+        groupifyEmptyCap.unallocated.length() === 0,
+        "randAssignAll should work after adding into an empty Groupify"
+    );
+
+    const emptyCapSizes = [
+        groupifyEmptyCap.groups[0].length(),
+        groupifyEmptyCap.groups[1].length(),
+        groupifyEmptyCap.groups[2].length()
+    ];
+    console.assert(
+        emptyCapSizes[0] + emptyCapSizes[1] + emptyCapSizes[2] === 4,
+        "randAssignAll should assign all students added to an empty Groupify"
+    );
+    console.assert(
+        Math.max(...emptyCapSizes) - Math.min(...emptyCapSizes) <= 1,
+        "randAssignAll should keep group sizes within 1 after empty-state adds"
     );
 }
 

@@ -1,21 +1,24 @@
 import { CsvLoader } from "../src/CSVLoader.js";
-import { Group } from "../src/Group.js";
 import { Groupify } from "../src/Groupify.js";
+import { Student } from "../src/Student.js";
 
 const FILE_INPUT = document.getElementById("csv-input");
 const OUTPUT = document.getElementById("student-list");
+const STUDENT_INPUT = document.getElementById("student-input");
+const STUDENT_ADD_ERROR = document.getElementById("student-add-error");
+const BTN_ADD_STUDENT = document.getElementById("btn-add-student");
 const BTN_EINZELN = document.getElementById("btn-aufteilen-einzeln");
 const BTN_ALLE = document.getElementById("btn-alle-aufteilen");
 const CONFIG_VALUE = document.getElementById("config-value");
 const GROUPS_CONTAINER = document.getElementById("groups");
 const LOADER = new CsvLoader();
 
-let students = [];
 let groupify = null;
 let draggedStudent = null;
 let draggedGroup = null;
 
 FILE_INPUT.addEventListener("change", loadFile);
+BTN_ADD_STUDENT.addEventListener("click", addStudentFromInput);
 BTN_EINZELN.addEventListener("click", aufteilenEinzeln);
 BTN_ALLE.addEventListener("click", aufteilenAlle);
 CONFIG_VALUE.addEventListener("input", onConfigValueChange);
@@ -43,9 +46,13 @@ function loadFile(event) {
 
     reader.onload = function () {
         try {
-            students = LOADER.parse(reader.result);
+            const roster = LOADER.parse(reader.result);
+            if (roster.length === 0) {
+                groupify = null;
+            } else {
+                groupify = new Groupify(getNumberOfGroups(), roster);
+            }
         } catch (error) {
-            students = [];
             groupify = null;
             OUTPUT.innerHTML = "<h2>Schülerliste</h2>";
             const paragraph = document.createElement("p");
@@ -55,7 +62,6 @@ function loadFile(event) {
             return;
         }
 
-        setupGroupify();
         render();
     };
 
@@ -70,31 +76,43 @@ function getNumberOfGroups() {
     return value;
 }
 
-function setupGroupify() {
-    if (students.length === 0) {
-        groupify = null;
+function addStudentFromInput() {
+    const name = STUDENT_INPUT.value.trim();
+    if (name === "") {
+        showAddError("Bitte einen Namen eingeben.");
         return;
     }
 
-    const numberOfGroups = getNumberOfGroups();
-    // randAssign() ensures an even initial distribution.
-    // max only defines the hard capacity and allows free manual redistribution.
-    const minPerGroup = Math.floor(students.length / numberOfGroups);
-    const maxPerGroup = students.length;
-
-    const groups = [];
-    for (let i = 1; i <= numberOfGroups; i++) {
-        groups.push(new Group("Gruppe " + i, minPerGroup, maxPerGroup));
+    try {
+        const student = new Student(name);
+        if (!groupify) {
+            groupify = new Groupify(getNumberOfGroups(), [student]);
+        } else {
+            groupify.addStudent(student);
+        }
+    } catch (error) {
+        showAddError(error.message);
+        return;
     }
 
-    groupify = new Groupify(groups, students);
+    STUDENT_INPUT.value = "";
+    hideAddError();
+    render();
+}
+
+function showAddError(message) {
+    STUDENT_ADD_ERROR.textContent = message;
+    STUDENT_ADD_ERROR.hidden = false;
+}
+
+function hideAddError() {
+    STUDENT_ADD_ERROR.textContent = "";
+    STUDENT_ADD_ERROR.hidden = true;
 }
 
 function onConfigValueChange() {
-    if (students.length > 0) {
-        setupGroupify();
-    } else {
-        groupify = null;
+    if (groupify) {
+        groupify.setNumberOfGroups(getNumberOfGroups());
     }
     render();
 }
@@ -177,21 +195,60 @@ function createGroupCard(name, group) {
 
 function createStudentRow(student, group) {
     const paragraph = document.createElement("p");
-    paragraph.textContent = student.name;
+    paragraph.className = "student-row";
     paragraph.draggable = true;
     paragraph._student = student;
     paragraph._group = group;
+
+    const name = document.createElement("span");
+    name.textContent = student.name;
+    paragraph.appendChild(name);
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "btn-delete-student";
+    button.textContent = "×";
+    button.setAttribute("aria-label", student.name + " löschen");
+    button.addEventListener("mousedown", function (event) {
+        event.stopPropagation();
+    });
+    button.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        deleteStudent(student);
+    });
+    paragraph.appendChild(button);
+
     return paragraph;
+}
+
+function deleteStudent(student) {
+    if (!groupify) {
+        return;
+    }
+
+    if (!confirm(student.name + " wirklich löschen?")) {
+        return;
+    }
+
+    groupify.removeStudent(student);
+    render();
 }
 
 // Starts dragging a student and stores the source group
 function onDragStart(event) {
-    if (!event.target._student) {
+    if (event.target.closest(".btn-delete-student")) {
+        event.preventDefault();
         return;
     }
 
-    draggedStudent = event.target._student;
-    draggedGroup = event.target._group;
+    const row = event.target.closest(".student-row");
+    if (!row || !row._student) {
+        return;
+    }
+
+    draggedStudent = row._student;
+    draggedGroup = row._group;
     event.dataTransfer.setData("text/plain", draggedStudent.name);
     event.dataTransfer.effectAllowed = "move";
 }

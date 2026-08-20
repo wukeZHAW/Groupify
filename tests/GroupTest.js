@@ -122,6 +122,48 @@ function runTests() {
         errorThrown = error
     }
     console.assert(errorThrown != null, "Invalid name setter should throw");
+
+    // gültiger max-Setter
+    const groupMaxSetter = new Group("Hallo", 1, 2);
+    groupMaxSetter.addStudent("Max");
+    groupMaxSetter.addStudent("Anna");
+    console.assert(groupMaxSetter.isFull() === true, "Group should start full at original max");
+    groupMaxSetter.max = 3;
+    console.assert(groupMaxSetter.max === 3, "Valid max setter should update max");
+    console.assert(groupMaxSetter.isFull() === false, "Raising max should make a full group not full");
+    groupMaxSetter.addStudent("Peter");
+    console.assert(groupMaxSetter.length() === 3, "Raising max should allow another student");
+
+    // max kein Integer
+    errorThrown = null;
+    try {groupMaxSetter.max = 3.5;} catch(error) {
+        errorThrown = error
+    }
+    console.assert(errorThrown instanceof TypeError, "max setter must be an integer");
+
+    // max < 1
+    errorThrown = null;
+    try {groupMaxSetter.max = 0;} catch(error) {
+        errorThrown = error
+    }
+    console.assert(errorThrown != null, "max setter must be >= 1");
+
+    // max < min
+    const groupMaxBelowMin = new Group("Hallo", 2, 3);
+    errorThrown = null;
+    try {groupMaxBelowMin.max = 1;} catch(error) {
+        errorThrown = error
+    }
+    console.assert(errorThrown != null, "max setter must be >= min");
+    console.assert(groupMaxBelowMin.max === 3, "Invalid max setter should not change max");
+
+    // max unter aktueller Gruppengrösse
+    errorThrown = null;
+    try {groupMaxSetter.max = 2;} catch(error) {
+        errorThrown = error
+    }
+    console.assert(errorThrown != null, "max setter must not be below current group size");
+    console.assert(groupMaxSetter.max === 3, "Invalid max setter should not change max");
 }
 
 

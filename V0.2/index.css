@@ -94,6 +94,41 @@ body {
     outline-offset: 2px;
 }
 
+#student-add {
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
+}
+
+#student-input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.5rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text);
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+#student-input:focus {
+    outline: 2px solid var(--zhaw-blue);
+    outline-offset: 2px;
+}
+
+#controls #btn-add-student {
+    width: auto;
+    padding: 0.5rem 0.75rem;
+    white-space: nowrap;
+}
+
+#student-add-error {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #b00020;
+}
+
 #student-list {
     background: var(--bg-panel);
     border: 1px solid var(--border);
@@ -132,6 +167,44 @@ body {
 #groups p {
     cursor: grab;
     margin: 0.25rem 0;
+}
+
+.student-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.student-row span {
+    min-width: 0;
+    flex: 1;
+}
+
+.btn-delete-student,
+#controls .btn-delete-student {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+.btn-delete-student:hover,
+#controls .btn-delete-student:hover,
+#controls .btn-delete-student:active {
+    color: #b00020;
+    background: transparent;
 }
 
 /* ----- Buttons ----- */

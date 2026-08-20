@@ -7,13 +7,19 @@ export class Groupify {
 
     // constructor
     constructor(groups, students){
-        this.#validateGroups(groups);
-        this.#validateStudents(students);
-        
+        if (typeof groups === "number") {
+            this.#validateStudents(students);
+            groups = this.#createGroups(groups, students.length);
+        } else {
+            this.#validateGroups(groups);
+            this.#validateStudents(students);
+        }
+
         this.#groups = groups;
 
+        // Unallocated is a waiting pool and has no practical capacity limit.
         this.#unallocated = new Group(
-            "Unallocated", 0, Math.max(1, students.length)
+            "Unallocated", 0, Number.MAX_SAFE_INTEGER
         );
 
         // alle Students in unallocated einfügen
@@ -45,6 +51,72 @@ export class Groupify {
                     "students must only contain Student objects"
                 );
             }
+        }
+    }
+
+    #createGroups(numberOfGroups, studentCount) {
+        if (!Number.isInteger(numberOfGroups)) {
+            throw new TypeError("numberOfGroups must be an integer");
+        }
+
+        if (numberOfGroups < 1) {
+            throw new RangeError("numberOfGroups must be >= 1");
+        }
+
+        // randAssign() ensures an even initial distribution.
+        // max only defines the hard capacity and allows free manual redistribution.
+        // Group requires max >= 1, so an empty roster still gets a valid capacity.
+        const minPerGroup = Math.floor(studentCount / numberOfGroups);
+        const maxPerGroup = Math.max(1, studentCount);
+
+        const groups = [];
+        for (let i = 1; i <= numberOfGroups; i++) {
+            groups.push(new Group("Gruppe " + i, minPerGroup, maxPerGroup));
+        }
+
+        return groups;
+    }
+
+    #collectStudents() {
+        const students = [];
+
+        for (let i = 0; i < this.#unallocated.length(); i++) {
+            students.push(this.#unallocated.getStudent(i));
+        }
+
+        for (const group of this.#groups) {
+            for (let i = 0; i < group.length(); i++) {
+                students.push(group.getStudent(i));
+            }
+        }
+
+        return students;
+    }
+
+    #hasStudentName(name) {
+        const needle = name.toLowerCase();
+        const students = this.#collectStudents();
+
+        for (const student of students) {
+            if (student.name.toLowerCase() === needle) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    setNumberOfGroups(numberOfGroups) {
+        const students = this.#collectStudents();
+        const groups = this.#createGroups(numberOfGroups, students.length);
+
+        this.#groups = groups;
+        this.#unallocated = new Group(
+            "Unallocated", 0, Number.MAX_SAFE_INTEGER
+        );
+
+        for (const student of students) {
+            this.#unallocated.addStudent(student);
         }
     }
 
@@ -172,5 +244,63 @@ export class Groupify {
             const student = this.#unallocated.getStudent(0);
             this.randAssign(student);
         }
+    }
+
+    addStudent(student){
+        if (!(student instanceof Student)) {
+            throw new TypeError("student must be a Student object");
+        }
+
+        if (this.#findGroup(student) !== null) {
+            throw new Error("student already belongs to Groupify");
+        }
+
+        if (this.#hasStudentName(student.name)) {
+            throw new Error("student name already exists");
+        }
+
+        this.#unallocated.addStudent(student);
+        this.#ensureGroupCapacity();
+    }
+
+    #ensureGroupCapacity() {
+        const newMax = Math.max(1, this.#collectStudents().length);
+
+        for (const group of this.#groups) {
+            if (newMax > group.max) {
+                group.max = newMax;
+            }
+        }
+    }
+
+    removeStudent(student){
+        if (!(student instanceof Student)) {
+            throw new TypeError("student must be a Student object");
+        }
+
+        const group = this.#findGroup(student);
+        if (group === null) {
+            throw new Error("student does not belong to Groupify");
+        }
+
+        group.removeStudent(student);
+    }
+
+    #findGroup(student) {
+        for (let i = 0; i < this.#unallocated.length(); i++) {
+            if (this.#unallocated.getStudent(i) === student) {
+                return this.#unallocated;
+            }
+        }
+
+        for (const group of this.#groups) {
+            for (let i = 0; i < group.length(); i++) {
+                if (group.getStudent(i) === student) {
+                    return group;
+                }
+            }
+        }
+
+        return null;
     }
 }
