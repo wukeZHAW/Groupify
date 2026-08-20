@@ -34,6 +34,7 @@ OUTPUT.addEventListener("drop", onListDrop);
 
 document.addEventListener("dragend", clearDrag);
 
+groupify = new Groupify(getNumberOfGroups(), []);
 render();
 
 function loadFile(event) {
@@ -186,11 +187,69 @@ function createGroupCard(name, group) {
         return article;
     }
 
+    heading.className = "group-name";
+    heading.title = "Doppelklick zum Umbenennen";
+    heading.addEventListener("dblclick", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        startGroupRename(heading, group);
+    });
+
     for (let i = 0; i < group.length(); i++) {
         article.appendChild(createStudentRow(group.getStudent(i), group));
     }
 
     return article;
+}
+
+function startGroupRename(heading, group) {
+    if (heading.querySelector("input")) {
+        return;
+    }
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "group-name-input";
+    input.value = group.name;
+
+    heading.textContent = "";
+    heading.appendChild(input);
+
+    input.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            input.blur();
+        }
+        if (event.key === "Escape") {
+            input.value = group.name;
+            input.blur();
+        }
+    });
+
+    input.addEventListener("mousedown", function (event) {
+        event.stopPropagation();
+    });
+
+    input.addEventListener("blur", function () {
+        finishGroupRename(heading, group, input);
+    });
+
+    window.setTimeout(function () {
+        input.focus();
+        input.select();
+    }, 0);
+}
+
+function finishGroupRename(heading, group, input) {
+    try {
+        if (groupify) {
+            groupify.renameGroup(group, input.value.trim());
+        }
+    } catch (error) {
+        alert(error.message);
+    }
+
+    heading.textContent = group.name;
 }
 
 function createStudentRow(student, group) {

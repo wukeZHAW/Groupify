@@ -1,6 +1,6 @@
 export class Group {
     
-    static NAME_MIN_LEN = 5;
+    static NAME_MIN_LEN = 1;
     static NAME_MAX_LEN = 20;
 
     // Private fields

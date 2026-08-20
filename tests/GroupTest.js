@@ -23,14 +23,17 @@ function runTests() {
 
     // Name unter Minimum
     errorThrown = null;
-    try {const group4 = new Group("Hall", 1, 2);} catch(error) {
+    try {const group4 = new Group("", 1, 2);} catch(error) {
         errorThrown = error
     }
     console.assert(errorThrown != null, `name must be between ${Group.NAME_MIN_LEN} and ${Group.NAME_MAX_LEN} characters`)
 
     // Name genau Minimum
-    const groupMinName = new Group("Hallo", 1, 2);
-    console.assert(groupMinName.name === "Hallo", "5 character name should be valid");
+    const groupMinName = new Group("A", 1, 2);
+    console.assert(
+    groupMinName.name === "A",
+    "1 character name should be valid"
+    )
 
     // Name genau Maximum
     const groupMaxName = new Group("HalloHalloHalloHallo", 1, 2);
@@ -118,7 +121,7 @@ function runTests() {
 
     // ungültiger Name-Setter
     errorThrown = null;
-    try {groupNameSetter.name = "Hi";} catch(error) {
+    try {groupNameSetter.name = "";} catch(error) {
         errorThrown = error
     }
     console.assert(errorThrown != null, "Invalid name setter should throw");

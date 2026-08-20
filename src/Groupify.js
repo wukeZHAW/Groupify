@@ -286,6 +286,18 @@ export class Groupify {
         group.removeStudent(student);
     }
 
+    renameGroup(group, newName) {
+        if (!(group instanceof Group)) {
+            throw new TypeError("group must be a Group object");
+        }
+
+        if (!this.#groups.includes(group)) {
+            throw new Error("group does not belong to Groupify");
+        }
+
+        group.name = newName;
+    }
+
     #findGroup(student) {
         for (let i = 0; i < this.#unallocated.length(); i++) {
             if (this.#unallocated.getStudent(i) === student) {

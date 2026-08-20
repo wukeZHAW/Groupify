@@ -20,9 +20,9 @@ describe("Group", () => {
         });
 
         test("accepts name at minimum length", () => {
-            const group = new Group("Hallo", 1, 2);
+            const group = new Group("A", 1, 2);
 
-            expect(group.name).toBe("Hallo");
+            expect(group.name).toBe("A");
         });
 
         test("accepts name at maximum length", () => {

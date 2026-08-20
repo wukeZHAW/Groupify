@@ -742,6 +742,64 @@ function runTests() {
         Math.max(...emptyCapSizes) - Math.min(...emptyCapSizes) <= 1,
         "randAssignAll should keep group sizes within 1 after empty-state adds"
     );
+
+    // ========================================
+    // renameGroup
+    // ========================================
+
+    const renameGroup = new Group("Group A", 0, 2);
+    const renameOther = new Group("Group B", 0, 2);
+    const groupifyRename = new Groupify(
+        [renameGroup, renameOther],
+        [new Student("Rename One")]
+    );
+
+    groupifyRename.renameGroup(renameGroup, "Gruppe X");
+    console.assert(
+        renameGroup.name === "Gruppe X",
+        "renameGroup should update the group name"
+    );
+
+    errorThrown = null;
+    try {
+        groupifyRename.renameGroup("Hallo", "Gruppe Y");
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof TypeError,
+        "renameGroup should require a Group object"
+    );
+
+    errorThrown = null;
+    try {
+        groupifyRename.renameGroup(new Group("Foreign", 0, 2), "Gruppe Y");
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof Error,
+        "renameGroup should reject a foreign group"
+    );
+    console.assert(
+        renameGroup.name === "Gruppe X",
+        "failed foreign renameGroup should not change names"
+    );
+
+    errorThrown = null;
+    try {
+        groupifyRename.renameGroup(renameGroup, "");
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof RangeError,
+        "renameGroup should reject an invalid name via Group"
+    );
+    console.assert(
+        renameGroup.name === "Gruppe X",
+        "failed renameGroup should leave the old name unchanged"
+    );
 }
 
 runTests();
