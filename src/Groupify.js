@@ -106,6 +106,21 @@ export class Groupify {
         return false;
     }
 
+    #hasGroupName(name, exceptGroup) {
+        const needle = name.toLowerCase();
+
+        for (const group of this.#groups) {
+            if (group === exceptGroup) {
+                continue;
+            }
+            if (group.name.toLowerCase() === needle) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     setNumberOfGroups(numberOfGroups) {
         const students = this.#collectStudents();
         const groups = this.#createGroups(numberOfGroups, students.length);
@@ -295,7 +310,13 @@ export class Groupify {
             throw new Error("group does not belong to Groupify");
         }
 
-        group.name = newName;
+        const trimmedNewName = newName.trim();
+
+        if (this.#hasGroupName(trimmedNewName, group)) {
+            throw new Error("group name already exists");
+        }
+
+        group.name = trimmedNewName;
     }
 
     #findGroup(student) {

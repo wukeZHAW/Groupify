@@ -800,6 +800,38 @@ function runTests() {
         renameGroup.name === "Gruppe X",
         "failed renameGroup should leave the old name unchanged"
     );
+
+    errorThrown = null;
+    try {
+        groupifyRename.renameGroup(renameGroup, "Group B");
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof Error,
+        "renameGroup should reject a name that already exists"
+    );
+    console.assert(
+        renameGroup.name === "Gruppe X",
+        "failed duplicate renameGroup should leave the old name unchanged"
+    );
+
+    errorThrown = null;
+    try {
+        groupifyRename.renameGroup(renameGroup, "group b");
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof Error,
+        "renameGroup should reject a duplicate name case-insensitively"
+    );
+
+    groupifyRename.renameGroup(renameGroup, "Gruppe X");
+    console.assert(
+        renameGroup.name === "Gruppe X",
+        "renameGroup should allow keeping the current name"
+    );
 }
 
 runTests();
