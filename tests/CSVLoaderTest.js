@@ -16,7 +16,9 @@ function runTests() {
 
     console.assert(STUDENTS[0] instanceof Student, "Parsed entries must be of type Student");
 
-    console.assert(STUDENTS[0].name === "Max Müller", "Stundent name should be 'Vorname Nachname'");
+    console.assert(STUDENTS[0].lastName === "Müller", "lastName should come from the Name column");
+    console.assert(STUDENTS[0].firstName === "Max", "firstName should come from the Vorname column");
+    console.assert(STUDENTS[0].name === "Max Müller", "Student name should be 'Vorname Nachname'");
 
     //not string
     let errorThrown = null;
@@ -64,7 +66,9 @@ function runTests() {
     //whitespace
     const WHITESPACE_STUDENTS = LOADER.parse("Name;Vorname\n  Wu  ;  Kevin  ");
     console.assert(
-        WHITESPACE_STUDENTS[0].name === "Kevin Wu",
+        WHITESPACE_STUDENTS[0].lastName === "Wu" &&
+            WHITESPACE_STUDENTS[0].firstName === "Kevin" &&
+            WHITESPACE_STUDENTS[0].name === "Kevin Wu",
         "Whitespace should be trimmed"
     );
 
@@ -76,6 +80,18 @@ function runTests() {
         STUDENTS_WITH_EMPTYROW.length === 2,
         "Empty row should be ignored"
     );
-}
+
+    const EAST_ASIAN_STUDENTS = LOADER.parse(
+        "Name;Vorname\n王;小明\n李;雨桐\n陈;子轩\n佐藤;陽菜\n김;민준"
+    );
+    console.assert(
+        EAST_ASIAN_STUDENTS.length === 5 &&
+            EAST_ASIAN_STUDENTS[0].lastName === "王" &&
+            EAST_ASIAN_STUDENTS[0].firstName === "小明" &&
+            EAST_ASIAN_STUDENTS[4].lastName === "김" &&
+            EAST_ASIAN_STUDENTS[4].firstName === "민준",
+        "1 character last names should parse"
+    );
+    }
 
 runTests();

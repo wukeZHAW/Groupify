@@ -4,7 +4,8 @@ import { Student } from "../src/Student.js";
 
 const FILE_INPUT = document.getElementById("csv-input");
 const OUTPUT = document.getElementById("student-list");
-const STUDENT_INPUT = document.getElementById("student-input");
+const FIRST_NAME_INPUT = document.getElementById("student-first-name");
+const LAST_NAME_INPUT = document.getElementById("student-last-name");
 const STUDENT_ADD_ERROR = document.getElementById("student-add-error");
 const BTN_ADD_STUDENT = document.getElementById("btn-add-student");
 const BTN_EINZELN = document.getElementById("btn-aufteilen-einzeln");
@@ -112,14 +113,15 @@ function applyGroupConfig() {
 }
 
 function addStudentFromInput() {
-    const name = STUDENT_INPUT.value.trim();
-    if (name === "") {
-        showAddError("Bitte einen Namen eingeben.");
+    const firstName = FIRST_NAME_INPUT.value.trim();
+    const lastName = LAST_NAME_INPUT.value.trim();
+    if (firstName === "" || lastName === "") {
+        showAddError("Bitte Vorname und Nachname eingeben.");
         return;
     }
 
     try {
-        const student = new Student(name);
+        const student = new Student(lastName, firstName);
         if (!groupify) {
             groupify = createGroupify([student]);
         } else {
@@ -130,7 +132,8 @@ function addStudentFromInput() {
         return;
     }
 
-    STUDENT_INPUT.value = "";
+    FIRST_NAME_INPUT.value = "";
+    LAST_NAME_INPUT.value = "";
     hideAddError();
     render();
 }

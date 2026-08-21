@@ -96,12 +96,13 @@ body {
 
 #student-add {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
     align-items: stretch;
 }
 
-#student-input {
-    flex: 1;
+#student-add input[type="text"] {
+    flex: 1 1 6rem;
     min-width: 0;
     padding: 0.5rem;
     font-family: inherit;
@@ -112,7 +113,7 @@ body {
     border-radius: var(--radius);
 }
 
-#student-input:focus {
+#student-add input[type="text"]:focus {
     outline: 2px solid var(--zhaw-blue);
     outline-offset: 2px;
 }

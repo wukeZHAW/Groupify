@@ -1,13 +1,16 @@
 export class Student {
 
-    static NAME_MIN_LEN = 2;
+    static NAME_MIN_LEN = 1;
     static NAME_MAX_LEN = 50;
 
-    #name;
+    #lastName;
+    #firstName;
 
-    constructor(name){
-        this.#validateName(name);
-        this.#name = name;
+    constructor(lastName, firstName){
+        this.#validateName(lastName);
+        this.#validateName(firstName);
+        this.#lastName = lastName;
+        this.#firstName = firstName;
     }
 
     #validateName(name) {
@@ -19,12 +22,15 @@ export class Student {
         }
     }
 
-    get name() {
-        return this.#name;
+    get firstName() {
+        return this.#firstName;
     }
 
-    set name(newName) {
-        this.#validateName(newName);
-        this.#name = newName;
+    get lastName() {
+        return this.#lastName;
+    }
+
+    get name() {
+        return this.#firstName + " " + this.#lastName;
     }
 }

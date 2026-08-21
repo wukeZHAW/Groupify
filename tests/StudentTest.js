@@ -3,58 +3,87 @@ import { Student } from "../src/Student.js";
 function runTests(){
     console.log("Starting Student.js tests ...");
 
-    const student1 = new Student("Kevin")
-    console.assert(student1.name === "Kevin", "Valid student should be created");
+    const student1 = new Student("Wu", "Kevin");
+    console.assert(student1.lastName === "Wu", "Valid student should store lastName");
+    console.assert(student1.firstName === "Kevin", "Valid student should store firstName");
+    console.assert(student1.name === "Kevin Wu", "name should be 'Vorname Nachname'");
 
-    // Name unter Minimum
+    // einstellige Namen (z. B. 王, 김)
+    const studentShort = new Student("王", "小明");
+    console.assert(
+        studentShort.lastName === "王" && studentShort.firstName === "小明",
+        "1 character lastName should be valid"
+    );
+
+    // Nachname unter Minimum
     let errorThrown = null;
-    try {const student2 = new Student("Wu");} catch(error) {
+    try {new Student("", "Kevin");} catch(error) {
         errorThrown = error
     }
     console.assert(
-        errorThrown != null,
-        `name must be between ${Student.NAME_MIN_LEN} and ${Student.NAME_MAX_LEN} characters`
+        errorThrown instanceof RangeError,
+        `lastName must be between ${Student.NAME_MIN_LEN} and ${Student.NAME_MAX_LEN} characters`
     )
 
-    // Name genau Minimum
-    const studentMinName = new Student("Kevin");
+    // Vorname unter Minimum
+    errorThrown = null;
+    try {new Student("Wu", "");} catch(error) {
+        errorThrown = error
+    }
     console.assert(
-    studentMinName.name === "Kevin",
-    "5 character name should be valid"
+        errorThrown instanceof RangeError,
+        `firstName must be between ${Student.NAME_MIN_LEN} and ${Student.NAME_MAX_LEN} characters`
     )
 
-    // Name genau Maximum
-    const studentMaxName = new Student("MaximilianPeterMüler");
-    console.assert(studentMaxName.name.length === Student.NAME_MAX_LEN, "20 character name should be valid");
+    // Namen genau Minimum
+    const minName = "A".repeat(Student.NAME_MIN_LEN);
+    const studentMinName = new Student(minName, minName);
+    console.assert(
+        studentMinName.lastName === minName && studentMinName.firstName === minName,
+        `${Student.NAME_MIN_LEN} character names should be valid`
+    )
 
-    // Name kein String
+    // Namen genau Maximum
+    const maxName = "A".repeat(Student.NAME_MAX_LEN);
+    const studentMaxName = new Student(maxName, maxName);
+    console.assert(
+        studentMaxName.lastName.length === Student.NAME_MAX_LEN &&
+            studentMaxName.firstName.length === Student.NAME_MAX_LEN,
+        `${Student.NAME_MAX_LEN} character names should be valid`
+    );
+
+    // Nachname kein String
     errorThrown = null;
-    try {const studentNotString = new Student(1234);} catch(error) {
+    try {new Student(1234, "Kevin");} catch(error) {
         errorThrown = error
     }
-    console.assert(errorThrown instanceof TypeError, "name must be of type string");
+    console.assert(errorThrown instanceof TypeError, "lastName must be of type string");
 
-    // Name über Maximum
+    // Vorname kein String
     errorThrown = null;
-    try {const student7 = new Student("HalloHalloHalloHallos");} catch(error) {
+    try {new Student("Wu", 1234);} catch(error) {
         errorThrown = error
     }
-    console.assert(errorThrown != null, `name must not exceed ${Student.NAME_MAX_LEN} characters`);
+    console.assert(errorThrown instanceof TypeError, "firstName must be of type string");
 
-    // gültiger Name-Setter
-    const studentNameSetter = new Student("Marco");
-    studentNameSetter.name = "Philip";
-    console.assert(studentNameSetter.name === "Philip", "Valid name setter should update the student name");
-
-    // ungültiger Name-Setter
+    // Nachname über Maximum
     errorThrown = null;
-    try {studentNameSetter.name = "Hi"} catch(error) {
+    try {new Student(maxName + "s", "Kevin");} catch(error) {
         errorThrown = error
     }
-    console.assert(errorThrown != null, "Invalid name setter should throw");
-    
-    console.assert(studentNameSetter.name === "Philip", 
-        "Invalid name setter should not change existing name"
+    console.assert(
+        errorThrown instanceof RangeError,
+        `lastName must not exceed ${Student.NAME_MAX_LEN} characters`
+    );
+
+    // Vorname über Maximum
+    errorThrown = null;
+    try {new Student("Wu", maxName + "s");} catch(error) {
+        errorThrown = error
+    }
+    console.assert(
+        errorThrown instanceof RangeError,
+        `firstName must not exceed ${Student.NAME_MAX_LEN} characters`
     );
 }
 

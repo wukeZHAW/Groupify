@@ -9,8 +9,8 @@ function runTests() {
     const group1 = new Group("Group 1", 1, 2);
     const group2 = new Group("Group 2", 1, 2);
 
-    const student1 = new Student("Kevin Wu");
-    const student2 = new Student("Max Müller");
+    const student1 = new Student("Wu", "Kevin");
+    const student2 = new Student("Müller", "Max");
 
     const groups = [group1, group2];
     const students = [student1, student2];
@@ -61,11 +61,11 @@ function runTests() {
     // ========================================
 
     const countStudents = [
-        new Student("Anna A"),
-        new Student("Bernd B"),
-        new Student("Clara C"),
-        new Student("Dora D"),
-        new Student("Emil E")
+        new Student("Albers", "Anna"),
+        new Student("Bauer", "Bernd"),
+        new Student("Conrad", "Clara"),
+        new Student("Dunst", "Dora"),
+        new Student("Engel", "Emil")
     ];
     const groupifyFromCount = new Groupify(2, countStudents);
 
@@ -143,7 +143,7 @@ function runTests() {
         "empty roster should create empty groups and empty unallocated"
     );
 
-    const lastStudent = new Student("Last One");
+    const lastStudent = new Student("One", "Last");
     const groupifyLast = new Groupify(3, [lastStudent]);
     groupifyLast.removeStudent(lastStudent);
     console.assert(
@@ -159,7 +159,7 @@ function runTests() {
         "setNumberOfGroups should work with zero students"
     );
 
-    groupifyLast.addStudent(new Student("Again Ok"));
+    groupifyLast.addStudent(new Student("Ok", "Again"));
     console.assert(
         groupifyLast.unallocated.length() === 1,
         "addStudent should work after Groupify became empty"
@@ -170,9 +170,9 @@ function runTests() {
     // ========================================
 
     const rebuildStudents = [
-        new Student("Finn F"),
-        new Student("Greta G"),
-        new Student("Hugo H")
+        new Student("Frost", "Finn"),
+        new Student("Grün", "Greta"),
+        new Student("Hahn", "Hugo")
     ];
     const groupifyRebuild = new Groupify(2, rebuildStudents);
     const oldGroup = groupifyRebuild.groups[0];
@@ -250,11 +250,11 @@ function runTests() {
     // ========================================
 
     const sizeStudents = [
-        new Student("Iris I"),
-        new Student("Jonas J"),
-        new Student("Klara K"),
-        new Student("Leo L"),
-        new Student("Mira M")
+        new Student("Iten", "Iris"),
+        new Student("Jung", "Jonas"),
+        new Student("Kurz", "Klara"),
+        new Student("Lang", "Leo"),
+        new Student("Meier", "Mira")
     ];
     const groupifySize = new Groupify(2, sizeStudents);
     const oldSizeGroup = groupifySize.groups[0];
@@ -458,8 +458,8 @@ function runTests() {
     //volle Target-Group
     const smallGroup = new Group("Small", 1, 1);
     const otherGroup = new Group("Other", 1, 2);
-    const studentA = new Student("Anna A");
-    const studentB = new Student("Bernd B");
+    const studentA = new Student("Albers", "Anna");
+    const studentB = new Student("Bauer", "Bernd");
     const groupifyFull = new Groupify(
         [smallGroup, otherGroup],
         [studentA, studentB]
@@ -489,7 +489,7 @@ function runTests() {
     const moveGroupA = new Group("Move A", 1, 2);
     const moveGroupB = new Group("Move B", 1, 2);
     const foreignGroup = new Group("Foreign", 1, 2);
-    const moveStudent = new Student("Clara C");
+    const moveStudent = new Student("Conrad", "Clara");
     const groupifyMove = new Groupify(
         [moveGroupA, moveGroupB],
         [moveStudent]
@@ -546,7 +546,7 @@ function runTests() {
     // Student landet in einer verfügbaren Group + verschwindet aus unallocated
     const raGroup1 = new Group("RandA One", 1, 3);
     const raGroup2 = new Group("RandA Two", 1, 3);
-    const raStudent = new Student("Dora Distel");
+    const raStudent = new Student("Distel", "Dora");
     const groupifyRand = new Groupify([raGroup1, raGroup2], [raStudent]);
 
     groupifyRand.randAssign(raStudent);
@@ -563,8 +563,8 @@ function runTests() {
     // volle Groups werden nicht gewählt
     const raFull = new Group("RandA Full", 1, 1);
     const raOpen = new Group("RandA Open", 1, 3);
-    const raFiller = new Student("Emil Egal");
-    const raPick = new Student("Frida Fein");
+    const raFiller = new Student("Egal", "Emil");
+    const raPick = new Student("Fein", "Frida");
     const groupifyPick = new Groupify([raFull, raOpen], [raFiller, raPick]);
 
     groupifyPick.allocate(raFiller, raFull); // raFull ist jetzt voll
@@ -581,8 +581,8 @@ function runTests() {
 
     // keine verfügbare Group → Error
     const raOnly = new Group("RandA Only", 1, 1);
-    const raTaken = new Student("Gustav Gross");
-    const raExtra = new Student("Hanna Hoch");
+    const raTaken = new Student("Gross", "Gustav");
+    const raExtra = new Student("Hoch", "Hanna");
     const groupifyNone = new Groupify([raOnly], [raTaken, raExtra]);
 
     groupifyNone.allocate(raTaken, raOnly); // einzige Gruppe ist voll
@@ -601,8 +601,8 @@ function runTests() {
     // kleinere Groups werden vor grösseren gewählt
     const raSmall = new Group("Rand Small", 0, 3);
     const raBig = new Group("Rand Big", 0, 3);
-    const raFirst = new Student("Ines Klein");
-    const raSecond = new Student("Jonas Klein");
+    const raFirst = new Student("Klein", "Ines");
+    const raSecond = new Student("Klein", "Jonas");
     const groupifyEven = new Groupify(
         [raSmall, raBig],
         [raFirst, raSecond]
@@ -624,9 +624,9 @@ function runTests() {
     const raaGroup1 = new Group("RandAll One", 0, 2);
     const raaGroup2 = new Group("RandAll Two", 0, 2);
     const raaStudents = [
-        new Student("Ida Igel"),
-        new Student("Jan Jungmann"),
-        new Student("Kira Klein")
+        new Student("Igel", "Ida"),
+        new Student("Jungmann", "Jan"),
+        new Student("Klein", "Kira")
     ];
     const groupifyAll = new Groupify([raaGroup1, raaGroup2], raaStudents);
 
@@ -655,10 +655,10 @@ function runTests() {
     const evenB = new Group("Even B", 1, 2);
     const evenC = new Group("Even C", 1, 2);
     const evenStudents = [
-        new Student("Lisa Lang"),
-        new Student("Mark Kurz"),
-        new Student("Nina Neu"),
-        new Student("Otto Obst")
+        new Student("Lang", "Lisa"),
+        new Student("Kurz", "Mark"),
+        new Student("Neu", "Nina"),
+        new Student("Obst", "Otto")
     ];
     const groupifyEvenAll = new Groupify(
         [evenA, evenB, evenC],
@@ -683,10 +683,10 @@ function runTests() {
     // ========================================
 
     const addGroup = new Group("Add Group", 0, 3);
-    const addExisting = new Student("Paul Park");
+    const addExisting = new Student("Park", "Paul");
     const groupifyAdd = new Groupify([addGroup], [addExisting]);
 
-    const addNew = new Student("Rita Reis");
+    const addNew = new Student("Reis", "Rita");
     groupifyAdd.addStudent(addNew);
 
     console.assert(
@@ -722,7 +722,7 @@ function runTests() {
 
     errorThrown = null;
     try {
-        groupifyAdd.addStudent(new Student("paul park"));
+        groupifyAdd.addStudent(new Student("park", "paul"));
     } catch (error) {
         errorThrown = error;
     }
@@ -780,14 +780,14 @@ function runTests() {
     // addStudent: dynamic capacity
     // ========================================
 
-    const capFirst = new Student("Cap One");
+    const capFirst = new Student("One", "Cap");
     const groupifyCap = new Groupify(3, [capFirst]);
     groupifyCap.allocate(capFirst, groupifyCap.groups[0]);
 
-    groupifyCap.addStudent(new Student("Cap Two"));
-    groupifyCap.addStudent(new Student("Cap Three"));
-    groupifyCap.addStudent(new Student("Cap Four"));
-    groupifyCap.addStudent(new Student("Cap Five"));
+    groupifyCap.addStudent(new Student("Two", "Cap"));
+    groupifyCap.addStudent(new Student("Three", "Cap"));
+    groupifyCap.addStudent(new Student("Four", "Cap"));
+    groupifyCap.addStudent(new Student("Five", "Cap"));
 
     console.assert(
         groupifyCap.groups[0].length() === 1 &&
@@ -817,10 +817,10 @@ function runTests() {
     );
 
     const groupifyEmptyCap = new Groupify(3, []);
-    groupifyEmptyCap.addStudent(new Student("Empty A"));
-    groupifyEmptyCap.addStudent(new Student("Empty B"));
-    groupifyEmptyCap.addStudent(new Student("Empty C"));
-    groupifyEmptyCap.addStudent(new Student("Empty D"));
+    groupifyEmptyCap.addStudent(new Student("Able", "Empty"));
+    groupifyEmptyCap.addStudent(new Student("Best", "Empty"));
+    groupifyEmptyCap.addStudent(new Student("Cain", "Empty"));
+    groupifyEmptyCap.addStudent(new Student("Dale", "Empty"));
     groupifyEmptyCap.randAssignAll();
 
     console.assert(
@@ -850,7 +850,7 @@ function runTests() {
     const renameOther = new Group("Group B", 0, 2);
     const groupifyRename = new Groupify(
         [renameGroup, renameOther],
-        [new Student("Rename One")]
+        [new Student("One", "Rename")]
     );
 
     groupifyRename.renameGroup(renameGroup, "Gruppe X");
