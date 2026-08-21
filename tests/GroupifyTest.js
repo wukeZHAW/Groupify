@@ -246,6 +246,105 @@ function runTests() {
     );
 
     // ========================================
+    // setStudentsPerGroup
+    // ========================================
+
+    const sizeStudents = [
+        new Student("Iris I"),
+        new Student("Jonas J"),
+        new Student("Klara K"),
+        new Student("Leo L"),
+        new Student("Mira M")
+    ];
+    const groupifySize = new Groupify(2, sizeStudents);
+    const oldSizeGroup = groupifySize.groups[0];
+    groupifySize.allocate(sizeStudents[0], oldSizeGroup);
+    groupifySize.allocate(sizeStudents[1], groupifySize.groups[1]);
+
+    // 5 students / 2 per group → ceil(5 / 2) = 3 groups
+    groupifySize.setStudentsPerGroup(2);
+
+    console.assert(
+        groupifySize.groups.length === 3,
+        "setStudentsPerGroup should create ceil(students / size) groups"
+    );
+    console.assert(
+        groupifySize.groups[0].name === "Gruppe 1" &&
+            groupifySize.groups[1].name === "Gruppe 2" &&
+            groupifySize.groups[2].name === "Gruppe 3",
+        "setStudentsPerGroup should name groups Gruppe N"
+    );
+    console.assert(
+        groupifySize.unallocated.length() === sizeStudents.length,
+        "setStudentsPerGroup should move all students to unallocated"
+    );
+    console.assert(
+        groupifySize.groups.includes(oldSizeGroup) === false,
+        "setStudentsPerGroup should replace the previous Group objects"
+    );
+
+    // min = floor(5 / 3) = 1
+    groupifySize.allocate(sizeStudents[0], groupifySize.groups[0]);
+    console.assert(
+        groupifySize.groups[0].isComplete() === true,
+        "setStudentsPerGroup should recompute min via setNumberOfGroups"
+    );
+
+    errorThrown = null;
+    try {
+        groupifySize.allocate(sizeStudents[1], oldSizeGroup);
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof Error,
+        "setStudentsPerGroup should reject allocate into a replaced group"
+    );
+
+    // size larger than roster → 1 group
+    groupifySize.setStudentsPerGroup(10);
+    console.assert(
+        groupifySize.groups.length === 1 &&
+            groupifySize.unallocated.length() === sizeStudents.length,
+        "setStudentsPerGroup should create 1 group when size exceeds roster"
+    );
+
+    errorThrown = null;
+    try {
+        groupifySize.setStudentsPerGroup(1.5);
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof TypeError,
+        "setStudentsPerGroup must receive an integer"
+    );
+    console.assert(
+        groupifySize.groups.length === 1 &&
+            groupifySize.unallocated.length() === sizeStudents.length,
+        "failed setStudentsPerGroup should not change membership"
+    );
+
+    errorThrown = null;
+    try {
+        groupifySize.setStudentsPerGroup(0);
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof RangeError,
+        "setStudentsPerGroup must be >= 1"
+    );
+
+    const emptySizeGroupify = new Groupify(3, []);
+    emptySizeGroupify.setStudentsPerGroup(5);
+    console.assert(
+        emptySizeGroupify.groups.length === 1 &&
+            emptySizeGroupify.unallocated.length() === 0,
+        "setStudentsPerGroup with zero students should keep 1 empty group"
+    );
+
+    // ========================================
     // allocate: gültige Zuweisung
     // ========================================
 

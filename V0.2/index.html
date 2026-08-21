@@ -27,11 +27,16 @@
         </aside>
 
         <section id="group-config">
-            <label>
-                <input type="checkbox" id="config-mode" hidden>
-                <span id="config-label">Anzahl Gruppen</span>
+            <label class="config-option">
+                <input type="radio" name="config-mode" id="config-mode-groups" value="groups" checked>
+                <span>Anzahl Gruppen</span>
+                <input type="number" id="config-value" min="1" value="6">
             </label>
-            <input type="number" id="config-value" min="1" value="6">
+            <label class="config-option">
+                <input type="radio" name="config-mode" id="config-mode-size" value="size">
+                <span>Gruppengrösse</span>
+                <input type="number" id="config-size" min="1" value="4">
+            </label>
         </section>
 
         <section id="groups">

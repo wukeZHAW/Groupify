@@ -144,6 +144,24 @@ export class Groupify {
         return this.#unallocated;
     }
 
+    setStudentsPerGroup(studentsPerGroup) {
+        if (!Number.isInteger(studentsPerGroup)) {
+            throw new TypeError("studentsPerGroup must be an integer");
+        }
+
+        if (studentsPerGroup < 1) {
+            throw new RangeError("studentsPerGroup must be >= 1");
+        }
+
+        const students = this.#collectStudents();
+
+        // 0 students and 5 per group still yields 1 empty group.
+        const numberOfGroups = Math.max(
+            1, Math.ceil(students.length / studentsPerGroup)
+        );
+
+        this.setNumberOfGroups(numberOfGroups);
+    }
 
     allocate(student, targetGroup) {
         if (!(student instanceof Student)) {

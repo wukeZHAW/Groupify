@@ -10,6 +10,8 @@ const BTN_ADD_STUDENT = document.getElementById("btn-add-student");
 const BTN_EINZELN = document.getElementById("btn-aufteilen-einzeln");
 const BTN_ALLE = document.getElementById("btn-alle-aufteilen");
 const CONFIG_VALUE = document.getElementById("config-value");
+const CONFIG_SIZE = document.getElementById("config-size");
+const CONFIG_MODE_SIZE = document.getElementById("config-mode-size");
 const GROUPS_CONTAINER = document.getElementById("groups");
 const LOADER = new CsvLoader();
 
@@ -21,7 +23,11 @@ FILE_INPUT.addEventListener("change", loadFile);
 BTN_ADD_STUDENT.addEventListener("click", addStudentFromInput);
 BTN_EINZELN.addEventListener("click", aufteilenEinzeln);
 BTN_ALLE.addEventListener("click", aufteilenAlle);
-CONFIG_VALUE.addEventListener("input", onConfigValueChange);
+CONFIG_VALUE.addEventListener("input", onConfigChange);
+CONFIG_SIZE.addEventListener("input", onConfigChange);
+document.querySelectorAll("input[name='config-mode']").forEach((radio) => {
+    radio.addEventListener("change", onConfigChange);
+});
 
 GROUPS_CONTAINER.addEventListener("dragstart", onDragStart);
 GROUPS_CONTAINER.addEventListener("dragover", onGroupDragOver);
@@ -34,7 +40,7 @@ OUTPUT.addEventListener("drop", onListDrop);
 
 document.addEventListener("dragend", clearDrag);
 
-groupify = new Groupify(getNumberOfGroups(), []);
+groupify = createGroupify([]);
 render();
 
 function loadFile(event) {
@@ -51,7 +57,7 @@ function loadFile(event) {
             if (roster.length === 0) {
                 groupify = null;
             } else {
-                groupify = new Groupify(getNumberOfGroups(), roster);
+                groupify = createGroupify(roster);
             }
         } catch (error) {
             groupify = null;
@@ -69,12 +75,40 @@ function loadFile(event) {
     reader.readAsText(file);
 }
 
-function getNumberOfGroups() {
-    const value = Number(CONFIG_VALUE.value);
+function getPositiveInt(input) {
+    const value = Number(input.value);
     if (!Number.isInteger(value) || value < 1) {
         return 1;
     }
     return value;
+}
+
+function getNumberOfGroups() {
+    return getPositiveInt(CONFIG_VALUE);
+}
+
+function getStudentsPerGroup() {
+    return getPositiveInt(CONFIG_SIZE);
+}
+
+function createGroupify(students) {
+    const instance = new Groupify(getNumberOfGroups(), students);
+    if (CONFIG_MODE_SIZE.checked) {
+        instance.setStudentsPerGroup(getStudentsPerGroup());
+    }
+    return instance;
+}
+
+function applyGroupConfig() {
+    if (!groupify) {
+        return;
+    }
+
+    if (CONFIG_MODE_SIZE.checked) {
+        groupify.setStudentsPerGroup(getStudentsPerGroup());
+    } else {
+        groupify.setNumberOfGroups(getNumberOfGroups());
+    }
 }
 
 function addStudentFromInput() {
@@ -87,7 +121,7 @@ function addStudentFromInput() {
     try {
         const student = new Student(name);
         if (!groupify) {
-            groupify = new Groupify(getNumberOfGroups(), [student]);
+            groupify = createGroupify([student]);
         } else {
             groupify.addStudent(student);
         }
@@ -111,10 +145,8 @@ function hideAddError() {
     STUDENT_ADD_ERROR.hidden = true;
 }
 
-function onConfigValueChange() {
-    if (groupify) {
-        groupify.setNumberOfGroups(getNumberOfGroups());
-    }
+function onConfigChange() {
+    applyGroupConfig();
     render();
 }
 
