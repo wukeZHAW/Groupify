@@ -224,12 +224,17 @@ body {
     cursor: pointer;
 }
 
-#controls button:hover {
+#controls button:hover:not(:disabled) {
     background-color: var(--zhaw-blue-hover);
 }
 
-#controls button:active {
+#controls button:active:not(:disabled) {
     background-color: var(--zhaw-blue-active);
+}
+
+#controls button:disabled {
+    background-color: #c5c9cc;
+    cursor: not-allowed;
 }
 
 #controls button:focus-visible {
@@ -350,6 +355,21 @@ body {
     font-weight: 700;
     color: inherit;
     background: transparent;
+}
+
+#groups article.group-under {
+    background: #fff8e6;
+    border-color: #e6d59a;
+}
+
+#groups article.group-complete {
+    background: #eaf6ea;
+    border-color: #a8d0a8;
+}
+
+#groups article.group-over {
+    background: #fbeaea;
+    border-color: #e0b4b4;
 }
 
 #groups article.drop-target {

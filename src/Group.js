@@ -4,28 +4,14 @@ export class Group {
     static NAME_MAX_LEN = 20;
 
     // Private fields
-    #min;
-    #max;
     #name;
     #members;
 
-    constructor(name, min, max) {
-
-        if(!Number.isInteger(min) || !Number.isInteger(max)) {
-            throw new TypeError("min and max must be integers");
-        }
-
-        if (min < 0 || max < 1 || min > max) {
-            throw new RangeError("min and max must be positive with min >=0, max >= 1 and max >= min");
-        }
-
+    constructor(name) {
         this.#validateName(name);
  
         this.#name = name;
-        this.#min = min;
-        this.#max = max;
         this.#members = [];
-
     }
 
     #validateName(name) {
@@ -46,26 +32,6 @@ export class Group {
         this.#name = newName;
     }
 
-    get max() {
-        return this.#max;
-    }
-
-    set max(newMax) {
-        if (!Number.isInteger(newMax)) {
-            throw new TypeError("max must be an integer");
-        }
-
-        if (newMax < 1 || this.#min > newMax) {
-            throw new RangeError("min and max must be positive with min >=0, max >= 1 and max >= min");
-        }
-
-        if (this.#members.length > newMax) {
-            throw new RangeError("max must not be below current group size");
-        }
-
-        this.#max = newMax;
-    }
-
     getStudent(index){
         return this.#members[index];
     }
@@ -75,9 +41,6 @@ export class Group {
     }
 
     addStudent(student) {
-        if (this.isFull()) {
-            throw new Error(`${this.name} is already full.`);
-        }
         if(this.#members.indexOf(student) >= 0) {
             throw new Error(`${this.name} already contains ${student}`);
         }
@@ -90,13 +53,5 @@ export class Group {
             throw new Error("Element to be removed is not present");
         }
         this.#members.splice(idx,1);
-    }
-
-    isComplete() {
-        return this.#members.length >= this.#min
-    }
-
-    isFull() {
-        return this.#members.length === this.#max
     }
 }

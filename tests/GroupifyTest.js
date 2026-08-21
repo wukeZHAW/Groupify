@@ -6,8 +6,8 @@ function runTests() {
     console.log("Starting Groupify.js tests ...");
 
     // Testdaten
-    const group1 = new Group("Group 1", 1, 2);
-    const group2 = new Group("Group 2", 1, 2);
+    const group1 = new Group("Group 1");
+    const group2 = new Group("Group 2");
 
     const student1 = new Student("Wu", "Kevin");
     const student2 = new Student("Müller", "Max");
@@ -82,30 +82,9 @@ function runTests() {
         groupifyFromCount.unallocated.length() === countStudents.length,
         "numberOfGroups constructor should put all students in unallocated"
     );
-
-    // min = floor(5 / 2) = 2
-    groupifyFromCount.allocate(countStudents[0], groupifyFromCount.groups[0]);
     console.assert(
-        groupifyFromCount.groups[0].isComplete() === false,
-        "group min should be floor(studentCount / numberOfGroups)"
-    );
-    groupifyFromCount.allocate(countStudents[1], groupifyFromCount.groups[0]);
-    console.assert(
-        groupifyFromCount.groups[0].isComplete() === true,
-        "group should be complete once it reaches min"
-    );
-
-    // max = studentCount = 5
-    groupifyFromCount.allocate(countStudents[2], groupifyFromCount.groups[0]);
-    groupifyFromCount.allocate(countStudents[3], groupifyFromCount.groups[0]);
-    console.assert(
-        groupifyFromCount.groups[0].isFull() === false,
-        "group max should be studentCount, not a tight per-group cap"
-    );
-    groupifyFromCount.allocate(countStudents[4], groupifyFromCount.groups[0]);
-    console.assert(
-        groupifyFromCount.groups[0].isFull() === true,
-        "group should be full when it contains all students"
+        groupifyFromCount.groupSize === 3,
+        "groupSize should be ceil(studentCount / numberOfGroups)"
     );
 
     errorThrown = null;
@@ -132,7 +111,8 @@ function runTests() {
 
     const emptyGroupify = new Groupify(3, []);
     console.assert(
-        emptyGroupify.groups.length === 3,
+        emptyGroupify.groups.length === 3 &&
+            emptyGroupify.groupSize === 1,
         "empty roster should still create the requested groups"
     );
     console.assert(
@@ -199,12 +179,9 @@ function runTests() {
         groupifyRebuild.groups.includes(oldGroup) === false,
         "setNumberOfGroups should replace the previous Group objects"
     );
-
-    // min = floor(3 / 3) = 1
-    groupifyRebuild.allocate(rebuildStudents[0], groupifyRebuild.groups[0]);
     console.assert(
-        groupifyRebuild.groups[0].isComplete() === true,
-        "setNumberOfGroups should recompute min from the current roster"
+        groupifyRebuild.groupSize === 1,
+        "setNumberOfGroups should recompute groupSize from the current roster"
     );
 
     errorThrown = null;
@@ -230,7 +207,7 @@ function runTests() {
     );
     console.assert(
         groupifyRebuild.groups.length === 3 &&
-            groupifyRebuild.unallocated.length() === 2,
+            groupifyRebuild.unallocated.length() === 3,
         "failed setNumberOfGroups should not change membership"
     );
 
@@ -282,12 +259,9 @@ function runTests() {
         groupifySize.groups.includes(oldSizeGroup) === false,
         "setStudentsPerGroup should replace the previous Group objects"
     );
-
-    // min = floor(5 / 3) = 1
-    groupifySize.allocate(sizeStudents[0], groupifySize.groups[0]);
     console.assert(
-        groupifySize.groups[0].isComplete() === true,
-        "setStudentsPerGroup should recompute min via setNumberOfGroups"
+        groupifySize.groupSize === 2,
+        "setStudentsPerGroup should keep the requested groupSize"
     );
 
     errorThrown = null;
@@ -305,7 +279,8 @@ function runTests() {
     groupifySize.setStudentsPerGroup(10);
     console.assert(
         groupifySize.groups.length === 1 &&
-            groupifySize.unallocated.length() === sizeStudents.length,
+            groupifySize.unallocated.length() === sizeStudents.length &&
+            groupifySize.groupSize === 10,
         "setStudentsPerGroup should create 1 group when size exceeds roster"
     );
 
@@ -340,7 +315,8 @@ function runTests() {
     emptySizeGroupify.setStudentsPerGroup(5);
     console.assert(
         emptySizeGroupify.groups.length === 1 &&
-            emptySizeGroupify.unallocated.length() === 0,
+            emptySizeGroupify.unallocated.length() === 0 &&
+            emptySizeGroupify.groupSize === 5,
         "setStudentsPerGroup with zero students should keep 1 empty group"
     );
 
@@ -383,7 +359,7 @@ function runTests() {
     // allocate: targetGroup ist nicht in Groupify
     errorThrown = null;
     try {
-        groupify.allocate(student2, new Group("Foreign", 1, 2));
+        groupify.allocate(student2, new Group("Foreign"));
     } catch (error) {
         errorThrown = error;
     }   
@@ -431,7 +407,7 @@ function runTests() {
     // allocate: targetGroup ist nicht in Groupify
     errorThrown = null;
     try {
-        groupify.unallocate(student2, new Group("Foreign", 1, 2));
+        groupify.unallocate(student2, new Group("Foreign"));
     } catch (error) {
         errorThrown = error;
     }   
@@ -455,40 +431,11 @@ function runTests() {
         "move should add student to targetGroup"
     );
 
-    //volle Target-Group
-    const smallGroup = new Group("Small", 1, 1);
-    const otherGroup = new Group("Other", 1, 2);
-    const studentA = new Student("Albers", "Anna");
-    const studentB = new Student("Bauer", "Bernd");
-    const groupifyFull = new Groupify(
-        [smallGroup, otherGroup],
-        [studentA, studentB]
-    );
-
-    groupifyFull.allocate(studentA, smallGroup);
-    groupifyFull.allocate(studentB, otherGroup);
-
-    errorThrown = null;
-    try {
-        groupifyFull.move(otherGroup, studentB, smallGroup);
-    } catch (error) {
-        errorThrown = error;
-    }
-    console.assert(
-        errorThrown instanceof Error,
-        "move to a full group should throw"
-    );
-    console.assert(
-        otherGroup.length() === 1 && smallGroup.length() === 1,
-        "failed move should not change group membership"
-    );
-
-
     
     //fremde Source/Target-Group
-    const moveGroupA = new Group("Move A", 1, 2);
-    const moveGroupB = new Group("Move B", 1, 2);
-    const foreignGroup = new Group("Foreign", 1, 2);
+    const moveGroupA = new Group("Move A");
+    const moveGroupB = new Group("Move B");
+    const foreignGroup = new Group("Foreign");
     const moveStudent = new Student("Conrad", "Clara");
     const groupifyMove = new Groupify(
         [moveGroupA, moveGroupB],
@@ -544,8 +491,8 @@ function runTests() {
     // ========================================
 
     // Student landet in einer verfügbaren Group + verschwindet aus unallocated
-    const raGroup1 = new Group("RandA One", 1, 3);
-    const raGroup2 = new Group("RandA Two", 1, 3);
+    const raGroup1 = new Group("RandA One");
+    const raGroup2 = new Group("RandA Two");
     const raStudent = new Student("Distel", "Dora");
     const groupifyRand = new Groupify([raGroup1, raGroup2], [raStudent]);
 
@@ -560,47 +507,9 @@ function runTests() {
         "randAssign should remove student from unallocated"
     );
 
-    // volle Groups werden nicht gewählt
-    const raFull = new Group("RandA Full", 1, 1);
-    const raOpen = new Group("RandA Open", 1, 3);
-    const raFiller = new Student("Egal", "Emil");
-    const raPick = new Student("Fein", "Frida");
-    const groupifyPick = new Groupify([raFull, raOpen], [raFiller, raPick]);
-
-    groupifyPick.allocate(raFiller, raFull); // raFull ist jetzt voll
-    groupifyPick.randAssign(raPick);
-
-    console.assert(
-        raOpen.length() === 1,
-        "randAssign should choose the open group and skip full ones"
-    );
-    console.assert(
-        raFull.length() === 1,
-        "randAssign should not add to a full group"
-    );
-
-    // keine verfügbare Group → Error
-    const raOnly = new Group("RandA Only", 1, 1);
-    const raTaken = new Student("Gross", "Gustav");
-    const raExtra = new Student("Hoch", "Hanna");
-    const groupifyNone = new Groupify([raOnly], [raTaken, raExtra]);
-
-    groupifyNone.allocate(raTaken, raOnly); // einzige Gruppe ist voll
-
-    errorThrown = null;
-    try {
-        groupifyNone.randAssign(raExtra);
-    } catch (error) {
-        errorThrown = error;
-    }
-    console.assert(
-        errorThrown instanceof Error,
-        "randAssign should throw when no group is available"
-    );
-
     // kleinere Groups werden vor grösseren gewählt
-    const raSmall = new Group("Rand Small", 0, 3);
-    const raBig = new Group("Rand Big", 0, 3);
+    const raSmall = new Group("Rand Small");
+    const raBig = new Group("Rand Big");
     const raFirst = new Student("Klein", "Ines");
     const raSecond = new Student("Klein", "Jonas");
     const groupifyEven = new Groupify(
@@ -621,8 +530,8 @@ function runTests() {
     // randAssignAll
     // ========================================
 
-    const raaGroup1 = new Group("RandAll One", 0, 2);
-    const raaGroup2 = new Group("RandAll Two", 0, 2);
+    const raaGroup1 = new Group("RandAll One");
+    const raaGroup2 = new Group("RandAll Two");
     const raaStudents = [
         new Student("Igel", "Ida"),
         new Student("Jungmann", "Jan"),
@@ -644,16 +553,10 @@ function runTests() {
         "randAssignAll should empty unallocated"
     );
 
-    // keine Group überschreitet max
-    console.assert(
-        raaGroup1.length() <= 2 && raaGroup2.length() <= 2,
-        "randAssignAll should not exceed group max"
-    );
-
     // Verteilung bleibt gleichmässig (kein 2,2,0)
-    const evenA = new Group("Even A", 1, 2);
-    const evenB = new Group("Even B", 1, 2);
-    const evenC = new Group("Even C", 1, 2);
+    const evenA = new Group("Even A");
+    const evenB = new Group("Even B");
+    const evenC = new Group("Even C");
     const evenStudents = [
         new Student("Lang", "Lisa"),
         new Student("Kurz", "Mark"),
@@ -682,7 +585,7 @@ function runTests() {
     // addStudent / removeStudent
     // ========================================
 
-    const addGroup = new Group("Add Group", 0, 3);
+    const addGroup = new Group("Add Group");
     const addExisting = new Student("Park", "Paul");
     const groupifyAdd = new Groupify([addGroup], [addExisting]);
 
@@ -777,7 +680,7 @@ function runTests() {
     );
 
     // ========================================
-    // addStudent: dynamic capacity
+    // addStudent: weitere Students
     // ========================================
 
     const capFirst = new Student("One", "Cap");
@@ -846,8 +749,8 @@ function runTests() {
     // renameGroup
     // ========================================
 
-    const renameGroup = new Group("Group A", 0, 2);
-    const renameOther = new Group("Group B", 0, 2);
+    const renameGroup = new Group("Group A");
+    const renameOther = new Group("Group B");
     const groupifyRename = new Groupify(
         [renameGroup, renameOther],
         [new Student("One", "Rename")]
@@ -872,7 +775,7 @@ function runTests() {
 
     errorThrown = null;
     try {
-        groupifyRename.renameGroup(new Group("Foreign", 0, 2), "Gruppe Y");
+        groupifyRename.renameGroup(new Group("Foreign"), "Gruppe Y");
     } catch (error) {
         errorThrown = error;
     }
@@ -930,6 +833,131 @@ function runTests() {
     console.assert(
         renameGroup.name === "Gruppe X",
         "renameGroup should allow keeping the current name"
+    );
+
+    // ========================================
+    // groupSize
+    // ========================================
+
+    const thirtyStudents = [];
+    for (let i = 1; i <= 30; i++) {
+        thirtyStudents.push(new Student("Name" + i, "Vor" + i));
+    }
+
+    console.assert(
+        new Groupify(7, thirtyStudents).groupSize === 5,
+        "30 students / 7 groups should yield groupSize 5"
+    );
+    console.assert(
+        new Groupify(5, thirtyStudents).groupSize === 6,
+        "30 students / 5 groups should yield groupSize 6"
+    );
+
+    const threeStudents = [
+        new Student("Aa", "One"),
+        new Student("Bb", "Two"),
+        new Student("Cc", "Three")
+    ];
+    console.assert(
+        new Groupify(7, threeStudents).groupSize === 1,
+        "3 students / 7 groups should yield groupSize 1"
+    );
+
+    const groupifyPerGroup = new Groupify(7, thirtyStudents);
+    groupifyPerGroup.setStudentsPerGroup(5);
+    console.assert(
+        groupifyPerGroup.groupSize === 5 &&
+            groupifyPerGroup.groups.length === 6,
+        "setStudentsPerGroup(5) should set groupSize 5 and create 6 groups"
+    );
+
+    const sizeKeep = new Groupify(2, countStudents);
+    sizeKeep.setStudentsPerGroup(4);
+    console.assert(
+        sizeKeep.groupSize === 4 && sizeKeep.groups.length === 2,
+        "setStudentsPerGroup should not overwrite groupSize via setNumberOfGroups"
+    );
+
+    const overA = new Group("Over A");
+    const overB = new Group("Over B");
+    const over1 = new Student("One", "Over");
+    const over2 = new Student("Two", "Over");
+    const over3 = new Student("Three", "Over");
+    const groupifyOver = new Groupify(
+        [overA, overB],
+        [over1, over2, over3]
+    );
+    groupifyOver.allocate(over1, overA);
+    groupifyOver.allocate(over2, overA);
+    groupifyOver.allocate(over3, overB);
+    groupifyOver.move(overB, over3, overA);
+    console.assert(
+        overA.length() === 3 && groupifyOver.groupSize === 2,
+        "move should allow a group to exceed groupSize"
+    );
+
+    // ========================================
+    // getGroupStatus
+    // ========================================
+
+    const statusGroup = new Group("Status");
+    const statusStudents = [
+        new Student("Stat", "One"),
+        new Student("Stat", "Two"),
+        new Student("Stat", "Three"),
+        new Student("Stat", "Four"),
+        new Student("Stat", "Five"),
+        new Student("Stat", "Six")
+    ];
+    const groupifyStatus = new Groupify(
+        [statusGroup],
+        statusStudents.slice(0, 5)
+    );
+
+    groupifyStatus.allocate(statusStudents[0], statusGroup);
+    groupifyStatus.allocate(statusStudents[1], statusGroup);
+    groupifyStatus.allocate(statusStudents[2], statusGroup);
+    groupifyStatus.allocate(statusStudents[3], statusGroup);
+    console.assert(
+        groupifyStatus.groupSize === 5 &&
+            groupifyStatus.getGroupStatus(statusGroup) === "under",
+        "group below groupSize should be under"
+    );
+
+    groupifyStatus.allocate(statusStudents[4], statusGroup);
+    console.assert(
+        groupifyStatus.getGroupStatus(statusGroup) === "complete",
+        "group at groupSize should be complete"
+    );
+
+    groupifyStatus.addStudent(statusStudents[5]);
+    groupifyStatus.allocate(statusStudents[5], statusGroup);
+    console.assert(
+        statusGroup.length() === 6 &&
+            groupifyStatus.getGroupStatus(statusGroup) === "over",
+        "group above groupSize should be over"
+    );
+
+    errorThrown = null;
+    try {
+        groupifyStatus.getGroupStatus("Hallo");
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof TypeError,
+        "getGroupStatus should require a Group object"
+    );
+
+    errorThrown = null;
+    try {
+        groupifyStatus.getGroupStatus(new Group("Foreign"));
+    } catch (error) {
+        errorThrown = error;
+    }
+    console.assert(
+        errorThrown instanceof Error,
+        "getGroupStatus should reject a foreign group"
     );
 }
 

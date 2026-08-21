@@ -1,4 +1,5 @@
 import { CsvLoader } from "../src/CSVLoader.js";
+import { CsvExporter } from "../src/CSVExporter.js";
 import { Groupify } from "../src/Groupify.js";
 import { Student } from "../src/Student.js";
 
@@ -10,11 +11,13 @@ const STUDENT_ADD_ERROR = document.getElementById("student-add-error");
 const BTN_ADD_STUDENT = document.getElementById("btn-add-student");
 const BTN_EINZELN = document.getElementById("btn-aufteilen-einzeln");
 const BTN_ALLE = document.getElementById("btn-alle-aufteilen");
+const BTN_EXPORT = document.getElementById("btn-export");
 const CONFIG_VALUE = document.getElementById("config-value");
 const CONFIG_SIZE = document.getElementById("config-size");
 const CONFIG_MODE_SIZE = document.getElementById("config-mode-size");
 const GROUPS_CONTAINER = document.getElementById("groups");
 const LOADER = new CsvLoader();
+const EXPORTER = new CsvExporter();
 
 let groupify = null;
 let draggedStudent = null;
@@ -24,6 +27,7 @@ FILE_INPUT.addEventListener("change", loadFile);
 BTN_ADD_STUDENT.addEventListener("click", addStudentFromInput);
 BTN_EINZELN.addEventListener("click", aufteilenEinzeln);
 BTN_ALLE.addEventListener("click", aufteilenAlle);
+BTN_EXPORT.addEventListener("click", exportCsv);
 CONFIG_VALUE.addEventListener("input", onConfigChange);
 CONFIG_SIZE.addEventListener("input", onConfigChange);
 document.querySelectorAll("input[name='config-mode']").forEach((radio) => {
@@ -67,6 +71,7 @@ function loadFile(event) {
             paragraph.textContent = error.message;
             OUTPUT.appendChild(paragraph);
             renderGroups();
+            updateExportButton();
             return;
         }
 
@@ -174,9 +179,37 @@ function aufteilenAlle() {
     render();
 }
 
+function exportCsv() {
+
+    try {
+        const csv = EXPORTER.export(groupify);
+
+        const blob = new Blob([csv], {
+            type: "text/csv;charset=utf-8"
+        });
+        
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "groupify.csv";
+        link.click();
+
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        alert(error.message);
+    }
+
+}
+
 function render() {
     renderStudents();
     renderGroups();
+    updateExportButton();
+}
+
+function updateExportButton() {
+    BTN_EXPORT.disabled = !groupify || groupify.unallocated.length() > 0;
 }
 
 // render Studentlist
@@ -221,6 +254,8 @@ function createGroupCard(name, group) {
     if (!group) {
         return article;
     }
+
+    article.classList.add("group-" + groupify.getGroupStatus(group));
 
     heading.className = "group-name";
     heading.title = "Doppelklick zum Umbenennen";
@@ -301,16 +336,29 @@ function createStudentRow(student, group) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "btn-delete-student";
-    button.textContent = "×";
-    button.setAttribute("aria-label", student.name + " löschen");
     button.addEventListener("mousedown", function (event) {
         event.stopPropagation();
     });
-    button.addEventListener("click", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        deleteStudent(student);
-    });
+
+    if (group === null) {
+        button.textContent = "×";
+        button.setAttribute("aria-label", student.name + " löschen");
+        button.addEventListener("click", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            deleteStudent(student);
+        });
+    } else {
+        button.textContent = "←";
+        button.title = student.name + " zurück zur Schülerliste";
+        button.setAttribute("aria-label", student.name + " zurück zur Schülerliste");
+        button.addEventListener("click", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            groupify.unallocate(student, group);
+            render();
+        });
+    }
     paragraph.appendChild(button);
 
     return paragraph;

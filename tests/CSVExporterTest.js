@@ -8,8 +8,8 @@ function runTests() {
 
     const EXPORTER = new CsvExporter();
 
-    const group1 = new Group("Gruppe 1", 0, 2);
-    const group2 = new Group("Gruppe 2", 0, 2);
+    const group1 = new Group("Gruppe 1");
+    const group2 = new Group("Gruppe 2");
     const student1 = new Student("Müller", "Max");
     const student2 = new Student("Meier", "Anna");
     const groupify = new Groupify(
@@ -39,7 +39,7 @@ function runTests() {
     // noch unallocated Students
     const leftover = new Student("Wu", "Kevin");
     const groupifyOpen = new Groupify(
-        [new Group("Gruppe A", 0, 2)],
+        [new Group("Gruppe A")],
         [leftover]
     );
 
@@ -51,8 +51,8 @@ function runTests() {
     );
 
     // leere Gruppen werden übersprungen
-    const onlyGroup = new Group("Gruppe 1", 0, 2);
-    const emptyGroup = new Group("Gruppe 2", 0, 2);
+    const onlyGroup = new Group("Gruppe 1");
+    const emptyGroup = new Group("Gruppe 2");
     const onlyStudent = new Student("Lang", "Lisa");
     const groupifyEmptyGroup = new Groupify(
         [onlyGroup, emptyGroup],
@@ -74,7 +74,7 @@ function runTests() {
     );
 
     // mehrere Students in einer Gruppe
-    const multiGroup = new Group("Team X", 0, 3);
+    const multiGroup = new Group("Team X");
     const multiA = new Student("Igel", "Ida");
     const multiB = new Student("Jung", "Jan");
     const groupifyMulti = new Groupify(
@@ -91,7 +91,7 @@ function runTests() {
     );
 
     // einstellige Namen
-    const eastGroup = new Group("Gruppe 1", 0, 2);
+    const eastGroup = new Group("Gruppe 1");
     const eastStudent = new Student("王", "小明");
     const groupifyEast = new Groupify([eastGroup], [eastStudent]);
     groupifyEast.allocate(eastStudent, eastGroup);
