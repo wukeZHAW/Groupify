@@ -1,7 +1,7 @@
-import { CsvLoader } from "../src/CSVLoader.js";
-import { CsvExporter } from "../src/CSVExporter.js";
-import { Groupify } from "../src/Groupify.js";
-import { Student } from "../src/Student.js";
+import { CsvLoader } from "./src/CSVLoader.js";
+import { CsvExporter } from "./src/CSVExporter.js";
+import { Groupify } from "./src/Groupify.js";
+import { Student } from "./src/Student.js";
 
 const FILE_INPUT = document.getElementById("csv-input");
 const OUTPUT = document.getElementById("student-list");
