@@ -75,12 +75,6 @@ function runTests(){
         RangeError,
         `firstName must not exceed ${Student.NAME_MAX_LEN} characters`
     );
-
-    assert.equal(
-    student1.lastName,
-    "DIES_IST_ABSICHTLICH_FALSCH, MUSS failen",
-    "CI failure test"
-);
 }
 
 runTests()
