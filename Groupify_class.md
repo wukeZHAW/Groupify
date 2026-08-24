@@ -1,7 +1,6 @@
 # Groupify – zentrale Verwaltung der Gruppenzuteilung
 
 ## Zweck
-
 Die Klasse `Groupify` ist die zentrale Verwaltungsschicht der Anwendung.
 
 Sie hält den gesamten Zustand der Gruppenzuteilung zusammen und stellt sicher, dass Studierende kontrolliert zwischen dem nicht zugeteilten Zustand und den eigentlichen Gruppen verschoben werden.
@@ -9,7 +8,6 @@ Sie hält den gesamten Zustand der Gruppenzuteilung zusammen und stellt sicher, 
 Die Main Application soll die Zuteilungslogik nicht selbst implementieren, sondern nur über die öffentliche Schnittstelle von `Groupify` darauf zugreifen.
 
 ## Grundmodell
-
 Groupify verwaltet:
 
 - eine virtuelle Gruppe `unallocated`
@@ -25,7 +23,6 @@ Dadurch ist kein zusätzliches Property wie `student.assigned` notwendig.
 Der Zustand eines Students ergibt sich daraus, in welcher Gruppe er sich befindet.
 
 ## Struktur
-
 Main Application
     |
     v
