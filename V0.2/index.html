@@ -8,10 +8,11 @@
 </head>
 <body>
     <main id="groupify">
+        <h1>Groupify</h1>
 
         <aside id="controls">
-            <label for="csv-input">CSV-Datei mit Schülerliste importieren</label>
-            <input type="file" id="csv-input" accept=".csv">
+            <p id="csv-input-label">CSV-Datei mit Schülerliste importieren</p>
+            <input type="file" id="csv-input" accept=".csv" aria-labelledby="csv-input-label">
 
             <section id="student-list">
                 <h2>Schülerliste</h2>
@@ -30,22 +31,24 @@
             </span>
         </aside>
 
-        <section id="group-config">
-            <label class="config-option">
-                <input type="radio" name="config-mode" id="config-mode-groups" value="groups" checked>
-                <span>Anzahl Gruppen</span>
-                <input type="number" id="config-value" min="1" value="6">
-            </label>
-            <label class="config-option">
-                <input type="radio" name="config-mode" id="config-mode-size" value="size">
-                <span>Gruppengrösse</span>
-                <input type="number" id="config-size" min="1" value="4">
-            </label>
-        </section>
+        <div id="main-content">
+            <section id="group-config">
+                <label class="config-option">
+                    <input type="radio" name="config-mode" id="config-mode-groups" value="groups" checked>
+                    <span>Anzahl Gruppen</span>
+                    <input type="number" id="config-value" min="1" value="6">
+                </label>
+                <label class="config-option">
+                    <input type="radio" name="config-mode" id="config-mode-size" value="size">
+                    <span>Gruppengrösse</span>
+                    <input type="number" id="config-size" min="1" value="4">
+                </label>
+            </section>
 
-        <section id="groups">
-            <!-- Gruppenkarten werden per JavaScript erzeugt -->
-        </section>
+            <section id="groups">
+                <!-- Gruppenkarten werden per JavaScript erzeugt -->
+            </section>
+        </div>
 
     </main>
     <footer>Made by Intern Wuke (2026)</footer>
