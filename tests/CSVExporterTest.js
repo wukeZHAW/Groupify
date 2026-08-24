@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import { CsvExporter } from "../src/CSVExporter.js";
 import { Groupify } from "../src/Groupify.js";
 import { Group } from "../src/Group.js";
@@ -22,19 +23,24 @@ function runTests() {
 
     // gültiger Export
     const CSV = EXPORTER.export(groupify);
-    console.assert(
-        CSV === "Name;Vorname;Gruppe\nMüller;Max;Gruppe 1\nMeier;Anna;Gruppe 2\n",
+    assert.equal(
+        CSV,
+        "Name;Vorname;Gruppe\nMüller;Max;Gruppe 1\nMeier;Anna;Gruppe 2\n",
         "Export should write Name;Vorname;Gruppe rows in group order"
     );
 
     // kein Groupify-Objekt
-    let errorThrown = null;
-    try {EXPORTER.export("Hallo");} catch (error) {errorThrown = error}
-    console.assert(errorThrown instanceof TypeError, "groupify must be a Groupify object");
+    assert.throws(
+        () => EXPORTER.export("Hallo"),
+        TypeError,
+        "groupify must be a Groupify object"
+    );
 
-    errorThrown = null;
-    try {EXPORTER.export(null);} catch (error) {errorThrown = error}
-    console.assert(errorThrown instanceof TypeError, "groupify must be a Groupify object");
+    assert.throws(
+        () => EXPORTER.export(null),
+        TypeError,
+        "groupify must be a Groupify object"
+    );
 
     // noch unallocated Students
     const leftover = new Student("Wu", "Kevin");
@@ -43,10 +49,9 @@ function runTests() {
         [leftover]
     );
 
-    errorThrown = null;
-    try {EXPORTER.export(groupifyOpen);} catch (error) {errorThrown = error}
-    console.assert(
-        errorThrown instanceof Error,
+    assert.throws(
+        () => EXPORTER.export(groupifyOpen),
+        Error,
         "all students must be allocated before export"
     );
 
@@ -60,16 +65,17 @@ function runTests() {
     );
     groupifyEmptyGroup.allocate(onlyStudent, onlyGroup);
 
-    console.assert(
-        EXPORTER.export(groupifyEmptyGroup) ===
-            "Name;Vorname;Gruppe\nLang;Lisa;Gruppe 1\n",
+    assert.equal(
+        EXPORTER.export(groupifyEmptyGroup),
+        "Name;Vorname;Gruppe\nLang;Lisa;Gruppe 1\n",
         "Empty groups should not add student rows"
     );
 
     // leere Schülerliste
     const emptyGroupify = new Groupify(2, []);
-    console.assert(
-        EXPORTER.export(emptyGroupify) === "Name;Vorname;Gruppe\n",
+    assert.equal(
+        EXPORTER.export(emptyGroupify),
+        "Name;Vorname;Gruppe\n",
         "Export without students should only contain the header"
     );
 
@@ -84,9 +90,9 @@ function runTests() {
     groupifyMulti.allocate(multiA, multiGroup);
     groupifyMulti.allocate(multiB, multiGroup);
 
-    console.assert(
-        EXPORTER.export(groupifyMulti) ===
-            "Name;Vorname;Gruppe\nIgel;Ida;Team X\nJung;Jan;Team X\n",
+    assert.equal(
+        EXPORTER.export(groupifyMulti),
+        "Name;Vorname;Gruppe\nIgel;Ida;Team X\nJung;Jan;Team X\n",
         "Students in the same group should keep allocation order"
     );
 
@@ -96,9 +102,9 @@ function runTests() {
     const groupifyEast = new Groupify([eastGroup], [eastStudent]);
     groupifyEast.allocate(eastStudent, eastGroup);
 
-    console.assert(
-        EXPORTER.export(groupifyEast) ===
-            "Name;Vorname;Gruppe\n王;小明;Gruppe 1\n",
+    assert.equal(
+        EXPORTER.export(groupifyEast),
+        "Name;Vorname;Gruppe\n王;小明;Gruppe 1\n",
         "1 character last names should export"
     );
 }
