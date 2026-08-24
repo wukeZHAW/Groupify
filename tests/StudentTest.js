@@ -78,7 +78,7 @@ function runTests(){
 
     assert.equal(
     student1.lastName,
-    "DIES_IST_ABSICHTLICH_FALSCH",
+    "DIES_IST_ABSICHTLICH_FALSCH, MUSS failen",
     "CI failure test"
 );
 }
