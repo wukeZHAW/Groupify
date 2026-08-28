@@ -244,18 +244,18 @@ function renderGroups() {
 }
 
 function createGroupCard(name, group) {
-    const article = document.createElement("article");
-    article._group = group;
+    const groupCard = document.createElement("article");
+    groupCard._group = group;
 
     const heading = document.createElement("h2");
     heading.textContent = name;
-    article.appendChild(heading);
+    groupCard.appendChild(heading);
 
     if (!group) {
-        return article;
+        return groupCard;
     }
 
-    article.classList.add("group-" + groupify.getGroupStatus(group));
+    groupCard.classList.add("group-" + groupify.getGroupStatus(group));
 
     heading.className = "group-name";
     heading.title = "Doppelklick zum Umbenennen";
@@ -266,10 +266,10 @@ function createGroupCard(name, group) {
     });
 
     for (let i = 0; i < group.length(); i++) {
-        article.appendChild(createStudentRow(group.getStudent(i), group));
+        groupCard.appendChild(createStudentRow(group.getStudent(i), group));
     }
 
-    return article;
+    return groupCard;
 }
 
 function startGroupRename(heading, group) {
@@ -397,37 +397,37 @@ function onDragStart(event) {
 
 // Allows dropping a student onto a group
 function onGroupDragOver(event) {
-    const article = event.target.closest("article");
-    if (!article || !article._group || !draggedStudent) {
+    const groupCard = event.target.closest("article");
+    if (!groupCard || !groupCard._group || !draggedStudent) {
         return;
     }
 
     event.preventDefault();
-    article.classList.add("drop-target");
+    groupCard.classList.add("drop-target");
 }
 
 // Removes the drop highlight when leaving a group
 function onGroupDragLeave(event) {
-    const article = event.target.closest("article");
-    if (!article) {
+    const groupCard = event.target.closest("article");
+    if (!groupCard) {
         return;
     }
-    if (article.contains(event.relatedTarget)) {
+    if (groupCard.contains(event.relatedTarget)) {
         return;
     }
-    article.classList.remove("drop-target");
+    groupCard.classList.remove("drop-target");
 }
 
 // Moves or allocates the dragged student to the target group
 function onGroupDrop(event) {
     event.preventDefault();
 
-    const article = event.target.closest("article");
-    if (article) {
-        article.classList.remove("drop-target");
+    const groupCard = event.target.closest("article");
+    if (groupCard) {
+        groupCard.classList.remove("drop-target");
     }
 
-    const targetGroup = article && article._group;
+    const targetGroup = groupCard && groupCard._group;
     if (!groupify || !draggedStudent || !targetGroup) {
         return;
     }
