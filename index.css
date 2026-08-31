@@ -126,12 +126,6 @@ body {
     white-space: nowrap;
 }
 
-#student-add-error {
-    margin: 0;
-    font-size: 0.85rem;
-    color: #b00020;
-}
-
 #student-list {
     background: var(--bg-panel);
     border: 1px solid var(--border);

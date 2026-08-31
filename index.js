@@ -7,7 +7,6 @@ const FILE_INPUT = document.getElementById("csv-input");
 const OUTPUT = document.getElementById("student-list");
 const FIRST_NAME_INPUT = document.getElementById("student-first-name");
 const LAST_NAME_INPUT = document.getElementById("student-last-name");
-const STUDENT_ADD_ERROR = document.getElementById("student-add-error");
 const BTN_ADD_STUDENT = document.getElementById("btn-add-student");
 const BTN_EINZELN = document.getElementById("btn-aufteilen-einzeln");
 const BTN_ALLE = document.getElementById("btn-alle-aufteilen");
@@ -121,7 +120,7 @@ function addStudentFromInput() {
     const firstName = FIRST_NAME_INPUT.value.trim();
     const lastName = LAST_NAME_INPUT.value.trim();
     if (firstName === "" || lastName === "") {
-        showAddError("Bitte Vorname und Nachname eingeben.");
+        alert("Bitte Vorname und Nachname eingeben.");
         return;
     }
 
@@ -133,24 +132,13 @@ function addStudentFromInput() {
             groupify.addStudent(student);
         }
     } catch (error) {
-        showAddError(error.message);
+        alert(error.message);
         return;
     }
 
     FIRST_NAME_INPUT.value = "";
     LAST_NAME_INPUT.value = "";
-    hideAddError();
     render();
-}
-
-function showAddError(message) {
-    STUDENT_ADD_ERROR.textContent = message;
-    STUDENT_ADD_ERROR.hidden = false;
-}
-
-function hideAddError() {
-    STUDENT_ADD_ERROR.textContent = "";
-    STUDENT_ADD_ERROR.hidden = true;
 }
 
 function onConfigChange() {
