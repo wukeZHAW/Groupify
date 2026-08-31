@@ -10,6 +10,7 @@ const LAST_NAME_INPUT = document.getElementById("student-last-name");
 const BTN_ADD_STUDENT = document.getElementById("btn-add-student");
 const BTN_EINZELN = document.getElementById("btn-aufteilen-einzeln");
 const BTN_ALLE = document.getElementById("btn-alle-aufteilen");
+const BTN_ALLE_ZURUECK = document.getElementById("btn-alle-zurueck");
 const BTN_EXPORT = document.getElementById("btn-export");
 const CONFIG_VALUE = document.getElementById("config-value");
 const CONFIG_SIZE = document.getElementById("config-size");
@@ -26,6 +27,7 @@ FILE_INPUT.addEventListener("change", loadFile);
 BTN_ADD_STUDENT.addEventListener("click", addStudentFromInput);
 BTN_EINZELN.addEventListener("click", aufteilenEinzeln);
 BTN_ALLE.addEventListener("click", aufteilenAlle);
+BTN_ALLE_ZURUECK.addEventListener("click", alleZurueck);
 BTN_EXPORT.addEventListener("click", exportCsv);
 CONFIG_VALUE.addEventListener("input", onConfigChange);
 CONFIG_SIZE.addEventListener("input", onConfigChange);
@@ -176,6 +178,21 @@ function aufteilenAlle() {
     }
 
     groupify.randAssignAll();
+    render();
+}
+
+function alleZurueck() {
+    if (!groupify) {
+        return;
+    }
+
+    const groups = groupify.groups;
+    for (let i = 0; i < groups.length; i++) {
+        const group = groups[i];
+        while (group.length() > 0) {
+            groupify.unallocate(group.getStudent(0), group);
+        }
+    }
     render();
 }
 
