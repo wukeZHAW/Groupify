@@ -32,43 +32,11 @@ body {
 
 /* ----- Main application ----- */
 
-#groupify {
-    display: grid;
-    grid-template-columns: minmax(240px, 300px) 1fr;
-    grid-template-areas:
-        "title title"
-        "controls main";
-    gap: 1.5rem 2rem;
-    max-width: 1100px;
-    width: 100%;
-    margin: 0 auto;
-    align-items: start;
-    align-content: start;
-    flex: 1;
-}
-
 #groupify h1 {
-    grid-area: title;
-    margin: 0;
     font-size: 1.75rem;
     font-weight: 700;
     color: var(--zhaw-blue);
     letter-spacing: -0.02em;
-}
-
-#controls {
-    grid-area: controls;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-#main-content {
-    grid-area: main;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    min-width: 0;
 }
 
 /* ----- Left: import & student list ----- */
@@ -394,14 +362,6 @@ footer {
 /* ----- Responsive ----- */
 
 @media (max-width: 800px) {
-    #groupify {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-            "title"
-            "controls"
-            "main";
-    }
-
     #groups {
         grid-template-columns: repeat(2, 1fr);
     }
