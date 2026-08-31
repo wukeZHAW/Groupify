@@ -64,14 +64,8 @@ function loadFile(event) {
                 groupify = createGroupify(roster);
             }
         } catch (error) {
-            groupify = null;
-            OUTPUT.innerHTML = "<h2>Schülerliste</h2>";
-            const paragraph = document.createElement("p");
-            paragraph.textContent = error.message;
-            OUTPUT.appendChild(paragraph);
-            renderGroups();
-            updateExportButton();
-            return;
+            alert(error.message);
+            FILE_INPUT.value = "";
         }
 
         render();
