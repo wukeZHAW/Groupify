@@ -80,6 +80,8 @@ function loadFile(event) {
     reader.readAsText(file);
 }
 
+
+
 function getPositiveInt(input) {
     const value = Number(input.value);
     if (!Number.isInteger(value) || value < 1) {
@@ -88,13 +90,19 @@ function getPositiveInt(input) {
     return value;
 }
 
+
+
 function getNumberOfGroups() {
     return getPositiveInt(CONFIG_VALUE);
 }
 
+
+
 function getStudentsPerGroup() {
     return getPositiveInt(CONFIG_SIZE);
 }
+
+
 
 function createGroupify(students) {
     const instance = new Groupify(getNumberOfGroups(), students);
@@ -103,6 +111,8 @@ function createGroupify(students) {
     }
     return instance;
 }
+
+
 
 function applyGroupConfig() {
     if (!groupify) {
@@ -115,6 +125,8 @@ function applyGroupConfig() {
         groupify.setNumberOfGroups(getNumberOfGroups());
     }
 }
+
+
 
 function addStudentFromInput() {
     const firstName = FIRST_NAME_INPUT.value.trim();
@@ -141,10 +153,14 @@ function addStudentFromInput() {
     render();
 }
 
+
+
 function onConfigChange() {
     applyGroupConfig();
     render();
 }
+
+
 
 function aufteilenEinzeln() {
     if (!groupify || groupify.unallocated.length() === 0) {
@@ -158,6 +174,8 @@ function aufteilenEinzeln() {
     render();
 }
 
+
+
 function aufteilenAlle() {
     if (!groupify || groupify.unallocated.length() === 0) {
         return;
@@ -166,6 +184,8 @@ function aufteilenAlle() {
     groupify.randAssignAll();
     render();
 }
+
+
 
 function exportCsv() {
 
@@ -190,15 +210,21 @@ function exportCsv() {
 
 }
 
+
+
 function render() {
     renderStudents();
     renderGroups();
     updateExportButton();
 }
 
+
+
 function updateExportButton() {
     BTN_EXPORT.disabled = !groupify || groupify.unallocated.length() > 0;
 }
+
+
 
 // render Studentlist
 function renderStudents() {
@@ -212,6 +238,8 @@ function renderStudents() {
         OUTPUT.appendChild(createStudentRow(unallocated.getStudent(i), null));
     }
 }
+
+
 
 // rendern Groupscards number of groups
 function renderGroups() {
@@ -231,6 +259,8 @@ function renderGroups() {
     }
 }
 
+
+
 function createGroupCard(name, group) {
     const groupCard = document.createElement("article");
     groupCard._group = group;
@@ -245,13 +275,7 @@ function createGroupCard(name, group) {
 
     groupCard.classList.add("group-" + groupify.getGroupStatus(group));
 
-    heading.className = "group-name";
-    heading.title = "Doppelklick zum Umbenennen";
-    heading.addEventListener("dblclick", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        startGroupRename(heading, group);
-    });
+    renderGroupHeading(heading, group);
 
     for (let i = 0; i < group.length(); i++) {
         groupCard.appendChild(createStudentRow(group.getStudent(i), group));
@@ -259,6 +283,30 @@ function createGroupCard(name, group) {
 
     return groupCard;
 }
+
+
+
+function renderGroupHeading(heading, group) {
+    heading.textContent = "";
+    heading.className = "group-name";
+
+    const nameText = document.createElement("span");
+    nameText.className = "group-name-text";
+    nameText.textContent = group.name;
+    heading.appendChild(nameText);
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "btn-rename-group";
+    button.title = "Gruppe umbenennen";
+    button.textContent = "✏️";
+    button.addEventListener("click", function () {
+        startGroupRename(heading, group);
+    });
+    heading.appendChild(button);
+}
+
+
 
 function startGroupRename(heading, group) {
     if (heading.querySelector("input")) {
@@ -298,6 +346,8 @@ function startGroupRename(heading, group) {
     }, 0);
 }
 
+
+
 function finishGroupRename(heading, group, input) {
     try {
         if (groupify) {
@@ -307,8 +357,10 @@ function finishGroupRename(heading, group, input) {
         alert(error.message);
     }
 
-    heading.textContent = group.name;
+    renderGroupHeading(heading, group);
 }
+
+
 
 function createStudentRow(student, group) {
     const paragraph = document.createElement("p");
@@ -352,6 +404,8 @@ function createStudentRow(student, group) {
     return paragraph;
 }
 
+
+
 function deleteStudent(student) {
     if (!groupify) {
         return;
@@ -364,6 +418,8 @@ function deleteStudent(student) {
     groupify.removeStudent(student);
     render();
 }
+
+
 
 // Starts dragging a student and stores the source group
 function onDragStart(event) {
@@ -383,6 +439,8 @@ function onDragStart(event) {
     event.dataTransfer.effectAllowed = "move";
 }
 
+
+
 // Allows dropping a student onto a group
 function onGroupDragOver(event) {
     const groupCard = event.target.closest("article");
@@ -393,6 +451,8 @@ function onGroupDragOver(event) {
     event.preventDefault();
     groupCard.classList.add("drop-target");
 }
+
+
 
 // Removes the drop highlight when leaving a group
 function onGroupDragLeave(event) {
@@ -405,6 +465,8 @@ function onGroupDragLeave(event) {
     }
     groupCard.classList.remove("drop-target");
 }
+
+
 
 // Moves or allocates the dragged student to the target group
 function onGroupDrop(event) {
@@ -436,6 +498,8 @@ function onGroupDrop(event) {
     }
 }
 
+
+
 // Allows dragging a grouped student back into the student list
 function onListDragOver(event) {
     if (!draggedStudent || !draggedGroup) {
@@ -444,6 +508,8 @@ function onListDragOver(event) {
 
     event.preventDefault();
 }
+
+
 
 // Unallocates the dragged student back to the student list
 function onListDrop(event) {
@@ -456,6 +522,8 @@ function onListDrop(event) {
     groupify.unallocate(draggedStudent, draggedGroup);
     render();
 }
+
+
 
 // Resets the drag state and removes drop highlights
 function clearDrag() {
