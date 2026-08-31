@@ -14,7 +14,6 @@ const BTN_ALLE_ZURUECK = document.getElementById("btn-alle-zurueck");
 const BTN_EXPORT = document.getElementById("btn-export");
 const CONFIG_VALUE = document.getElementById("config-value");
 const CONFIG_SIZE = document.getElementById("config-size");
-const CONFIG_MODE_SIZE = document.getElementById("config-mode-size");
 const GROUPS_CONTAINER = document.getElementById("groups");
 const LOADER = new CsvLoader();
 const EXPORTER = new CsvExporter();
@@ -29,11 +28,8 @@ BTN_EINZELN.addEventListener("click", aufteilenEinzeln);
 BTN_ALLE.addEventListener("click", aufteilenAlle);
 BTN_ALLE_ZURUECK.addEventListener("click", alleZurueck);
 BTN_EXPORT.addEventListener("click", exportCsv);
-CONFIG_VALUE.addEventListener("input", onConfigChange);
-CONFIG_SIZE.addEventListener("input", onConfigChange);
-document.querySelectorAll("input[name='config-mode']").forEach((radio) => {
-    radio.addEventListener("change", onConfigChange);
-});
+CONFIG_VALUE.addEventListener("change", onNumberOfGroupsChange);
+CONFIG_SIZE.addEventListener("change", onGroupSizeChange);
 
 GROUPS_CONTAINER.addEventListener("dragstart", onDragStart);
 GROUPS_CONTAINER.addEventListener("dragover", onGroupDragOver);
@@ -101,25 +97,26 @@ function getStudentsPerGroup() {
 
 
 function createGroupify(students) {
-    const instance = new Groupify(getNumberOfGroups(), students);
-    if (CONFIG_MODE_SIZE.checked) {
-        instance.setStudentsPerGroup(getStudentsPerGroup());
-    }
+    let instance = new Groupify(getNumberOfGroups(), students);
     return instance;
 }
 
 
 
-function applyGroupConfig() {
-    if (!groupify) {
-        return;
-    }
-
-    if (CONFIG_MODE_SIZE.checked) {
-        groupify.setStudentsPerGroup(getStudentsPerGroup());
-    } else {
+function onNumberOfGroupsChange() {
+    if (groupify) {
         groupify.setNumberOfGroups(getNumberOfGroups());
+        CONFIG_SIZE.value = groupify.groupSize;
     }
+    render();
+}
+
+function onGroupSizeChange() {
+    if (groupify) {
+        groupify.setStudentsPerGroup(getStudentsPerGroup());
+        CONFIG_VALUE.value = groupify.groups.length;
+    }
+    render();
 }
 
 
