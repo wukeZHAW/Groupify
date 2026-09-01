@@ -397,7 +397,7 @@ function createStudentRow(student, group) {
 
     if (group === null) {
         const deleteIcon = document.createElement("i");
-        deleteIcon.className = "bi bi-x-lg";
+        deleteIcon.className = "bi bi-trash";
         deleteIcon.setAttribute("aria-hidden", "true");
         button.appendChild(deleteIcon);
         button.setAttribute("aria-label", student.name + " löschen");
@@ -408,7 +408,7 @@ function createStudentRow(student, group) {
         });
     } else {
         const unallocateIcon = document.createElement("i");
-        unallocateIcon.className = "bi bi-arrow-left";
+        unallocateIcon.className = "bi bi-caret-left";
         unallocateIcon.setAttribute("aria-hidden", "true");
         button.appendChild(unallocateIcon);
         button.title = student.name + " zurück zur Schülerliste";
