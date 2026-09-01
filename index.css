@@ -55,19 +55,10 @@ body {
 }
 
 #student-list {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 1rem;
     height: 320px;
-    overflow-y: auto;
 }
 
 #student-list h2 {
-    margin: 0 0 0.75rem;
-    font-size: 1rem;
-    font-weight: 700;
     color: var(--zhaw-blue);
 }
 
@@ -91,19 +82,6 @@ body {
 #student-list p,
 #groups p {
     cursor: grab;
-    margin: 0.25rem 0;
-}
-
-.student-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-}
-
-.student-row span {
-    min-width: 0;
-    flex: 1;
 }
 
 .btn-delete-student,
@@ -187,30 +165,11 @@ body {
 }
 
 #groups article {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 1rem;
     min-height: 140px;
 }
 
 #groups article h2 {
-    margin: 0 0 0.75rem;
-    font-size: 1.05rem;
-    font-weight: 700;
     color: var(--zhaw-blue);
-}
-
-#groups article h2.group-name {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-}
-
-.group-name-text {
-    min-width: 0;
-    flex: 1;
 }
 
 .btn-rename-group {

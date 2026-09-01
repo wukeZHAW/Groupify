@@ -236,7 +236,7 @@ function updateExportButton() {
 
 // render Studentlist
 function renderStudents() {
-    OUTPUT.innerHTML = "<h2>Schülerliste</h2>";
+    OUTPUT.innerHTML = '<h2 class="card-title h5">Schülerliste</h2>';
     if (!groupify) {
         return;
     }
@@ -271,9 +271,11 @@ function renderGroups() {
 
 function createGroupCard(name, group) {
     const groupCard = document.createElement("article");
+    groupCard.className = "card shadow-sm p-3";
     groupCard._group = group;
 
     const heading = document.createElement("h2");
+    heading.className = "card-title h5";
     heading.textContent = name;
     groupCard.appendChild(heading);
 
@@ -296,10 +298,10 @@ function createGroupCard(name, group) {
 
 function renderGroupHeading(heading, group) {
     heading.textContent = "";
-    heading.className = "group-name";
+    heading.className = "group-name card-title h5 d-flex align-items-center gap-1";
 
     const nameText = document.createElement("span");
-    nameText.className = "group-name-text";
+    nameText.className = "group-name-text min-w-0 flex-grow-1";
     nameText.textContent = group.name;
     heading.appendChild(nameText);
 
@@ -372,12 +374,13 @@ function finishGroupRename(heading, group, input) {
 
 function createStudentRow(student, group) {
     const paragraph = document.createElement("p");
-    paragraph.className = "student-row";
+    paragraph.className = "student-row d-flex align-items-center justify-content-between gap-2 my-1";
     paragraph.draggable = true;
     paragraph._student = student;
     paragraph._group = group;
 
     const name = document.createElement("span");
+    name.className = "min-w-0 flex-grow-1";
     name.textContent = student.name;
     paragraph.appendChild(name);
 
