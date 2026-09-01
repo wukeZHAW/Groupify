@@ -245,7 +245,10 @@ function render() {
 
 
 function updateExportButton() {
-    BTN_EXPORT.disabled = !groupify || groupify.unallocated.length() > 0;
+    const hasUnallocated = groupify && groupify.unallocated.length() > 0;
+    BTN_EINZELN.disabled = !hasUnallocated;
+    BTN_ALLE.disabled = !hasUnallocated;
+    BTN_EXPORT.disabled = !groupify || hasUnallocated;
 }
 
 
