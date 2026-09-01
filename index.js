@@ -15,6 +15,8 @@ const BTN_EXPORT = document.getElementById("btn-export");
 const CONFIG_VALUE = document.getElementById("config-value");
 const CONFIG_SIZE = document.getElementById("config-size");
 const GROUPS_CONTAINER = document.getElementById("groups");
+const STUDENT_ADD_ERROR_MODAL = document.getElementById("student-add-error-modal");
+const STUDENT_ADD_ERROR_BODY = document.getElementById("student-add-error-body");
 const LOADER = new CsvLoader();
 const EXPORTER = new CsvExporter();
 
@@ -125,7 +127,7 @@ function addStudentFromInput() {
     const firstName = FIRST_NAME_INPUT.value.trim();
     const lastName = LAST_NAME_INPUT.value.trim();
     if (firstName === "" || lastName === "") {
-        alert("Bitte Vorname und Nachname eingeben.");
+        showAddStudentError("Bitte Vorname und Nachname eingeben.");
         return;
     }
 
@@ -137,13 +139,18 @@ function addStudentFromInput() {
             groupify.addStudent(student);
         }
     } catch (error) {
-        alert(error.message);
+        showAddStudentError(error.message);
         return;
     }
 
     FIRST_NAME_INPUT.value = "";
     LAST_NAME_INPUT.value = "";
     render();
+}
+
+function showAddStudentError(message) {
+    STUDENT_ADD_ERROR_BODY.textContent = message;
+    bootstrap.Modal.getOrCreateInstance(STUDENT_ADD_ERROR_MODAL).show();
 }
 
 
