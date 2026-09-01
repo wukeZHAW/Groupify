@@ -14,22 +14,22 @@
         <div class="row g-4 align-items-start">
         <aside id="controls" class="col-12 col-md-4 d-flex flex-column gap-3">
             <p id="csv-input-label">CSV-Datei mit Schülerliste importieren</p>
-            <input type="file" id="csv-input" accept=".csv" aria-labelledby="csv-input-label">
+            <input type="file" id="csv-input" class="form-control" accept=".csv" aria-labelledby="csv-input-label">
 
             <section id="student-list">
                 <h2>Schülerliste</h2>
             </section>
-            <div id="student-add">
-                <input type="text" id="student-first-name" placeholder="Vorname">
-                <input type="text" id="student-last-name" placeholder="Nachname">
-                <button type="button" id="btn-add-student" aria-label="Hinzufügen" title="Student hinzufügen">+</button> 
+            <div id="student-add" class="d-flex gap-2 align-items-stretch">
+                <input type="text" id="student-first-name" class="form-control min-w-0 flex-grow-1" placeholder="Vorname">
+                <input type="text" id="student-last-name" class="form-control min-w-0 flex-grow-1" placeholder="Nachname">
+                <button type="button" id="btn-add-student" class="btn btn-primary flex-shrink-0" aria-label="Hinzufügen" title="Student hinzufügen">+</button> 
             </div>
 
-            <button type="button" id="btn-aufteilen-einzeln">Einzeln aufteilen</button>
-            <button type="button" id="btn-alle-aufteilen">Alle aufteilen</button>
-            <button type="button" id="btn-alle-zurueck">Alle zurück zur Schülerliste</button>
+            <button type="button" id="btn-aufteilen-einzeln" class="btn btn-secondary w-100">Einzeln aufteilen</button>
+            <button type="button" id="btn-alle-aufteilen" class="btn btn-primary w-100">Alle aufteilen</button>
+            <button type="button" id="btn-alle-zurueck" class="btn btn-primary w-100">Alle zurück zur Schülerliste</button>
             <span title="Zuerst müssen alle Studierenden zugeteilt werden">
-                <button type="button" id="btn-export" disabled>CSV exportieren</button>
+                <button type="button" id="btn-export" class="btn btn-primary w-100" disabled>CSV exportieren</button>
             </span>
         </aside>
 
@@ -37,11 +37,11 @@
             <section id="group-config">
                 <label class="config-option">
                     <span>Anzahl Gruppen</span>
-                    <input type="number" id="config-value" min="1" value="6">
+                    <input type="number" id="config-value" class="form-control text-center" min="1" value="6">
                 </label>
                 <label class="config-option">
                     <span>Gruppengrösse</span>
-                    <input type="number" id="config-size" min="1" value="4">
+                    <input type="number" id="config-size" class="form-control text-center" min="1" value="4">
                 </label>
             </section>
 

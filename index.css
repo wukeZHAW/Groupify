@@ -47,49 +47,8 @@ body {
     color: var(--zhaw-blue);
 }
 
-#csv-input {
-    display: block;
-    width: 100%;
-    padding: 0.5rem;
-    font-family: inherit;
-    font-size: 0.9rem;
-    color: var(--text);
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-}
-
-#csv-input:focus {
-    outline: 2px solid var(--zhaw-blue);
-    outline-offset: 2px;
-}
-
-#student-add {
-    display: flex;
-    gap: 0.5rem;
-    align-items: stretch;
-}
-
-#student-add input[type="text"] {
-    flex: 1 1 6rem;
-    min-width: 0;
-    padding: 0.5rem;
-    font-family: inherit;
-    font-size: 0.9rem;
-    color: var(--text);
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-}
-
-#student-add input[type="text"]:focus {
-    outline: 2px solid var(--zhaw-blue);
-    outline-offset: 2px;
-}
-
-#controls #btn-add-student {
+#student-add #btn-add-student {
     width: 2.4rem;
-    flex-shrink: 0;
     padding: 0;
     font-size: 1.25rem;
     line-height: 1;
@@ -175,53 +134,15 @@ body {
 
 /* ----- Buttons ----- */
 
-#controls button {
-    display: block;
-    width: 100%;
-    padding: 0.65rem 1rem;
-    font-family: inherit;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #ffffff;
-    background-color: var(--zhaw-blue);
-    border: none;
-    border-radius: var(--radius);
-    cursor: pointer;
-}
-
-#controls button:hover:not(:disabled) {
-    background-color: var(--zhaw-blue-hover);
-}
-
-#controls button:active:not(:disabled) {
-    background-color: var(--zhaw-blue-active);
-}
-
-#controls button:disabled {
-    background-color: #c5c9cc;
-    cursor: not-allowed;
-}
-
-#controls button:focus-visible {
-    outline: 2px solid var(--zhaw-blue);
-    outline-offset: 2px;
-}
-
-#btn-aufteilen-einzeln {
-    background-color: #4a90b8;
-}
-
-#btn-aufteilen-einzeln:hover {
-    background-color: #3a7a9e;
-}
-
-#btn-aufteilen-einzeln:active {
-    background-color: #2f6585;
-}
-
-#btn-alle-aufteilen {
-    padding: 0.8rem 1rem;
-    font-size: 1rem;
+.btn-primary {
+    --bs-btn-bg: var(--zhaw-blue);
+    --bs-btn-border-color: var(--zhaw-blue);
+    --bs-btn-hover-bg: var(--zhaw-blue-hover);
+    --bs-btn-hover-border-color: var(--zhaw-blue-hover);
+    --bs-btn-active-bg: var(--zhaw-blue-active);
+    --bs-btn-active-border-color: var(--zhaw-blue-active);
+    --bs-btn-disabled-bg: #c5c9cc;
+    --bs-btn-disabled-border-color: #c5c9cc;
 }
 
 /* ----- Group configuration ----- */
@@ -253,19 +174,6 @@ body {
 
 .config-option input[type="number"] {
     width: 5rem;
-    padding: 0.4rem 0.5rem;
-    font-family: inherit;
-    font-size: 1rem;
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    text-align: center;
-}
-
-.config-option input[type="number"]:focus {
-    outline: 2px solid var(--zhaw-blue);
-    outline-offset: 1px;
-    border-color: var(--zhaw-blue);
 }
 
 /* ----- Groups grid ----- */
