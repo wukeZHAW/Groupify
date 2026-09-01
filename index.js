@@ -69,7 +69,7 @@ function loadFile(event) {
                 groupify = createGroupify(roster);
             }
         } catch (error) {
-            alert(error.message);
+            showErrorToast(error.message);
             FILE_INPUT.value = "";
         }
 
@@ -132,7 +132,7 @@ function addStudentFromInput() {
     const firstName = FIRST_NAME_INPUT.value.trim();
     const lastName = LAST_NAME_INPUT.value.trim();
     if (firstName === "" || lastName === "") {
-        showAddStudentError("Bitte Vorname und Nachname eingeben.");
+        showErrorToast("Bitte Vorname und Nachname eingeben.");
         return;
     }
 
@@ -144,7 +144,7 @@ function addStudentFromInput() {
             groupify.addStudent(student);
         }
     } catch (error) {
-        showAddStudentError(error.message);
+        showErrorToast(error.message);
         return;
     }
 
@@ -153,7 +153,7 @@ function addStudentFromInput() {
     render();
 }
 
-function showAddStudentError(message) {
+function showErrorToast(message) {
     STUDENT_ADD_ERROR_TEXT.textContent = message;
     bootstrap.Toast.getOrCreateInstance(STUDENT_ADD_ERROR).show();
 }
@@ -225,7 +225,7 @@ function exportCsv() {
 
         URL.revokeObjectURL(url);
     } catch (error) {
-        alert(error.message);
+        showErrorToast(error.message);
     }
 
 }
@@ -395,7 +395,7 @@ function finishGroupRename(heading, group, input) {
             groupify.renameGroup(group, input.value.trim());
         }
     } catch (error) {
-        alert(error.message);
+        showErrorToast(error.message);
     }
 
     renderGroupHeading(heading, group);
