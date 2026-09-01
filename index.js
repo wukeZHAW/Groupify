@@ -236,7 +236,7 @@ function updateExportButton() {
 
 // render Studentlist
 function renderStudents() {
-    OUTPUT.innerHTML = '<h2 class="card-title h5">Schülerliste</h2>';
+    OUTPUT.innerHTML = "";
     if (!groupify) {
         return;
     }

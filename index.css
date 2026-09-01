@@ -41,7 +41,9 @@ body {
 
 /* ----- Left: import & student list ----- */
 
-#csv-input-label {
+#csv-input-label,
+#group-config-label,
+#student-list-label {
     margin: 0 0 0.25rem;
     font-weight: 700;
     color: var(--zhaw-blue);
@@ -56,10 +58,6 @@ body {
 
 #student-list {
     height: 320px;
-}
-
-#student-list h2 {
-    color: var(--zhaw-blue);
 }
 
 /* Placeholder for future name list items */
@@ -169,6 +167,7 @@ body {
 }
 
 #groups article h2 {
+    font-weight: 700;
     color: var(--zhaw-blue);
 }
 

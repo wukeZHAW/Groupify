@@ -14,27 +14,28 @@
 
         <div class="row g-4 align-items-start">
         <aside id="controls" class="col-12 col-md-4 d-flex flex-column gap-3">
-            <p id="csv-input-label">CSV-Datei mit Schülerliste importieren</p>
+            <p id="csv-input-label">Personenliste aus CSV</p>
             <input type="file" id="csv-input" class="form-control" accept=".csv" aria-labelledby="csv-input-label">
 
+            <p id="student-list-label">Personenliste</p>
             <section id="student-list" class="card shadow-sm overflow-auto p-3">
-                <h2 class="card-title h5">Schülerliste</h2>
             </section>
             <div id="student-add" class="d-flex gap-2 align-items-stretch">
                 <input type="text" id="student-first-name" class="form-control min-w-0 flex-grow-1" placeholder="Vorname">
                 <input type="text" id="student-last-name" class="form-control min-w-0 flex-grow-1" placeholder="Nachname">
-                <button type="button" id="btn-add-student" class="btn btn-primary flex-shrink-0" aria-label="Hinzufügen" title="Student hinzufügen"><i class="bi bi-plus-lg" aria-hidden="true"></i></button> 
+                <button type="button" id="btn-add-student" class="btn btn-success flex-shrink-0" aria-label="Hinzufügen" title="Student hinzufügen"><i class="bi bi-plus-lg" aria-hidden="true"></i></button> 
             </div>
 
             <button type="button" id="btn-aufteilen-einzeln" class="btn btn-secondary w-100">Einzeln aufteilen</button>
             <button type="button" id="btn-alle-aufteilen" class="btn btn-primary w-100">Alle aufteilen</button>
             <button type="button" id="btn-alle-zurueck" class="btn btn-primary w-100">Alle zurück zur Schülerliste</button>
             <span title="Zuerst müssen alle Studierenden zugeteilt werden">
-                <button type="button" id="btn-export" class="btn btn-primary w-100" disabled>CSV exportieren</button>
+                <button type="button" id="btn-export" class="btn btn-primary w-100" disabled>Gruppen als CSV exportieren</button>
             </span>
         </aside>
 
         <div id="main-content" class="col-12 col-md-8 d-flex flex-column gap-3 min-w-0">
+            <p id="group-config-label">Gruppeneinteilung</p>
             <section id="group-config">
                 <label class="config-option">
                     <span>Anzahl Gruppen</span>
