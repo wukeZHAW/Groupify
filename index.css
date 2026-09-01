@@ -182,6 +182,10 @@ body {
     cursor: pointer;
 }
 
+.btn-rename-group:hover {
+    color: #b00020;
+}
+
 #groups article h2.group-name .group-name-input {
     flex: 1;
     min-width: 0;

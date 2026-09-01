@@ -309,7 +309,11 @@ function renderGroupHeading(heading, group) {
     button.type = "button";
     button.className = "btn-rename-group";
     button.title = "Gruppe umbenennen";
-    button.textContent = "✏️";
+    button.setAttribute("aria-label", "Gruppe umbenennen");
+    const renameIcon = document.createElement("i");
+    renameIcon.className = "bi bi-pencil";
+    renameIcon.setAttribute("aria-hidden", "true");
+    button.appendChild(renameIcon);
     button.addEventListener("click", function () {
         startGroupRename(heading, group);
     });
@@ -392,7 +396,10 @@ function createStudentRow(student, group) {
     });
 
     if (group === null) {
-        button.textContent = "×";
+        const deleteIcon = document.createElement("i");
+        deleteIcon.className = "bi bi-x-lg";
+        deleteIcon.setAttribute("aria-hidden", "true");
+        button.appendChild(deleteIcon);
         button.setAttribute("aria-label", student.name + " löschen");
         button.addEventListener("click", function (event) {
             event.preventDefault();
@@ -400,7 +407,10 @@ function createStudentRow(student, group) {
             deleteStudent(student);
         });
     } else {
-        button.textContent = "←";
+        const unallocateIcon = document.createElement("i");
+        unallocateIcon.className = "bi bi-arrow-left";
+        unallocateIcon.setAttribute("aria-hidden", "true");
+        button.appendChild(unallocateIcon);
         button.title = student.name + " zurück zur Schülerliste";
         button.setAttribute("aria-label", student.name + " zurück zur Schülerliste");
         button.addEventListener("click", function (event) {
