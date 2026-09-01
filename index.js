@@ -17,7 +17,6 @@ const CONFIG_SIZE = document.getElementById("config-size");
 const GROUPS_CONTAINER = document.getElementById("groups");
 const STUDENT_ADD_ERROR = document.getElementById("student-add-error");
 const STUDENT_ADD_ERROR_TEXT = document.getElementById("student-add-error-text");
-const STUDENT_ADD_ERROR_CLOSE = document.getElementById("student-add-error-close");
 const LOADER = new CsvLoader();
 const EXPORTER = new CsvExporter();
 
@@ -27,7 +26,6 @@ let draggedGroup = null;
 
 FILE_INPUT.addEventListener("change", loadFile);
 BTN_ADD_STUDENT.addEventListener("click", addStudentFromInput);
-STUDENT_ADD_ERROR_CLOSE.addEventListener("click", hideAddStudentError);
 BTN_EINZELN.addEventListener("click", aufteilenEinzeln);
 BTN_ALLE.addEventListener("click", aufteilenAlle);
 BTN_ALLE_ZURUECK.addEventListener("click", alleZurueck);
@@ -147,19 +145,12 @@ function addStudentFromInput() {
 
     FIRST_NAME_INPUT.value = "";
     LAST_NAME_INPUT.value = "";
-    hideAddStudentError();
     render();
 }
 
 function showAddStudentError(message) {
     STUDENT_ADD_ERROR_TEXT.textContent = message;
-    STUDENT_ADD_ERROR.classList.remove("d-none");
-    STUDENT_ADD_ERROR.classList.add("show");
-}
-
-function hideAddStudentError() {
-    STUDENT_ADD_ERROR.classList.add("d-none");
-    STUDENT_ADD_ERROR.classList.remove("show");
+    bootstrap.Toast.getOrCreateInstance(STUDENT_ADD_ERROR).show();
 }
 
 
