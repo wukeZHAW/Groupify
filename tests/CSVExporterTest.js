@@ -42,17 +42,17 @@ function runTests() {
         "groupify must be a Groupify object"
     );
 
-    // noch unallocated Students
+    // unallocated Students
     const leftover = new Student("Wu", "Kevin");
     const groupifyOpen = new Groupify(
         [new Group("Gruppe A")],
         [leftover]
     );
 
-    assert.throws(
-        () => EXPORTER.export(groupifyOpen),
-        Error,
-        "all students must be allocated before export"
+    assert.equal(
+        EXPORTER.export(groupifyOpen),
+        "Name;Vorname;Gruppe\nWu;Kevin;Unallocated\n",
+        "unallocated students should export with group Unallocated"
     );
 
     // leere Gruppen werden übersprungen

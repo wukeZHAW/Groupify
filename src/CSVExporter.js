@@ -7,10 +7,6 @@ export class CsvExporter {
             throw new TypeError("groupifiy must be a Groupify object");
         }
 
-        if (groupify.unallocated.length() > 0) {
-            throw new Error("all students must be allocated before export");
-        }
-
         let csv = "Name;Vorname;Gruppe\n";
 
         for (const group of groupify.groups) {
@@ -19,6 +15,12 @@ export class CsvExporter {
 
                 csv += student.lastName + ";" + student.firstName + ";" + group.name + "\n";
             }
+        }
+
+        const unallocated = groupify.unallocated;
+        for (let i = 0; i < unallocated.length(); i++) {
+            const student = unallocated.getStudent(i);
+            csv += student.lastName + ";" + student.firstName + ";" + unallocated.name + "\n";
         }
         return csv
     }

@@ -239,16 +239,28 @@ function exportCsv() {
 function render() {
     renderStudents();
     renderGroups();
-    updateExportButton();
+    updateButtonStates();
 }
 
 
 
-function updateExportButton() {
+function updateButtonStates() {
     const hasUnallocated = groupify && groupify.unallocated.length() > 0;
     BTN_EINZELN.disabled = !hasUnallocated;
     BTN_ALLE.disabled = !hasUnallocated;
-    BTN_EXPORT.disabled = !groupify || hasUnallocated;
+    BTN_EXPORT.disabled = !FILE_INPUT.value;
+
+    let hasAllocated = false;
+    if (groupify) {
+        const groups = groupify.groups;
+        for (let i = 0; i < groups.length; i++) {
+            if (groups[i].length() > 0) {
+                hasAllocated = true;
+                break;
+            }
+        }
+    }
+    BTN_ALLE_ZURUECK.disabled = !hasAllocated;
 }
 
 
