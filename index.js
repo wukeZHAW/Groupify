@@ -17,15 +17,20 @@ const CONFIG_SIZE = document.getElementById("config-size");
 const GROUPS_CONTAINER = document.getElementById("groups");
 const STUDENT_ADD_ERROR = document.getElementById("student-add-error");
 const STUDENT_ADD_ERROR_TEXT = document.getElementById("student-add-error-text");
+const DELETE_STUDENT_MODAL = document.getElementById("delete-student-modal");
+const DELETE_STUDENT_BODY = document.getElementById("delete-student-body");
+const BTN_CONFIRM_DELETE = document.getElementById("btn-confirm-delete");
 const LOADER = new CsvLoader();
 const EXPORTER = new CsvExporter();
 
 let groupify = null;
 let draggedStudent = null;
 let draggedGroup = null;
+let studentToDelete = null;
 
 FILE_INPUT.addEventListener("change", loadFile);
 BTN_ADD_STUDENT.addEventListener("click", addStudentFromInput);
+BTN_CONFIRM_DELETE.addEventListener("click", confirmDeleteStudent);
 BTN_EINZELN.addEventListener("click", aufteilenEinzeln);
 BTN_ALLE.addEventListener("click", aufteilenAlle);
 BTN_ALLE_ZURUECK.addEventListener("click", alleZurueck);
@@ -454,11 +459,19 @@ function deleteStudent(student) {
         return;
     }
 
-    if (!confirm(student.name + " wirklich löschen?")) {
+    studentToDelete = student;
+    DELETE_STUDENT_BODY.textContent = student.name + " wirklich löschen?";
+    bootstrap.Modal.getOrCreateInstance(DELETE_STUDENT_MODAL).show();
+}
+
+function confirmDeleteStudent() {
+    if (!groupify || !studentToDelete) {
         return;
     }
 
-    groupify.removeStudent(student);
+    groupify.removeStudent(studentToDelete);
+    studentToDelete = null;
+    bootstrap.Modal.getOrCreateInstance(DELETE_STUDENT_MODAL).hide();
     render();
 }
 
