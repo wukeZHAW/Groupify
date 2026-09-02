@@ -67,6 +67,7 @@ function loadFile(event) {
                 groupify = null;
             } else {
                 groupify = createGroupify(roster);
+                CONFIG_SIZE.value = groupify.groupSize;
             }
         } catch (error) {
             showErrorToast(error.message);
