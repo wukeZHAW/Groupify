@@ -1,7 +1,7 @@
 /* Groupify – ZHAW Corporate Design prototype */
 
 :root {
-    --zhaw-blue: #0064A6;
+    --zhaw-blue: #0064a6;
     --zhaw-blue-hover: #004d80;
     --zhaw-blue-active: #003d66;
     --bg-page: #f0f2f4;
@@ -16,6 +16,10 @@
 
 * {
     box-sizing: border-box;
+}
+
+html {
+    scrollbar-gutter: stable;
 }
 
 body {
@@ -36,18 +40,10 @@ body {
 }
 
 .program-logo {
-    display: inline-flex;
-    font-size: 1.25rem;
-    line-height: 1;
+    display: block;
+    height: 2rem;
+    width: auto;
 }
-
-.program-logo .bi + .bi {
-    margin-left: -0.3em;
-}
-
-.program-logo .bi:nth-child(1) { color: #C5C5C5; }
-.program-logo .bi:nth-child(2) { color: #898989; }
-.program-logo .bi:nth-child(3) { color: #0064A6; }
 
 #appName .nav-link {
     color: var(--text);
@@ -195,7 +191,7 @@ body {
 
 /* ----- Groups grid ----- */
 
-#groups {   
+#groups {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
@@ -269,6 +265,18 @@ body {
 
 /* ----- Information ----- */
 
+#about h2 {
+    margin-top: 2rem;
+}
+
+#about h1 + h2 {
+    margin-top: 1rem;
+}
+
+#about h3:not(.accordion-header) {
+    margin-top: 1.25rem;
+}
+
 #about a {
     color: var(--zhaw-blue);
 }
@@ -278,6 +286,7 @@ body {
     --bs-accordion-active-bg: #f8f8f8;
     --bs-accordion-active-color: var(--text);
     --bs-accordion-btn-focus-box-shadow: none;
+    margin-bottom: 10rem;
 }
 
 .accordion-button:not(.collapsed)::after {
