@@ -1,102 +1,4 @@
-/* Groupify – ZHAW Corporate Design prototype */
-
-:root {
-    --zhaw-blue: #0064a6;
-    --zhaw-blue-hover: #004d80;
-    --zhaw-blue-active: #003d66;
-    --bg-page: #f0f2f4;
-    --bg-hover: #e6f2f8;
-    --fg-hover: white;
-    --bg-panel: #ffffff;
-    --border: #d0d5d9;
-    --text: #222222;
-    --text-muted: #555555;
-    --radius: 4px;
-    --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-    --chrome-height: 3.5rem;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-html {
-    scrollbar-gutter: stable;
-}
-
-body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: var(--text);
-}
-
-/* ----- Navbar ----- */
-
-.navbar > .container {
-    background-color: #f8f9fa;
-    min-height: var(--chrome-height);
-    align-items: stretch;
-}
-
-.program-logo {
-    display: block;
-    height: 2.5rem;
-    width: auto;
-}
-
-#appName {
-    display: flex;
-}
-
-#appName .nav-link {
-    display: flex;
-    align-items: center;
-    color: var(--text);
-    font-weight: 700;
-    padding: 0.4rem 0.85rem 0.4rem 0.5rem;
-}
-
-#appName .nav-link:hover {
-    color: var(--text);
-}
-
-.navbar-collapse,
-.navbar-nav {
-    align-items: stretch;
-}
-
-.navbar-nav .nav-link {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    color: #777777;
-    background-color: #f8f9fa;
-    border-bottom: 4px solid transparent;
-    border-radius: 0;
-    padding: 0.5rem 1.25rem;
-}
-
-.navbar-nav .nav-link:hover {
-    color: #4a4a4a;
-    background-color: #f8f8f8;
-    border-bottom-color: #999999;
-}
-
-.navbar-nav .nav-item.active .nav-link,
-.navbar-nav .nav-item.active .nav-link:hover {
-    color: #555555;
-    background-color: #e7e7e7;
-    border-bottom-color: #0064a6;
-}
-
-/* ----- Main application ----- */
-
-/* ----- Left: import & person list ----- */
+/* ----- Person list ----- */
 
 #person-add #btn-add-person {
     width: 2.4rem;
@@ -109,7 +11,6 @@ body {
     height: 320px;
 }
 
-/* Placeholder for future name list items */
 #person-list ul {
     margin: 0;
     padding: 0;
@@ -164,19 +65,6 @@ body {
     background-color: var(--zhaw-blue-active);
 }
 
-/* ----- Buttons ----- */
-
-.btn-primary {
-    --bs-btn-bg: var(--zhaw-blue);
-    --bs-btn-border-color: var(--zhaw-blue);
-    --bs-btn-hover-bg: var(--zhaw-blue-hover);
-    --bs-btn-hover-border-color: var(--zhaw-blue-hover);
-    --bs-btn-active-bg: var(--zhaw-blue-active);
-    --bs-btn-active-border-color: var(--zhaw-blue-active);
-    --bs-btn-disabled-bg: #c5c9cc;
-    --bs-btn-disabled-border-color: #c5c9cc;
-}
-
 /* ----- Group configuration ----- */
 
 #group-config {
@@ -203,7 +91,7 @@ body {
     width: 5rem;
 }
 
-/* ----- Groups grid ----- */
+/* ----- Groups ----- */
 
 #groups {
     display: grid;
@@ -269,65 +157,6 @@ body {
 #groups article.drop-target {
     outline: 2px solid var(--zhaw-blue);
     outline-offset: 2px;
-}
-
-/* ----- Information ----- */
-
-#about h2 {
-    margin-top: 2rem;
-}
-
-#about h1 + h2 {
-    margin-top: 1rem;
-}
-
-#about h3:not(.accordion-header) {
-    margin-top: 1.25rem;
-}
-
-#about a {
-    color: var(--zhaw-blue);
-}
-
-code {
-    color: black;
-    background-color: #f8f9fa;
-    border-radius: 0.25em;
-}
-
-ol > li {
-    margin-bottom: 0.75em;
-}
-.accordion {
-    --bs-accordion-btn-bg: #f8f8f8;
-    --bs-accordion-active-bg: #f8f8f8;
-    --bs-accordion-active-color: var(--text);
-    --bs-accordion-btn-focus-box-shadow: none;
-}
-
-.accordion-button:not(.collapsed)::after {
-    background-image: var(--bs-accordion-btn-icon);
-}
-
-/* ----- Footer ----- */
-
-footer {
-    min-height: var(--chrome-height);
-    display: flex;
-    align-items: center;
-    color: #212529;
-    background-color: #f8f8f8;
-    margin-top: 3em;
-}
-
-footer .container {
-    width: 100%;
-}
-
-footer a,
-footer a:hover {
-    color: inherit;
-    text-decoration: none;
 }
 
 /* ----- Responsive ----- */
