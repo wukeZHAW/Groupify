@@ -1,4 +1,4 @@
-export class Student {
+export class Person {
 
     static NAME_MIN_LEN = 1;
     static NAME_MAX_LEN = 50;
@@ -17,8 +17,8 @@ export class Student {
         if(typeof name !== "string") {
             throw new TypeError("name must be of type string!");
         }
-        if(name.length < Student.NAME_MIN_LEN || name.length > Student.NAME_MAX_LEN) {
-            throw new RangeError(`name must be between ${Student.NAME_MIN_LEN} and ${Student.NAME_MAX_LEN} characters`);
+        if(name.length < Person.NAME_MIN_LEN || name.length > Person.NAME_MAX_LEN) {
+            throw new RangeError(`name must be between ${Person.NAME_MIN_LEN} and ${Person.NAME_MAX_LEN} characters`);
         }
     }
 

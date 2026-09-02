@@ -96,43 +96,43 @@ body {
 
 /* ----- Main application ----- */
 
-/* ----- Left: import & student list ----- */
+/* ----- Left: import & person list ----- */
 
-#student-add #btn-add-student {
+#person-add #btn-add-person {
     width: 2.4rem;
     padding: 0;
     font-size: 1.25rem;
     line-height: 1;
 }
 
-#student-list {
+#person-list {
     height: 320px;
 }
 
 /* Placeholder for future name list items */
-#student-list ul {
+#person-list ul {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-#student-list li {
+#person-list li {
     padding: 0.35rem 0;
     border-bottom: 1px solid #e8eaec;
     font-size: 0.95rem;
 }
 
-#student-list li:last-child {
+#person-list li:last-child {
     border-bottom: none;
 }
 
-#student-list p,
+#person-list p,
 #groups p {
     cursor: grab;
 }
 
-.btn-unallocate-student,
-.btn-delete-student {
+.btn-unallocate-person,
+.btn-delete-person {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -150,16 +150,16 @@ body {
     cursor: pointer;
 }
 
-.btn-delete-student:hover,
+.btn-delete-person:hover,
 .btn-rename-group:hover,
-.btn-unallocate-student:hover {
+.btn-unallocate-person:hover {
     color: var(--fg-hover);
     background-color: var(--zhaw-blue-hover);
 }
 
-.btn-delete-student:active,
+.btn-delete-person:active,
 .btn-rename-group:active,
-.btn-unallocate-student:active {
+.btn-unallocate-person:active {
     color: var(--fg-hover);
     background-color: var(--zhaw-blue-active);
 }

@@ -11,16 +11,16 @@ export class CsvExporter {
 
         for (const group of groupify.groups) {
             for (let i = 0; i < group.length(); i++){
-                const student = group.getStudent(i);
+                const person = group.getPerson(i);
 
-                csv += student.lastName + ";" + student.firstName + ";" + group.name + "\n";
+                csv += person.lastName + ";" + person.firstName + ";" + group.name + "\n";
             }
         }
 
         const unallocated = groupify.unallocated;
         for (let i = 0; i < unallocated.length(); i++) {
-            const student = unallocated.getStudent(i);
-            csv += student.lastName + ";" + student.firstName + ";" + unallocated.name + "\n";
+            const person = unallocated.getPerson(i);
+            csv += person.lastName + ";" + person.firstName + ";" + unallocated.name + "\n";
         }
         return csv
     }

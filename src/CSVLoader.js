@@ -1,23 +1,17 @@
-import { Student } from "./Student.js";
+import { Person } from "./Person.js";
 
 export class CsvLoader {
     /**
-     * Parses CSV content into students.
+     * Parses CSV content into persons.
     *
      * @param {string} csvText CSV in Name;Vorname format
-     * @returns {Student[]} parsed students
+     * @returns {Person[]} parsed persons
          * @throws {TypeError} if csvText is not a string
     * @throws {Error} if the CSV format is invalid
     */
 
 
     parse(csvText){
-        // CSV-Text validieren
-        // Header entfernen
-        // Zeilen durchgehen
-        // Name + Vorname zusammensetzen
-        // Student erzeugen
-        // Student[] zurückgeben
         
         this.#validateInput(csvText);
 
@@ -28,7 +22,7 @@ export class CsvLoader {
         const HEADER = LINES[0];
         this.#validateHeader(HEADER);
 
-        const STUDENTS = [];
+        const PERSONS = [];
 
         //skip header
         const DATA_LINES = LINES.slice(1);
@@ -45,15 +39,15 @@ export class CsvLoader {
 
             const [LAST_NAME, FIRST_NAME] = ROW.split(";");
 
-            const STUDENT = new Student(
+            const STUDENT = new Person(
                 LAST_NAME.trim(),
                 FIRST_NAME.trim()
             );
 
-            STUDENTS.push(STUDENT);
+            PERSONS.push(STUDENT);
         }
 
-        return STUDENTS
+        return PERSONS
 
         
     }

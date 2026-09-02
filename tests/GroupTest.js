@@ -40,32 +40,32 @@ function runTests() {
         "name must be of type string"
     );
 
-    // Student hinzufügen
+    // Person hinzufügen
     const group5 = new Group("Hallo");
-    group5.addStudent("Max");
-    group5.addStudent("Anna");
-    assert.equal(group5.length(), 2, "Group should accept students without a capacity limit");
+    group5.addPerson("Max");
+    group5.addPerson("Anna");
+    assert.equal(group5.length(), 2, "Group should accept persons without a capacity limit");
 
-    // Student doppelt hinzufügen
+    // Person doppelt hinzufügen
     const groupDuplicate = new Group("Hallo");
-    groupDuplicate.addStudent("Max");
+    groupDuplicate.addPerson("Max");
     assert.throws(
-        () => groupDuplicate.addStudent("Max"),
+        () => groupDuplicate.addPerson("Max"),
         Error,
-        "Adding a duplicate student should throw"
+        "Adding a duplicate person should throw"
     );
 
-    // vorhandenen Student entfernen
+    // vorhandenen Person entfernen
     const groupRemove = new Group("Hallo");
-    groupRemove.addStudent("Max");
-    groupRemove.removeStudent("Max");
-    assert.equal(groupRemove.length(), 0, "Removing an existing student should leave the group empty");
+    groupRemove.addPerson("Max");
+    groupRemove.removePerson("Max");
+    assert.equal(groupRemove.length(), 0, "Removing an existing person should leave the group empty");
 
     // nicht vorhandenen entfernen
     assert.throws(
-        () => groupRemove.removeStudent("Peter"),
+        () => groupRemove.removePerson("Peter"),
         Error,
-        "Removing a student that is not in the group should throw"
+        "Removing a person that is not in the group should throw"
     );
 
     // gültiger Name-Setter

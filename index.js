@@ -1,13 +1,13 @@
 import { CsvLoader } from "./src/CSVLoader.js";
 import { CsvExporter } from "./src/CSVExporter.js";
 import { Groupify } from "./src/Groupify.js";
-import { Student } from "./src/Student.js";
+import { Person } from "./src/Person.js";
 
 const FILE_INPUT = document.getElementById("csv-input");
-const OUTPUT = document.getElementById("student-list");
-const FIRST_NAME_INPUT = document.getElementById("student-first-name");
-const LAST_NAME_INPUT = document.getElementById("student-last-name");
-const BTN_ADD_STUDENT = document.getElementById("btn-add-student");
+const OUTPUT = document.getElementById("person-list");
+const FIRST_NAME_INPUT = document.getElementById("person-first-name");
+const LAST_NAME_INPUT = document.getElementById("person-last-name");
+const BTN_ADD_STUDENT = document.getElementById("btn-add-person");
 const BTN_EINZELN = document.getElementById("btn-aufteilen-einzeln");
 const BTN_ALLE = document.getElementById("btn-alle-aufteilen");
 const BTN_ALLE_ZURUECK = document.getElementById("btn-alle-zurueck");
@@ -15,22 +15,22 @@ const BTN_EXPORT = document.getElementById("btn-export");
 const CONFIG_VALUE = document.getElementById("config-value");
 const CONFIG_SIZE = document.getElementById("config-size");
 const GROUPS_CONTAINER = document.getElementById("groups");
-const STUDENT_ADD_ERROR = document.getElementById("student-add-error");
-const STUDENT_ADD_ERROR_TEXT = document.getElementById("student-add-error-text");
-const DELETE_STUDENT_MODAL = document.getElementById("delete-student-modal");
-const DELETE_STUDENT_BODY = document.getElementById("delete-student-body");
+const STUDENT_ADD_ERROR = document.getElementById("person-add-error");
+const STUDENT_ADD_ERROR_TEXT = document.getElementById("person-add-error-text");
+const DELETE_STUDENT_MODAL = document.getElementById("delete-person-modal");
+const DELETE_STUDENT_BODY = document.getElementById("delete-person-body");
 const BTN_CONFIRM_DELETE = document.getElementById("btn-confirm-delete");
 const LOADER = new CsvLoader();
 const EXPORTER = new CsvExporter();
 
 let groupify = null;
-let draggedStudent = null;
+let draggedPerson = null;
 let draggedGroup = null;
-let studentToDelete = null;
+let personToDelete = null;
 
 FILE_INPUT.addEventListener("change", loadFile);
-BTN_ADD_STUDENT.addEventListener("click", addStudentFromInput);
-BTN_CONFIRM_DELETE.addEventListener("click", confirmDeleteStudent);
+BTN_ADD_STUDENT.addEventListener("click", addPersonFromInput);
+BTN_CONFIRM_DELETE.addEventListener("click", confirmDeletePerson);
 BTN_EINZELN.addEventListener("click", aufteilenEinzeln);
 BTN_ALLE.addEventListener("click", aufteilenAlle);
 BTN_ALLE_ZURUECK.addEventListener("click", alleZurueck);
@@ -98,14 +98,14 @@ function getNumberOfGroups() {
 
 
 
-function getStudentsPerGroup() {
+function getPersonsPerGroup() {
     return getPositiveInt(CONFIG_SIZE);
 }
 
 
 
-function createGroupify(students) {
-    let instance = new Groupify(getNumberOfGroups(), students);
+function createGroupify(persons) {
+    let instance = new Groupify(getNumberOfGroups(), persons);
     return instance;
 }
 
@@ -121,7 +121,7 @@ function onNumberOfGroupsChange() {
 
 function onGroupSizeChange() {
     if (groupify) {
-        groupify.setStudentsPerGroup(getStudentsPerGroup());
+        groupify.setPersonsPerGroup(getPersonsPerGroup());
         CONFIG_VALUE.value = groupify.groups.length;
     }
     render();
@@ -129,7 +129,7 @@ function onGroupSizeChange() {
 
 
 
-function addStudentFromInput() {
+function addPersonFromInput() {
     const firstName = FIRST_NAME_INPUT.value.trim();
     const lastName = LAST_NAME_INPUT.value.trim();
     if (firstName === "" || lastName === "") {
@@ -138,11 +138,11 @@ function addStudentFromInput() {
     }
 
     try {
-        const student = new Student(lastName, firstName);
+        const person = new Person(lastName, firstName);
         if (!groupify) {
-            groupify = createGroupify([student]);
+            groupify = createGroupify([person]);
         } else {
-            groupify.addStudent(student);
+            groupify.addPerson(person);
         }
     } catch (error) {
         showErrorToast(error.message);
@@ -175,8 +175,8 @@ function aufteilenEinzeln() {
 
     const unallocated = groupify.unallocated;
     const index = Math.floor(Math.random() * unallocated.length());
-    const student = unallocated.getStudent(index);
-    groupify.randAssign(student);
+    const person = unallocated.getPerson(index);
+    groupify.randAssign(person);
     render();
 }
 
@@ -200,7 +200,7 @@ function alleZurueck() {
     for (let i = 0; i < groups.length; i++) {
         const group = groups[i];
         while (group.length() > 0) {
-            groupify.unallocate(group.getStudent(0), group);
+            groupify.unallocate(group.getPerson(0), group);
         }
     }
     render();
@@ -234,7 +234,7 @@ function exportCsv() {
 
 
 function render() {
-    renderStudents();
+    renderPersons();
     renderGroups();
     updateButtonStates();
 }
@@ -262,8 +262,8 @@ function updateButtonStates() {
 
 
 
-// render Studentlist
-function renderStudents() {
+// render Personlist
+function renderPersons() {
     OUTPUT.innerHTML = "";
     if (!groupify) {
         return;
@@ -271,7 +271,7 @@ function renderStudents() {
 
     const unallocated = groupify.unallocated;
     for (let i = 0; i < unallocated.length(); i++) {
-        OUTPUT.appendChild(createStudentRow(unallocated.getStudent(i), null));
+        OUTPUT.appendChild(createPersonRow(unallocated.getPerson(i), null));
     }
 }
 
@@ -284,7 +284,10 @@ function renderGroups() {
     if (groupify) {
         const groups = groupify.groups;
         for (let i = 0; i < groups.length; i++) {
-            GROUPS_CONTAINER.appendChild(createGroupCard(groups[i].name, groups[i]));
+            GROUPS_CONTAINER.appendChild(
+                createGroupCard(groups[i].name, 
+                groups[i])
+            );
         }
         return;
     }
@@ -316,7 +319,7 @@ function createGroupCard(name, group) {
     renderGroupHeading(heading, group);
 
     for (let i = 0; i < group.length(); i++) {
-        groupCard.appendChild(createStudentRow(group.getStudent(i), group));
+        groupCard.appendChild(createPersonRow(group.getPerson(i), group));
     }
 
     return groupCard;
@@ -405,16 +408,16 @@ function finishGroupRename(heading, group, input) {
 
 
 
-function createStudentRow(student, group) {
+function createPersonRow(person, group) {
     const paragraph = document.createElement("p");
-    paragraph.className = "student-row d-flex align-items-center justify-content-between gap-2 my-1";
+    paragraph.className = "person-row d-flex align-items-center justify-content-between gap-2 my-1";
     paragraph.draggable = true;
-    paragraph._student = student;
+    paragraph._person = person;
     paragraph._group = group;
 
     const name = document.createElement("span");
     name.className = "min-w-0 flex-grow-1";
-    name.textContent = student.name;
+    name.textContent = person.name;
     paragraph.appendChild(name);
 
     const button = document.createElement("button");
@@ -424,29 +427,30 @@ function createStudentRow(student, group) {
     });
 
     if (group === null) {
-        button.className = "btn-delete-student";
+        button.className = "btn-delete-person";
         const deleteIcon = document.createElement("i");
         deleteIcon.className = "bi bi-trash";
         deleteIcon.setAttribute("aria-hidden", "true");
         button.appendChild(deleteIcon);
-        button.setAttribute("aria-label", student.name + " löschen");
+        button.setAttribute("aria-label", person.name + " löschen");
         button.addEventListener("click", function (event) {
             event.preventDefault();
             event.stopPropagation();
-            deleteStudent(student);
+            deletePerson(person);
         });
     } else {
-        button.className = "btn-unallocate-student";
+        button.className = "btn-unallocate-person";
         const unallocateIcon = document.createElement("i");
         unallocateIcon.className = "bi bi-caret-left";
         unallocateIcon.setAttribute("aria-hidden", "true");
         button.appendChild(unallocateIcon);
-        button.title = student.name + " zurück zur Schülerliste";
-        button.setAttribute("aria-label", student.name + " zurück zur Schülerliste");
+        let personNameDescription = person.name + " zurück zur Personenliste"
+        button.title = personNameDescription;
+        button.setAttribute("aria-label", personNameDescription);
         button.addEventListener("click", function (event) {
             event.preventDefault();
             event.stopPropagation();
-            groupify.unallocate(student, group);
+            groupify.unallocate(person, group);
             render();
         });
     }
@@ -457,53 +461,53 @@ function createStudentRow(student, group) {
 
 
 
-function deleteStudent(student) {
+function deletePerson(person) {
     if (!groupify) {
         return;
     }
 
-    studentToDelete = student;
-    DELETE_STUDENT_BODY.textContent = student.name + " wirklich löschen?";
+    personToDelete = person;
+    DELETE_STUDENT_BODY.textContent = person.name + " wirklich löschen?";
     bootstrap.Modal.getOrCreateInstance(DELETE_STUDENT_MODAL).show();
 }
 
-function confirmDeleteStudent() {
-    if (!groupify || !studentToDelete) {
+function confirmDeletePerson() {
+    if (!groupify || !personToDelete) {
         return;
     }
 
-    groupify.removeStudent(studentToDelete);
-    studentToDelete = null;
+    groupify.removePerson(personToDelete);
+    personToDelete = null;
     bootstrap.Modal.getOrCreateInstance(DELETE_STUDENT_MODAL).hide();
     render();
 }
 
 
 
-// Starts dragging a student and stores the source group
+// Starts dragging a person and stores the source group
 function onDragStart(event) {
-    if (event.target.closest(".btn-delete-student, .btn-unallocate-student")) {
+    if (event.target.closest(".btn-delete-person, .btn-unallocate-person")) {
         event.preventDefault();
         return;
     }
 
-    const row = event.target.closest(".student-row");
-    if (!row || !row._student) {
+    const row = event.target.closest(".person-row");
+    if (!row || !row._person) {
         return;
     }
 
-    draggedStudent = row._student;
+    draggedPerson = row._person;
     draggedGroup = row._group;
-    event.dataTransfer.setData("text/plain", draggedStudent.name);
+    event.dataTransfer.setData("text/plain", draggedPerson.name);
     event.dataTransfer.effectAllowed = "move";
 }
 
 
 
-// Allows dropping a student onto a group
+// Allows dropping a person onto a group
 function onGroupDragOver(event) {
     const groupCard = event.target.closest("article");
-    if (!groupCard || !groupCard._group || !draggedStudent) {
+    if (!groupCard || !groupCard._group || !draggedPerson) {
         return;
     }
 
@@ -527,7 +531,7 @@ function onGroupDragLeave(event) {
 
 
 
-// Moves or allocates the dragged student to the target group
+// Moves or allocates the dragged person to the target group
 function onGroupDrop(event) {
     event.preventDefault();
 
@@ -537,7 +541,7 @@ function onGroupDrop(event) {
     }
 
     const targetGroup = groupCard && groupCard._group;
-    if (!groupify || !draggedStudent || !targetGroup) {
+    if (!groupify || !draggedPerson || !targetGroup) {
         return;
     }
 
@@ -547,9 +551,9 @@ function onGroupDrop(event) {
 
     try {
         if (draggedGroup) {
-            groupify.move(draggedGroup, draggedStudent, targetGroup);
+            groupify.move(draggedGroup, draggedPerson, targetGroup);
         } else {
-            groupify.allocate(draggedStudent, targetGroup);
+            groupify.allocate(draggedPerson, targetGroup);
         }
         render();
     } catch (error) {
@@ -559,9 +563,9 @@ function onGroupDrop(event) {
 
 
 
-// Allows dragging a grouped student back into the student list
+// Allows dragging a grouped person back into the person list
 function onListDragOver(event) {
-    if (!draggedStudent || !draggedGroup) {
+    if (!draggedPerson || !draggedGroup) {
         return;
     }
 
@@ -570,15 +574,15 @@ function onListDragOver(event) {
 
 
 
-// Unallocates the dragged student back to the student list
+// Unallocates the dragged person back to the person list
 function onListDrop(event) {
     event.preventDefault();
 
-    if (!groupify || !draggedStudent || !draggedGroup) {
+    if (!groupify || !draggedPerson || !draggedGroup) {
         return;
     }
 
-    groupify.unallocate(draggedStudent, draggedGroup);
+    groupify.unallocate(draggedPerson, draggedGroup);
     render();
 }
 
@@ -586,7 +590,7 @@ function onListDrop(event) {
 
 // Resets the drag state and removes drop highlights
 function clearDrag() {
-    draggedStudent = null;
+    draggedPerson = null;
     draggedGroup = null;
 
     const articles = GROUPS_CONTAINER.querySelectorAll("article");

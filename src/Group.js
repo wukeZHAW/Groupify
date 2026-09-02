@@ -32,7 +32,7 @@ export class Group {
         this.#name = newName;
     }
 
-    getStudent(index){
+    getPerson(index){
         return this.#members[index];
     }
 
@@ -40,15 +40,15 @@ export class Group {
         return this.#members.length;
     }
 
-    addStudent(student) {
-        if(this.#members.indexOf(student) >= 0) {
-            throw new Error(`${this.name} already contains ${student}`);
+    addPerson(person) {
+        if(this.#members.indexOf(person) >= 0) {
+            throw new Error(`${this.name} already contains ${person}`);
         }
-        this.#members.push(student);
+        this.#members.push(person);
     }
 
-    removeStudent(student) {
-        const idx = this.#members.indexOf(student);        
+    removePerson(person) {
+        const idx = this.#members.indexOf(person);        
         if(idx < 0) {
             throw new Error("Element to be removed is not present");
         }

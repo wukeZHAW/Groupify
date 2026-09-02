@@ -14,6 +14,7 @@
     />
     <link rel="stylesheet" href="index.css" />
   </head>
+
   <body>
     <nav id="header" class="navbar navbar-light navbar-expand-md py-0">
       <div class="container">
@@ -69,25 +70,28 @@
           />
 
           <section
-            id="student-list"
+            id="person-list"
             class="card shadow-sm overflow-auto p-3"
           ></section>
-          <div id="student-add" class="d-flex gap-2 align-items-stretch">
+          <div id="person-add" class="d-flex gap-2 align-items-stretch">
             <input
               type="text"
-              id="student-first-name"
+              id="person-first-name"
               class="form-control min-w-0 flex-grow-1"
               placeholder="Vorname"
+              maxlength="20"
             />
             <input
               type="text"
-              id="student-last-name"
+              id="person-last-name"
               class="form-control min-w-0 flex-grow-1"
               placeholder="Nachname"
+              maxlength="20"
+              
             />
             <button
               type="button"
-              id="btn-add-student"
+              id="btn-add-person"
               class="btn btn-success flex-shrink-0"
               aria-label="Hinzufügen"
               title="Person hinzufügen"
@@ -209,7 +213,7 @@
 
     <div class="toast-container position-fixed top-0 end-0 p-3">
       <div
-        id="student-add-error"
+        id="person-add-error"
         class="toast align-items-center text-bg-danger border-0"
         role="alert"
         aria-live="assertive"
@@ -217,7 +221,7 @@
         data-bs-delay="3000"
       >
         <div class="d-flex">
-          <div class="toast-body" id="student-add-error-text"></div>
+          <div class="toast-body" id="person-add-error-text"></div>
           <button
             type="button"
             class="btn-close btn-close-white me-2 m-auto"
@@ -230,15 +234,15 @@
 
     <div
       class="modal fade"
-      id="delete-student-modal"
+      id="delete-person-modal"
       tabindex="-1"
-      aria-labelledby="delete-student-title"
+      aria-labelledby="delete-person-title"
       aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="delete-student-title">
+            <h5 class="modal-title" id="delete-person-title">
               Person löschen
             </h5>
             <button
@@ -248,7 +252,7 @@
               aria-label="Schliessen"
             ></button>
           </div>
-          <div class="modal-body" id="delete-student-body"></div>
+          <div class="modal-body" id="delete-person-body"></div>
           <div class="modal-footer">
             <button
               type="button"

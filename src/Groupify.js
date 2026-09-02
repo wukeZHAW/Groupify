@@ -1,5 +1,5 @@
 import { Group } from "./Group.js";
-import { Student } from "./Student.js";
+import { Person } from "./Person.js";
 
 export class Groupify {
     #groups;
@@ -7,20 +7,20 @@ export class Groupify {
     #groupSize;
 
     // constructor
-    constructor(groups, students){
+    constructor(groups, persons){
         if (typeof groups === "number") {
-            this.#validateStudents(students);
+            this.#validatePersons(persons);
             const numberOfGroups = groups;
             groups = this.#createGroups(numberOfGroups);
             this.#groupSize = Math.max(
-                1, Math.ceil(students.length / numberOfGroups)
+                1, Math.ceil(persons.length / numberOfGroups)
             );
         } else {
             this.#validateGroups(groups);
-            this.#validateStudents(students);
+            this.#validatePersons(persons);
             const groupCount = groups.length === 0 ? 1 : groups.length;
             this.#groupSize = Math.max(
-                1, Math.ceil(students.length / groupCount)
+                1, Math.ceil(persons.length / groupCount)
             );
         }
 
@@ -28,9 +28,9 @@ export class Groupify {
 
         this.#unallocated = new Group("nicht zugewiesen");
 
-        // alle Students in unallocated einfügen
-        for (const student of students) {
-            this.#unallocated.addStudent(student);
+        // alle Persons in unallocated einfügen
+        for (const person of persons) {
+            this.#unallocated.addPerson(person);
         }
     }
 
@@ -46,15 +46,15 @@ export class Groupify {
         }
     }
 
-    #validateStudents(students){
-        if (!Array.isArray(students)) {
-            throw new TypeError("students must be an array");
+    #validatePersons(persons){
+        if (!Array.isArray(persons)) {
+            throw new TypeError("persons must be an array");
         }
 
-        for (const student of students) {
-            if (!(student instanceof Student)) {
+        for (const person of persons) {
+            if (!(person instanceof Person)) {
                 throw new TypeError(
-                    "students must only contain Student objects"
+                    "persons must only contain Person objects"
                 );
             }
         }
@@ -77,28 +77,28 @@ export class Groupify {
         return groups;
     }
 
-    #collectStudents() {
-        const students = [];
+    #collectPersons() {
+        const persons = [];
 
         for (let i = 0; i < this.#unallocated.length(); i++) {
-            students.push(this.#unallocated.getStudent(i));
+            persons.push(this.#unallocated.getPerson(i));
         }
 
         for (const group of this.#groups) {
             for (let i = 0; i < group.length(); i++) {
-                students.push(group.getStudent(i));
+                persons.push(group.getPerson(i));
             }
         }
 
-        return students;
+        return persons;
     }
 
-    #hasStudentName(name) {
+    #hasPersonName(name) {
         const needle = name.toLowerCase();
-        const students = this.#collectStudents();
+        const persons = this.#collectPersons();
 
-        for (const student of students) {
-            if (student.name.toLowerCase() === needle) {
+        for (const person of persons) {
+            if (person.name.toLowerCase() === needle) {
                 return true;
             }
         }
@@ -122,17 +122,17 @@ export class Groupify {
     }
 
     setNumberOfGroups(numberOfGroups) {
-        const students = this.#collectStudents();
+        const persons = this.#collectPersons();
         const groups = this.#createGroups(numberOfGroups);
 
         this.#groupSize = Math.max(
-            1, Math.ceil(students.length / numberOfGroups)
+            1, Math.ceil(persons.length / numberOfGroups)
         );
         this.#groups = groups;
         this.#unallocated = new Group("Unallocated");
 
-        for (const student of students) {
-            this.#unallocated.addStudent(student);
+        for (const person of persons) {
+            this.#unallocated.addPerson(person);
         }
     }
 
@@ -149,35 +149,35 @@ export class Groupify {
         return this.#groupSize;
     }
 
-    setStudentsPerGroup(studentsPerGroup) {
-        if (!Number.isInteger(studentsPerGroup)) {
-            throw new TypeError("studentsPerGroup must be an integer");
+    setPersonsPerGroup(personsPerGroup) {
+        if (!Number.isInteger(personsPerGroup)) {
+            throw new TypeError("personsPerGroup must be an integer");
         }
 
-        if (studentsPerGroup < 1) {
-            throw new RangeError("studentsPerGroup must be >= 1");
+        if (personsPerGroup < 1) {
+            throw new RangeError("personsPerGroup must be >= 1");
         }
 
-        const students = this.#collectStudents();
+        const persons = this.#collectPersons();
 
-        // 0 students and 5 per group still yields 1 empty group.
+        // 0 persons and 5 per group still yields 1 empty group.
         const numberOfGroups = Math.max(
-            1, Math.ceil(students.length / studentsPerGroup)
+            1, Math.ceil(persons.length / personsPerGroup)
         );
         const groups = this.#createGroups(numberOfGroups);
 
-        this.#groupSize = studentsPerGroup;
+        this.#groupSize = personsPerGroup;
         this.#groups = groups;
         this.#unallocated = new Group("Unallocated");
 
-        for (const student of students) {
-            this.#unallocated.addStudent(student);
+        for (const person of persons) {
+            this.#unallocated.addPerson(person);
         }
     }
 
-    allocate(student, targetGroup) {
-        if (!(student instanceof Student)) {
-            throw new TypeError("student must be a Student object");
+    allocate(person, targetGroup) {
+        if (!(person instanceof Person)) {
+            throw new TypeError("person must be a Person object");
         }
 
         if (!(targetGroup instanceof Group)) {
@@ -189,13 +189,13 @@ export class Groupify {
         }
 
         // Erst NACH allen Prüfungen Zustand verändern
-        this.#unallocated.removeStudent(student);
-        targetGroup.addStudent(student);
+        this.#unallocated.removePerson(person);
+        targetGroup.addPerson(person);
     }
 
-    unallocate(student, group){
-        if (!(student instanceof Student)) {
-            throw new TypeError("student must be a Student object");
+    unallocate(person, group){
+        if (!(person instanceof Person)) {
+            throw new TypeError("person must be a Person object");
         }
 
         if (!(group instanceof Group)) {
@@ -207,18 +207,18 @@ export class Groupify {
         }
 
         // Erst NACH allen Prüfungen Zustand verändern
-        group.removeStudent(student);
-        this.#unallocated.addStudent(student);
+        group.removePerson(person);
+        this.#unallocated.addPerson(person);
         
     }
 
-    move(srcGroup, student, targetGroup){
+    move(srcGroup, person, targetGroup){
         if (!(srcGroup instanceof Group)){
             throw new TypeError("srcGroup must be a Group object");
         }
 
-        if (!(student instanceof Student)) {
-            throw new TypeError("student must be a Student object");
+        if (!(person instanceof Person)) {
+            throw new TypeError("person must be a Person object");
         }
 
         if (!(targetGroup instanceof Group)){
@@ -233,13 +233,13 @@ export class Groupify {
             throw new Error("targetGroup does not belong to Groupify");
         }
 
-        srcGroup.removeStudent(student);
-        targetGroup.addStudent(student);
+        srcGroup.removePerson(person);
+        targetGroup.addPerson(person);
     }
 
-    randAssign(student){
-        if (!(student instanceof Student)) {
-            throw new TypeError("student must be a Student object");
+    randAssign(person){
+        if (!(person instanceof Person)) {
+            throw new TypeError("person must be a Person object");
         }
 
         if (this.#groups.length === 0) {
@@ -266,43 +266,43 @@ export class Groupify {
 
         const randomGroup = candidates[randomIndex];
 
-        this.allocate(student, randomGroup);
+        this.allocate(person, randomGroup);
     }
 
     randAssignAll(){
         while (this.#unallocated.length() > 0){
-            const student = this.#unallocated.getStudent(0);
-            this.randAssign(student);
+            const person = this.#unallocated.getPerson(0);
+            this.randAssign(person);
         }
     }
 
-    addStudent(student){
-        if (!(student instanceof Student)) {
-            throw new TypeError("student must be a Student object");
+    addPerson(person){
+        if (!(person instanceof Person)) {
+            throw new TypeError("person must be a Person object");
         }
 
-        if (this.#findGroup(student) !== null) {
-            throw new Error("student already belongs to Groupify");
+        if (this.#findGroup(person) !== null) {
+            throw new Error("person already belongs to Groupify");
         }
 
-        if (this.#hasStudentName(student.name)) {
-            throw new Error("student name already exists");
+        if (this.#hasPersonName(person.name)) {
+            throw new Error("person name already exists");
         }
 
-        this.#unallocated.addStudent(student);
+        this.#unallocated.addPerson(person);
     }
 
-    removeStudent(student){
-        if (!(student instanceof Student)) {
-            throw new TypeError("student must be a Student object");
+    removePerson(person){
+        if (!(person instanceof Person)) {
+            throw new TypeError("person must be a Person object");
         }
 
-        const group = this.#findGroup(student);
+        const group = this.#findGroup(person);
         if (group === null) {
-            throw new Error("student does not belong to Groupify");
+            throw new Error("person does not belong to Groupify");
         }
 
-        group.removeStudent(student);
+        group.removePerson(person);
     }
 
     renameGroup(group, newName) {
@@ -343,16 +343,16 @@ export class Groupify {
         return "complete";
     }
 
-    #findGroup(student) {
+    #findGroup(person) {
         for (let i = 0; i < this.#unallocated.length(); i++) {
-            if (this.#unallocated.getStudent(i) === student) {
+            if (this.#unallocated.getPerson(i) === person) {
                 return this.#unallocated;
             }
         }
 
         for (const group of this.#groups) {
             for (let i = 0; i < group.length(); i++) {
-                if (group.getStudent(i) === student) {
+                if (group.getPerson(i) === person) {
                     return group;
                 }
             }

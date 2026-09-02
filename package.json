@@ -1,10 +1,10 @@
 {
   "name": "groupify",
   "version": "1.0.0",
-  "description": "Erstelle die Web-App **Groupify** um Studierende zufälligerweise in Gruppen aufzuteilen.",
+  "description": "Erstelle die Web-App **Groupify** um Personen zufälligerweise in Gruppen aufzuteilen.",
   "main": "src/Group.js",
   "scripts": {
-    "test": "node tests/StudentTest.js && node tests/GroupTest.js && node tests/CSVLoaderTest.js && node tests/CSVExporterTest.js && node tests/GroupifyTest.js"
+    "test": "node tests/PersonTest.js && node tests/GroupTest.js && node tests/CSVLoaderTest.js && node tests/CSVExporterTest.js && node tests/GroupifyTest.js"
   },
   "repository": {
     "type": "git",

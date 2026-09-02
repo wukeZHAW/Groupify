@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { Groupify } from "../src/Groupify.js";
-import { Student } from "../src/Student.js";
+import { Person } from "../src/Person.js";
 import { Group } from "../src/Group.js";
 
 function runTests() {
@@ -10,55 +10,55 @@ function runTests() {
     const group1 = new Group("Group 1");
     const group2 = new Group("Group 2");
 
-    const student1 = new Student("Wu", "Kevin");
-    const student2 = new Student("Müller", "Max");
+    const person1 = new Person("Wu", "Kevin");
+    const person2 = new Person("Müller", "Max");
 
     const groups = [group1, group2];
-    const students = [student1, student2];
+    const persons = [person1, person2];
 
     // gültiger Constructor
-    const groupify = new Groupify(groups, students);
+    const groupify = new Groupify(groups, persons);
 
     // groups ist kein Array
     assert.throws(
-        () => new Groupify("Hallo", students),
+        () => new Groupify("Hallo", persons),
         TypeError,
         "groups must be an array"
     );
 
     // groups enthält etwas amderes als Group-Objekte
     assert.throws(
-        () => new Groupify([group1, "hallo"], students),
+        () => new Groupify([group1, "hallo"], persons),
         TypeError,
         "groups must contain only Group objects"
     );
 
-    // students ist kein Array
+    // persons ist kein Array
     assert.throws(
         () => new Groupify(groups, "Hallo"),
         TypeError,
-        "students must be an array"
+        "persons must be an array"
     );
 
-    // students enthält keine Student-Objekte
+    // persons enthält keine Person-Objekte
     assert.throws(
-        () => new Groupify(groups, [student1, "hallo"]),
+        () => new Groupify(groups, [person1, "hallo"]),
         TypeError,
-        "students must contain only Student objects"
+        "persons must contain only Person objects"
     );
 
     // ========================================
     // constructor: numberOfGroups
     // ========================================
 
-    const countStudents = [
-        new Student("Albers", "Anna"),
-        new Student("Bauer", "Bernd"),
-        new Student("Conrad", "Clara"),
-        new Student("Dunst", "Dora"),
-        new Student("Engel", "Emil")
+    const countPersons = [
+        new Person("Albers", "Anna"),
+        new Person("Bauer", "Bernd"),
+        new Person("Conrad", "Clara"),
+        new Person("Dunst", "Dora"),
+        new Person("Engel", "Emil")
     ];
-    const groupifyFromCount = new Groupify(2, countStudents);
+    const groupifyFromCount = new Groupify(2, countPersons);
 
     assert.equal(
         groupifyFromCount.groups.length,
@@ -77,23 +77,23 @@ function runTests() {
     );
     assert.equal(
         groupifyFromCount.unallocated.length(),
-        countStudents.length,
-        "numberOfGroups constructor should put all students in unallocated"
+        countPersons.length,
+        "numberOfGroups constructor should put all persons in unallocated"
     );
     assert.equal(
         groupifyFromCount.groupSize,
         3,
-        "groupSize should be ceil(studentCount / numberOfGroups)"
+        "groupSize should be ceil(personCount / numberOfGroups)"
     );
 
     assert.throws(
-        () => new Groupify(1.5, countStudents),
+        () => new Groupify(1.5, countPersons),
         TypeError,
         "numberOfGroups must be an integer"
     );
 
     assert.throws(
-        () => new Groupify(0, countStudents),
+        () => new Groupify(0, countPersons),
         RangeError,
         "numberOfGroups must be >= 1"
     );
@@ -130,52 +130,52 @@ function runTests() {
         "empty roster should create empty groups and empty unallocated"
     );
 
-    const lastStudent = new Student("One", "Last");
-    const groupifyLast = new Groupify(3, [lastStudent]);
-    groupifyLast.removeStudent(lastStudent);
+    const lastPerson = new Person("One", "Last");
+    const groupifyLast = new Groupify(3, [lastPerson]);
+    groupifyLast.removePerson(lastPerson);
     assert.equal(
         groupifyLast.groups.length,
         3,
-        "removing the last student should leave Groupify empty but intact"
+        "removing the last person should leave Groupify empty but intact"
     );
     assert.equal(
         groupifyLast.unallocated.length(),
         0,
-        "removing the last student should leave Groupify empty but intact"
+        "removing the last person should leave Groupify empty but intact"
     );
 
     groupifyLast.setNumberOfGroups(5);
     assert.equal(
         groupifyLast.groups.length,
         5,
-        "setNumberOfGroups should work with zero students"
+        "setNumberOfGroups should work with zero persons"
     );
     assert.equal(
         groupifyLast.unallocated.length(),
         0,
-        "setNumberOfGroups should work with zero students"
+        "setNumberOfGroups should work with zero persons"
     );
 
-    groupifyLast.addStudent(new Student("Ok", "Again"));
+    groupifyLast.addPerson(new Person("Ok", "Again"));
     assert.equal(
         groupifyLast.unallocated.length(),
         1,
-        "addStudent should work after Groupify became empty"
+        "addPerson should work after Groupify became empty"
     );
 
     // ========================================
     // setNumberOfGroups
     // ========================================
 
-    const rebuildStudents = [
-        new Student("Frost", "Finn"),
-        new Student("Grün", "Greta"),
-        new Student("Hahn", "Hugo")
+    const rebuildPersons = [
+        new Person("Frost", "Finn"),
+        new Person("Grün", "Greta"),
+        new Person("Hahn", "Hugo")
     ];
-    const groupifyRebuild = new Groupify(2, rebuildStudents);
+    const groupifyRebuild = new Groupify(2, rebuildPersons);
     const oldGroup = groupifyRebuild.groups[0];
-    groupifyRebuild.allocate(rebuildStudents[0], oldGroup);
-    groupifyRebuild.allocate(rebuildStudents[1], groupifyRebuild.groups[1]);
+    groupifyRebuild.allocate(rebuildPersons[0], oldGroup);
+    groupifyRebuild.allocate(rebuildPersons[1], groupifyRebuild.groups[1]);
 
     groupifyRebuild.setNumberOfGroups(3);
 
@@ -201,8 +201,8 @@ function runTests() {
     );
     assert.equal(
         groupifyRebuild.unallocated.length(),
-        rebuildStudents.length,
-        "setNumberOfGroups should move all students to unallocated"
+        rebuildPersons.length,
+        "setNumberOfGroups should move all persons to unallocated"
     );
     assert.equal(
         groupifyRebuild.groups.includes(oldGroup),
@@ -216,7 +216,7 @@ function runTests() {
     );
 
     assert.throws(
-        () => groupifyRebuild.allocate(rebuildStudents[1], oldGroup),
+        () => groupifyRebuild.allocate(rebuildPersons[1], oldGroup),
         Error,
         "setNumberOfGroups should reject allocate into a replaced group"
     );
@@ -244,122 +244,122 @@ function runTests() {
     );
 
     // ========================================
-    // setStudentsPerGroup
+    // setPersonsPerGroup
     // ========================================
 
-    const sizeStudents = [
-        new Student("Iten", "Iris"),
-        new Student("Jung", "Jonas"),
-        new Student("Kurz", "Klara"),
-        new Student("Lang", "Leo"),
-        new Student("Meier", "Mira")
+    const sizePersons = [
+        new Person("Iten", "Iris"),
+        new Person("Jung", "Jonas"),
+        new Person("Kurz", "Klara"),
+        new Person("Lang", "Leo"),
+        new Person("Meier", "Mira")
     ];
-    const groupifySize = new Groupify(2, sizeStudents);
+    const groupifySize = new Groupify(2, sizePersons);
     const oldSizeGroup = groupifySize.groups[0];
-    groupifySize.allocate(sizeStudents[0], oldSizeGroup);
-    groupifySize.allocate(sizeStudents[1], groupifySize.groups[1]);
+    groupifySize.allocate(sizePersons[0], oldSizeGroup);
+    groupifySize.allocate(sizePersons[1], groupifySize.groups[1]);
 
-    // 5 students / 2 per group → ceil(5 / 2) = 3 groups
-    groupifySize.setStudentsPerGroup(2);
+    // 5 persons / 2 per group → ceil(5 / 2) = 3 groups
+    groupifySize.setPersonsPerGroup(2);
 
     assert.equal(
         groupifySize.groups.length,
         3,
-        "setStudentsPerGroup should create ceil(students / size) groups"
+        "setPersonsPerGroup should create ceil(persons / size) groups"
     );
     assert.equal(
         groupifySize.groups[0].name,
         "Gruppe 1",
-        "setStudentsPerGroup should name groups Gruppe N"
+        "setPersonsPerGroup should name groups Gruppe N"
     );
     assert.equal(
         groupifySize.groups[1].name,
         "Gruppe 2",
-        "setStudentsPerGroup should name groups Gruppe N"
+        "setPersonsPerGroup should name groups Gruppe N"
     );
     assert.equal(
         groupifySize.groups[2].name,
         "Gruppe 3",
-        "setStudentsPerGroup should name groups Gruppe N"
+        "setPersonsPerGroup should name groups Gruppe N"
     );
     assert.equal(
         groupifySize.unallocated.length(),
-        sizeStudents.length,
-        "setStudentsPerGroup should move all students to unallocated"
+        sizePersons.length,
+        "setPersonsPerGroup should move all persons to unallocated"
     );
     assert.equal(
         groupifySize.groups.includes(oldSizeGroup),
         false,
-        "setStudentsPerGroup should replace the previous Group objects"
+        "setPersonsPerGroup should replace the previous Group objects"
     );
     assert.equal(
         groupifySize.groupSize,
         2,
-        "setStudentsPerGroup should keep the requested groupSize"
+        "setPersonsPerGroup should keep the requested groupSize"
     );
 
     assert.throws(
-        () => groupifySize.allocate(sizeStudents[1], oldSizeGroup),
+        () => groupifySize.allocate(sizePersons[1], oldSizeGroup),
         Error,
-        "setStudentsPerGroup should reject allocate into a replaced group"
+        "setPersonsPerGroup should reject allocate into a replaced group"
     );
 
     // size larger than roster → 1 group
-    groupifySize.setStudentsPerGroup(10);
+    groupifySize.setPersonsPerGroup(10);
     assert.equal(
         groupifySize.groups.length,
         1,
-        "setStudentsPerGroup should create 1 group when size exceeds roster"
+        "setPersonsPerGroup should create 1 group when size exceeds roster"
     );
     assert.equal(
         groupifySize.unallocated.length(),
-        sizeStudents.length,
-        "setStudentsPerGroup should create 1 group when size exceeds roster"
+        sizePersons.length,
+        "setPersonsPerGroup should create 1 group when size exceeds roster"
     );
     assert.equal(
         groupifySize.groupSize,
         10,
-        "setStudentsPerGroup should create 1 group when size exceeds roster"
+        "setPersonsPerGroup should create 1 group when size exceeds roster"
     );
 
     assert.throws(
-        () => groupifySize.setStudentsPerGroup(1.5),
+        () => groupifySize.setPersonsPerGroup(1.5),
         TypeError,
-        "setStudentsPerGroup must receive an integer"
+        "setPersonsPerGroup must receive an integer"
     );
     assert.equal(
         groupifySize.groups.length,
         1,
-        "failed setStudentsPerGroup should not change membership"
+        "failed setPersonsPerGroup should not change membership"
     );
     assert.equal(
         groupifySize.unallocated.length(),
-        sizeStudents.length,
-        "failed setStudentsPerGroup should not change membership"
+        sizePersons.length,
+        "failed setPersonsPerGroup should not change membership"
     );
 
     assert.throws(
-        () => groupifySize.setStudentsPerGroup(0),
+        () => groupifySize.setPersonsPerGroup(0),
         RangeError,
-        "setStudentsPerGroup must be >= 1"
+        "setPersonsPerGroup must be >= 1"
     );
 
     const emptySizeGroupify = new Groupify(3, []);
-    emptySizeGroupify.setStudentsPerGroup(5);
+    emptySizeGroupify.setPersonsPerGroup(5);
     assert.equal(
         emptySizeGroupify.groups.length,
         1,
-        "setStudentsPerGroup with zero students should keep 1 empty group"
+        "setPersonsPerGroup with zero persons should keep 1 empty group"
     );
     assert.equal(
         emptySizeGroupify.unallocated.length(),
         0,
-        "setStudentsPerGroup with zero students should keep 1 empty group"
+        "setPersonsPerGroup with zero persons should keep 1 empty group"
     );
     assert.equal(
         emptySizeGroupify.groupSize,
         5,
-        "setStudentsPerGroup with zero students should keep 1 empty group"
+        "setPersonsPerGroup with zero persons should keep 1 empty group"
     );
 
     // ========================================
@@ -367,38 +367,38 @@ function runTests() {
     // ========================================
 
     // gültige Zuweisung
-    groupify.allocate(student1, group1);
+    groupify.allocate(person1, group1);
 
-    // Student wurde der Zielgruppe hinzugefügt und aus unallocated entfernt
+    // Person wurde der Zielgruppe hinzugefügt und aus unallocated entfernt
     assert.equal(
         group1.length(),
         1,
-        "allocate should add student to target group"
+        "allocate should add person to target group"
     );
 
     assert.equal(
         groupify.unallocated.length(),
         1,
-        "allocate should remove student from unallocated"
+        "allocate should remove person from unallocated"
     );
 
-    // allocate student ist kein student
+    // allocate person ist kein person
     assert.throws(
         () => groupify.allocate("Hallo", group1),
         TypeError,
-        "student must be a Student object"
+        "person must be a Person object"
     );
 
     // allocate group ist kein Group
     assert.throws(
-        () => groupify.allocate(student2, "Hallo"),
+        () => groupify.allocate(person2, "Hallo"),
         TypeError,
         "group must be a Group object"
     );
 
     // allocate: targetGroup ist nicht in Groupify
     assert.throws(
-        () => groupify.allocate(student2, new Group("Foreign")),
+        () => groupify.allocate(person2, new Group("Foreign")),
         Error,
         "targetGroup does not belong to Groupify"
     );
@@ -410,31 +410,31 @@ function runTests() {
     // ========================================
 
     // gültige Rückzuweisung
-    groupify.unallocate(student1, group1);
+    groupify.unallocate(person1, group1);
 
-    // Student wurde aus der Gruppe entfernt und zu unallocated hinzugefügt
+    // Person wurde aus der Gruppe entfernt und zu unallocated hinzugefügt
     assert.equal(
         group1.length(),
         0,
-        "unallocate should remove student from group"
+        "unallocate should remove person from group"
     );
 
     assert.equal(
         groupify.unallocated.length(),
         2,
-        "unallocate should add student back to unallocated"
+        "unallocate should add person back to unallocated"
     );
 
 
-    //falscher Student/Group-Typ
+    //falscher Person/Group-Typ
     assert.throws(
         () => groupify.unallocate("Hallo", group1),
         TypeError,
-        "student must be a Student object"
+        "person must be a Person object"
     );
 
     assert.throws(
-        () => groupify.unallocate(student2, "Hallo"),
+        () => groupify.unallocate(person2, "Hallo"),
         TypeError,
         "group must be a Group object"
     );
@@ -442,7 +442,7 @@ function runTests() {
     // fremde Gruppe
     // allocate: targetGroup ist nicht in Groupify
     assert.throws(
-        () => groupify.unallocate(student2, new Group("Foreign")),
+        () => groupify.unallocate(person2, new Group("Foreign")),
         Error,
         "targetGroup does not belong to Groupify"
     );
@@ -452,19 +452,19 @@ function runTests() {
     // move
     // ========================================
     //gültiger Move A → B
-    groupify.allocate(student1, group1);
-    groupify.move(group1, student1, group2);
+    groupify.allocate(person1, group1);
+    groupify.move(group1, person1, group2);
     
     assert.equal(
         group1.length(),
         0,
-        "move should remove student from srcGroup"
+        "move should remove person from srcGroup"
     );
 
     assert.equal(
         group2.length(),
         1,
-        "move should add student to targetGroup"
+        "move should add person to targetGroup"
     );
 
     
@@ -472,34 +472,34 @@ function runTests() {
     const moveGroupA = new Group("Move A");
     const moveGroupB = new Group("Move B");
     const foreignGroup = new Group("Foreign");
-    const moveStudent = new Student("Conrad", "Clara");
+    const movePerson = new Person("Conrad", "Clara");
     const groupifyMove = new Groupify(
         [moveGroupA, moveGroupB],
-        [moveStudent]
+        [movePerson]
     );
 
-    groupifyMove.allocate(moveStudent, moveGroupA);
+    groupifyMove.allocate(movePerson, moveGroupA);
 
     // fremde Source-Group
     assert.throws(
-        () => groupifyMove.move(foreignGroup, moveStudent, moveGroupB),
+        () => groupifyMove.move(foreignGroup, movePerson, moveGroupB),
         Error,
         "move from a foreign srcGroup should throw"
     );
 
     // fremde Target-Group
     assert.throws(
-        () => groupifyMove.move(moveGroupA, moveStudent, foreignGroup),
+        () => groupifyMove.move(moveGroupA, movePerson, foreignGroup),
         Error,
         "move to a foreign targetGroup should throw"
     );
 
 
-    //Student nicht in Source
+    //Person nicht in Source
     assert.throws(
-        () => groupifyMove.move(moveGroupB, moveStudent, moveGroupA),
+        () => groupifyMove.move(moveGroupB, movePerson, moveGroupA),
         Error,
-        "move should throw when student is not in srcGroup"
+        "move should throw when person is not in srcGroup"
     );
     assert.equal(
         moveGroupA.length(),
@@ -517,30 +517,30 @@ function runTests() {
     // randAssign
     // ========================================
 
-    // Student landet in einer verfügbaren Group + verschwindet aus unallocated
+    // Person landet in einer verfügbaren Group + verschwindet aus unallocated
     const raGroup1 = new Group("RandA One");
     const raGroup2 = new Group("RandA Two");
-    const raStudent = new Student("Distel", "Dora");
-    const groupifyRand = new Groupify([raGroup1, raGroup2], [raStudent]);
+    const raPerson = new Person("Distel", "Dora");
+    const groupifyRand = new Groupify([raGroup1, raGroup2], [raPerson]);
 
-    groupifyRand.randAssign(raStudent);
+    groupifyRand.randAssign(raPerson);
 
     assert.equal(
         raGroup1.length() + raGroup2.length(),
         1,
-        "randAssign should place student in an available group"
+        "randAssign should place person in an available group"
     );
     assert.equal(
         groupifyRand.unallocated.length(),
         0,
-        "randAssign should remove student from unallocated"
+        "randAssign should remove person from unallocated"
     );
 
     // kleinere Groups werden vor grösseren gewählt
     const raSmall = new Group("Rand Small");
     const raBig = new Group("Rand Big");
-    const raFirst = new Student("Klein", "Ines");
-    const raSecond = new Student("Klein", "Jonas");
+    const raFirst = new Person("Klein", "Ines");
+    const raSecond = new Person("Klein", "Jonas");
     const groupifyEven = new Groupify(
         [raSmall, raBig],
         [raFirst, raSecond]
@@ -567,20 +567,20 @@ function runTests() {
 
     const raaGroup1 = new Group("RandAll One");
     const raaGroup2 = new Group("RandAll Two");
-    const raaStudents = [
-        new Student("Igel", "Ida"),
-        new Student("Jungmann", "Jan"),
-        new Student("Klein", "Kira")
+    const raaPersons = [
+        new Person("Igel", "Ida"),
+        new Person("Jungmann", "Jan"),
+        new Person("Klein", "Kira")
     ];
-    const groupifyAll = new Groupify([raaGroup1, raaGroup2], raaStudents);
+    const groupifyAll = new Groupify([raaGroup1, raaGroup2], raaPersons);
 
     groupifyAll.randAssignAll();
 
-    // alle Students werden zugewiesen
+    // alle Persons werden zugewiesen
     assert.equal(
         raaGroup1.length() + raaGroup2.length(),
-        raaStudents.length,
-        "randAssignAll should assign all students to groups"
+        raaPersons.length,
+        "randAssignAll should assign all persons to groups"
     );
 
     // unallocated ist leer
@@ -594,15 +594,15 @@ function runTests() {
     const evenA = new Group("Even A");
     const evenB = new Group("Even B");
     const evenC = new Group("Even C");
-    const evenStudents = [
-        new Student("Lang", "Lisa"),
-        new Student("Kurz", "Mark"),
-        new Student("Neu", "Nina"),
-        new Student("Obst", "Otto")
+    const evenPersons = [
+        new Person("Lang", "Lisa"),
+        new Person("Kurz", "Mark"),
+        new Person("Neu", "Nina"),
+        new Person("Obst", "Otto")
     ];
     const groupifyEvenAll = new Groupify(
         [evenA, evenB, evenC],
-        evenStudents
+        evenPersons
     );
 
     groupifyEvenAll.randAssignAll();
@@ -611,7 +611,7 @@ function runTests() {
     assert.equal(
         evenSizes[0] + evenSizes[1] + evenSizes[2],
         4,
-        "randAssignAll should assign all students evenly"
+        "randAssignAll should assign all persons evenly"
     );
     assert(
         Math.max(...evenSizes) - Math.min(...evenSizes) <= 1,
@@ -620,106 +620,106 @@ function runTests() {
 
 
     // ========================================
-    // addStudent / removeStudent
+    // addPerson / removePerson
     // ========================================
 
     const addGroup = new Group("Add Group");
-    const addExisting = new Student("Park", "Paul");
+    const addExisting = new Person("Park", "Paul");
     const groupifyAdd = new Groupify([addGroup], [addExisting]);
 
-    const addNew = new Student("Reis", "Rita");
-    groupifyAdd.addStudent(addNew);
+    const addNew = new Person("Reis", "Rita");
+    groupifyAdd.addPerson(addNew);
 
     assert.equal(
         groupifyAdd.unallocated.length(),
         2,
-        "addStudent should place the student in unallocated"
+        "addPerson should place the person in unallocated"
     );
 
     assert.throws(
-        () => groupifyAdd.addStudent("Hallo"),
+        () => groupifyAdd.addPerson("Hallo"),
         TypeError,
-        "addStudent should require a Student object"
+        "addPerson should require a Person object"
     );
 
     assert.throws(
-        () => groupifyAdd.addStudent(addExisting),
+        () => groupifyAdd.addPerson(addExisting),
         Error,
-        "addStudent should reject a student already in Groupify"
+        "addPerson should reject a person already in Groupify"
     );
     assert.equal(
         groupifyAdd.unallocated.length(),
         2,
-        "failed addStudent should not change membership"
+        "failed addPerson should not change membership"
     );
 
     assert.throws(
-        () => groupifyAdd.addStudent(new Student("park", "paul")),
+        () => groupifyAdd.addPerson(new Person("park", "paul")),
         Error,
-        "addStudent should reject a duplicate name case-insensitively"
+        "addPerson should reject a duplicate name case-insensitively"
     );
     assert.equal(
         groupifyAdd.unallocated.length(),
         2,
-        "failed duplicate-name addStudent should not change membership"
+        "failed duplicate-name addPerson should not change membership"
     );
 
     groupifyAdd.allocate(addExisting, addGroup);
-    groupifyAdd.removeStudent(addExisting);
+    groupifyAdd.removePerson(addExisting);
 
     assert.equal(
         addGroup.length(),
         0,
-        "removeStudent should remove an allocated student from the group"
+        "removePerson should remove an allocated person from the group"
     );
     assert.equal(
         groupifyAdd.unallocated.length(),
         1,
-        "removeStudent should not leave the student in unallocated"
+        "removePerson should not leave the person in unallocated"
     );
 
-    groupifyAdd.removeStudent(addNew);
+    groupifyAdd.removePerson(addNew);
 
     assert.equal(
         groupifyAdd.unallocated.length(),
         0,
-        "removeStudent should remove an unallocated student"
+        "removePerson should remove an unallocated person"
     );
 
     assert.throws(
-        () => groupifyAdd.removeStudent(addNew),
+        () => groupifyAdd.removePerson(addNew),
         Error,
-        "removeStudent should reject a student that is not in Groupify"
+        "removePerson should reject a person that is not in Groupify"
     );
 
     assert.throws(
-        () => groupifyAdd.removeStudent("Hallo"),
+        () => groupifyAdd.removePerson("Hallo"),
         TypeError,
-        "removeStudent should require a Student object"
+        "removePerson should require a Person object"
     );
 
     // ========================================
-    // addStudent: weitere Students
+    // addPerson: weitere Persons
     // ========================================
 
-    const capFirst = new Student("One", "Cap");
+    const capFirst = new Person("One", "Cap");
     const groupifyCap = new Groupify(3, [capFirst]);
     groupifyCap.allocate(capFirst, groupifyCap.groups[0]);
 
-    groupifyCap.addStudent(new Student("Two", "Cap"));
-    groupifyCap.addStudent(new Student("Three", "Cap"));
-    groupifyCap.addStudent(new Student("Four", "Cap"));
-    groupifyCap.addStudent(new Student("Five", "Cap"));
+    groupifyCap.addPerson(new Person("Two", "Cap"));
+    groupifyCap.addPerson(new Person("Three", "Cap"));
+    groupifyCap.addPerson(new Person("Four", "Cap"));
+    groupifyCap.addPerson(new Person("Five", "Cap"));
 
     assert.equal(
         groupifyCap.groups[0].length(),
         1,
-        "addStudent should not change existing allocations"
+        "addPerson should not change existing allocations"
     );
     assert.equal(
-        groupifyCap.groups[0].getStudent(0),
+        groupifyCap.groups[0].getPerson(0),
         capFirst,
-        "addStudent should not change existing allocations"
+        "addPerson should not change existing allocations"
     );
 
     groupifyCap.randAssignAll();
@@ -738,7 +738,7 @@ function runTests() {
     assert.equal(
         capSizes[0] + capSizes[1] + capSizes[2],
         5,
-        "randAssignAll should assign all dynamically added students"
+        "randAssignAll should assign all dynamically added persons"
     );
     assert(
         Math.max(...capSizes) - Math.min(...capSizes) <= 1,
@@ -746,10 +746,10 @@ function runTests() {
     );
 
     const groupifyEmptyCap = new Groupify(3, []);
-    groupifyEmptyCap.addStudent(new Student("Able", "Empty"));
-    groupifyEmptyCap.addStudent(new Student("Best", "Empty"));
-    groupifyEmptyCap.addStudent(new Student("Cain", "Empty"));
-    groupifyEmptyCap.addStudent(new Student("Dale", "Empty"));
+    groupifyEmptyCap.addPerson(new Person("Able", "Empty"));
+    groupifyEmptyCap.addPerson(new Person("Best", "Empty"));
+    groupifyEmptyCap.addPerson(new Person("Cain", "Empty"));
+    groupifyEmptyCap.addPerson(new Person("Dale", "Empty"));
     groupifyEmptyCap.randAssignAll();
 
     assert.equal(
@@ -766,7 +766,7 @@ function runTests() {
     assert.equal(
         emptyCapSizes[0] + emptyCapSizes[1] + emptyCapSizes[2],
         4,
-        "randAssignAll should assign all students added to an empty Groupify"
+        "randAssignAll should assign all persons added to an empty Groupify"
     );
     assert(
         Math.max(...emptyCapSizes) - Math.min(...emptyCapSizes) <= 1,
@@ -781,7 +781,7 @@ function runTests() {
     const renameOther = new Group("Group B");
     const groupifyRename = new Groupify(
         [renameGroup, renameOther],
-        [new Student("One", "Rename")]
+        [new Person("One", "Rename")]
     );
 
     groupifyRename.renameGroup(renameGroup, "Gruppe X");
@@ -847,64 +847,64 @@ function runTests() {
     // groupSize
     // ========================================
 
-    const thirtyStudents = [];
+    const thirtyPersons = [];
     for (let i = 1; i <= 30; i++) {
-        thirtyStudents.push(new Student("Name" + i, "Vor" + i));
+        thirtyPersons.push(new Person("Name" + i, "Vor" + i));
     }
 
     assert.equal(
-        new Groupify(7, thirtyStudents).groupSize,
+        new Groupify(7, thirtyPersons).groupSize,
         5,
-        "30 students / 7 groups should yield groupSize 5"
+        "30 persons / 7 groups should yield groupSize 5"
     );
     assert.equal(
-        new Groupify(5, thirtyStudents).groupSize,
+        new Groupify(5, thirtyPersons).groupSize,
         6,
-        "30 students / 5 groups should yield groupSize 6"
+        "30 persons / 5 groups should yield groupSize 6"
     );
 
-    const threeStudents = [
-        new Student("Aa", "One"),
-        new Student("Bb", "Two"),
-        new Student("Cc", "Three")
+    const threePersons = [
+        new Person("Aa", "One"),
+        new Person("Bb", "Two"),
+        new Person("Cc", "Three")
     ];
     assert.equal(
-        new Groupify(7, threeStudents).groupSize,
+        new Groupify(7, threePersons).groupSize,
         1,
-        "3 students / 7 groups should yield groupSize 1"
+        "3 persons / 7 groups should yield groupSize 1"
     );
 
-    const groupifyPerGroup = new Groupify(7, thirtyStudents);
-    groupifyPerGroup.setStudentsPerGroup(5);
+    const groupifyPerGroup = new Groupify(7, thirtyPersons);
+    groupifyPerGroup.setPersonsPerGroup(5);
     assert.equal(
         groupifyPerGroup.groupSize,
         5,
-        "setStudentsPerGroup(5) should set groupSize 5 and create 6 groups"
+        "setPersonsPerGroup(5) should set groupSize 5 and create 6 groups"
     );
     assert.equal(
         groupifyPerGroup.groups.length,
         6,
-        "setStudentsPerGroup(5) should set groupSize 5 and create 6 groups"
+        "setPersonsPerGroup(5) should set groupSize 5 and create 6 groups"
     );
 
-    const sizeKeep = new Groupify(2, countStudents);
-    sizeKeep.setStudentsPerGroup(4);
+    const sizeKeep = new Groupify(2, countPersons);
+    sizeKeep.setPersonsPerGroup(4);
     assert.equal(
         sizeKeep.groupSize,
         4,
-        "setStudentsPerGroup should not overwrite groupSize via setNumberOfGroups"
+        "setPersonsPerGroup should not overwrite groupSize via setNumberOfGroups"
     );
     assert.equal(
         sizeKeep.groups.length,
         2,
-        "setStudentsPerGroup should not overwrite groupSize via setNumberOfGroups"
+        "setPersonsPerGroup should not overwrite groupSize via setNumberOfGroups"
     );
 
     const overA = new Group("Over A");
     const overB = new Group("Over B");
-    const over1 = new Student("One", "Over");
-    const over2 = new Student("Two", "Over");
-    const over3 = new Student("Three", "Over");
+    const over1 = new Person("One", "Over");
+    const over2 = new Person("Two", "Over");
+    const over3 = new Person("Three", "Over");
     const groupifyOver = new Groupify(
         [overA, overB],
         [over1, over2, over3]
@@ -929,23 +929,23 @@ function runTests() {
     // ========================================
 
     const statusGroup = new Group("Status");
-    const statusStudents = [
-        new Student("Stat", "One"),
-        new Student("Stat", "Two"),
-        new Student("Stat", "Three"),
-        new Student("Stat", "Four"),
-        new Student("Stat", "Five"),
-        new Student("Stat", "Six")
+    const statusPersons = [
+        new Person("Stat", "One"),
+        new Person("Stat", "Two"),
+        new Person("Stat", "Three"),
+        new Person("Stat", "Four"),
+        new Person("Stat", "Five"),
+        new Person("Stat", "Six")
     ];
     const groupifyStatus = new Groupify(
         [statusGroup],
-        statusStudents.slice(0, 5)
+        statusPersons.slice(0, 5)
     );
 
-    groupifyStatus.allocate(statusStudents[0], statusGroup);
-    groupifyStatus.allocate(statusStudents[1], statusGroup);
-    groupifyStatus.allocate(statusStudents[2], statusGroup);
-    groupifyStatus.allocate(statusStudents[3], statusGroup);
+    groupifyStatus.allocate(statusPersons[0], statusGroup);
+    groupifyStatus.allocate(statusPersons[1], statusGroup);
+    groupifyStatus.allocate(statusPersons[2], statusGroup);
+    groupifyStatus.allocate(statusPersons[3], statusGroup);
     assert.equal(
         groupifyStatus.groupSize,
         5,
@@ -957,15 +957,15 @@ function runTests() {
         "group below groupSize should be under"
     );
 
-    groupifyStatus.allocate(statusStudents[4], statusGroup);
+    groupifyStatus.allocate(statusPersons[4], statusGroup);
     assert.equal(
         groupifyStatus.getGroupStatus(statusGroup),
         "complete",
         "group at groupSize should be complete"
     );
 
-    groupifyStatus.addStudent(statusStudents[5]);
-    groupifyStatus.allocate(statusStudents[5], statusGroup);
+    groupifyStatus.addPerson(statusPersons[5]);
+    groupifyStatus.allocate(statusPersons[5], statusGroup);
     assert.equal(
         statusGroup.length(),
         6,
