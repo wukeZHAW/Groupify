@@ -51,8 +51,8 @@ function runTests() {
 
     assert.equal(
         EXPORTER.export(groupifyOpen),
-        "Name;Vorname;Gruppe\nWu;Kevin;Unallocated\n",
-        "unallocated students should export with group Unallocated"
+        "Name;Vorname;Gruppe\nWu;Kevin;nicht zugewiesen\n",
+        "unallocated students should export with group nicht zugewiesen"
     );
 
     // leere Gruppen werden übersprungen
