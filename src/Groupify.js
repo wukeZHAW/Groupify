@@ -26,7 +26,7 @@ export class Groupify {
 
         this.#groups = groups;
 
-        this.#unallocated = new Group("Unallocated");
+        this.#unallocated = new Group("nicht zugewiesen");
 
         // alle Students in unallocated einfügen
         for (const student of students) {

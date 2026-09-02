@@ -27,7 +27,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item active">
-                        <a class="nav-link" href="index.html" aria-current="page">Startseite</a>
+                        <a class="nav-link" href="index.html" aria-current="page">Gruppeneinteilung</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="information.html">Information</a>
@@ -40,39 +40,44 @@
     <main id="groupify" class="container flex-grow-1 py-4">
         <div class="row g-4 align-items-start">
         <aside id="controls" class="col-12 col-md-4 d-flex flex-column gap-3">
-            <p id="csv-input-label">Personenliste aus CSV</p>
+            <h1>Personen</h1>
+            
+            <h2>Personenliste</h2>
             <input type="file" id="csv-input" class="form-control" accept=".csv" aria-labelledby="csv-input-label">
-
-            <p id="student-list-label">Personenliste</p>
+            
             <section id="student-list" class="card shadow-sm overflow-auto p-3">
             </section>
             <div id="student-add" class="d-flex gap-2 align-items-stretch">
                 <input type="text" id="student-first-name" class="form-control min-w-0 flex-grow-1" placeholder="Vorname">
                 <input type="text" id="student-last-name" class="form-control min-w-0 flex-grow-1" placeholder="Nachname">
-                <button type="button" id="btn-add-student" class="btn btn-success flex-shrink-0" aria-label="Hinzufügen" title="Student hinzufügen"><i class="bi bi-person-plus" aria-hidden="true"></i></button> 
+                <button type="button" id="btn-add-student" class="btn btn-success flex-shrink-0" aria-label="Hinzufügen" title="Person hinzufügen"><i class="bi bi-person-plus" aria-hidden="true"></i></button> 
             </div>
 
-            <button type="button" id="btn-aufteilen-einzeln" class="btn btn-primary w-100" disabled><i class="bi bi-person-fill me-2" aria-hidden="true"></i>Einzeln aufteilen</button>
-            <button type="button" id="btn-alle-aufteilen" class="btn btn-primary w-100" disabled><i class="bi bi-people-fill me-2" aria-hidden="true"></i>Alle aufteilen</button>
+            <button type="button" id="btn-aufteilen-einzeln" class="btn btn-primary w-100" disabled><i class="bi bi-person-fill me-2" aria-hidden="true"></i>Einzelne Person zuweisen</button>
+            <button type="button" id="btn-alle-aufteilen" class="btn btn-primary w-100" disabled><i class="bi bi-people-fill me-2" aria-hidden="true"></i>Alle Personen zuweisen</button>
             <button type="button" id="btn-alle-zurueck" class="btn btn-primary w-100" disabled><i class="bi bi-rewind me-2" aria-hidden="true"></i>Alle zurück zur Personenliste</button>
-            <span title="Zuerst müssen alle Studierenden zugeteilt werden">
-                <button type="button" id="btn-export" class="btn btn-primary w-100" disabled><i class="bi bi-download me-2" aria-hidden="true"></i>Gruppen als CSV exportieren</button>
-            </span>
+            
         </aside>
 
         <div id="main-content" class="col-12 col-md-8 d-flex flex-column gap-3 min-w-0">
-            <p id="group-config-label">Gruppeneinteilung</p>
+            <h1>Gruppen</h1>
+
+            <h2>Eigenschaften</h2>
             <section id="group-config">
                 <label class="config-option">
-                    <span>Anzahl Gruppen</span>
+                    <span>Anzahl Gruppen:</span>
                     <input type="number" id="config-value" class="form-control text-center" min="1" value="6">
                 </label>
                 <label class="config-option">
-                    <span>Gruppengrösse</span>
-                    <input type="number" id="config-size" class="form-control text-center" min="1" value="4">
+                    <span>Gruppengrösse:</span>
+                    <input type="number" id="config-size" class="form-control text-center" min="1" value="5">
                 </label>
             </section>
 
+            <h2>Einteilung</h2>
+            <div title="Zuerst müssen alle Studierenden zugeteilt werden">
+                <button type="button" id="btn-export" class="btn btn-primary w-100" disabled><i class="bi bi-download me-2" aria-hidden="true"></i>Gruppen als CSV exportieren</button>
+            </div>
             <section id="groups">
                 <!-- Gruppenkarten werden per JavaScript erzeugt -->
             </section>

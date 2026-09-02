@@ -5,6 +5,7 @@
     --zhaw-blue-hover: #004d80;
     --zhaw-blue-active: #003d66;
     --bg-page: #f0f2f4;
+    --bg-hover: #e6f2f8;
     --bg-panel: #ffffff;
     --border: #d0d5d9;
     --text: #222222;
@@ -26,7 +27,6 @@ body {
     font-size: 1rem;
     line-height: 1.5;
     color: var(--text);
-    background-color: var(--bg-page);
 }
 
 /* ----- Navbar ----- */
@@ -84,14 +84,6 @@ body {
 
 /* ----- Left: import & student list ----- */
 
-#csv-input-label,
-#group-config-label,
-#student-list-label {
-    margin: 0 0 0.25rem;
-    font-weight: 700;
-    color: var(--zhaw-blue);
-}
-
 #student-add #btn-add-student {
     width: 2.4rem;
     padding: 0;
@@ -126,6 +118,7 @@ body {
 }
 
 .btn-delete-student,
+.btn-unallocate-student,
 #controls .btn-delete-student {
     display: inline-flex;
     align-items: center;
@@ -148,7 +141,12 @@ body {
 #controls .btn-delete-student:hover,
 #controls .btn-delete-student:active {
     color: #b00020;
-    background: transparent;
+    background: #f8d7da;
+}
+
+.btn-unallocate-student:hover {
+    color: var(--zhaw-blue-hover);
+    background-color: var(--bg-hover);
 }
 
 /* ----- Buttons ----- */
@@ -215,17 +213,24 @@ body {
 }
 
 .btn-rename-group {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
     padding: 0;
     font-size: 0.85rem;
     line-height: 1;
     background: transparent;
     border: none;
+    border-radius: var(--radius);
     cursor: pointer;
 }
 
 .btn-rename-group:hover {
-    color: #b00020;
+    color: var(--zhaw-blue-hover);
+    background-color: var(--bg-hover);
 }
 
 #groups article h2.group-name .group-name-input {
@@ -263,13 +268,6 @@ body {
 }
 
 /* ----- Information ----- */
-
-#about h1,
-#about h2,
-#about h4 {
-    font-weight: 700;
-    color: var(--zhaw-blue);
-}
 
 #about a {
     color: var(--zhaw-blue);

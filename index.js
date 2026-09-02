@@ -356,6 +356,7 @@ function startGroupRename(heading, group) {
 
     const input = document.createElement("input");
     input.type = "text";
+    input.setAttribute("maxlength", "20");
     input.className = "group-name-input";
     input.value = group.name;
 
@@ -417,12 +418,12 @@ function createStudentRow(student, group) {
 
     const button = document.createElement("button");
     button.type = "button";
-    button.className = "btn-delete-student";
     button.addEventListener("mousedown", function (event) {
         event.stopPropagation();
     });
 
     if (group === null) {
+        button.className = "btn-delete-student";
         const deleteIcon = document.createElement("i");
         deleteIcon.className = "bi bi-trash";
         deleteIcon.setAttribute("aria-hidden", "true");
@@ -434,6 +435,7 @@ function createStudentRow(student, group) {
             deleteStudent(student);
         });
     } else {
+        button.className = "btn-unallocate-student";
         const unallocateIcon = document.createElement("i");
         unallocateIcon.className = "bi bi-caret-left";
         unallocateIcon.setAttribute("aria-hidden", "true");
@@ -479,7 +481,7 @@ function confirmDeleteStudent() {
 
 // Starts dragging a student and stores the source group
 function onDragStart(event) {
-    if (event.target.closest(".btn-delete-student")) {
+    if (event.target.closest(".btn-delete-student, .btn-unallocate-student")) {
         event.preventDefault();
         return;
     }
