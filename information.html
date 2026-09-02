@@ -59,66 +59,65 @@
 
       <h2>Beschreibung</h2>
       <p>
-        Groupify ermöglicht Lehrpersonen und Dozierenden, Personen schnell und
-        zufällig in Gruppen einzuteilen, um wiederkehrende
-        Gruppenkonstellationen zu vermeiden und die Gruppeneinteilung zu
-        vereinfachen.
+        Personen neigen dazu, mit denselben anderen eine Gruppe zu bilden.
+        Groupify ermöglicht es, Personen zufällig in Gruppen einzuteilen. 
       </p>
 
       <h2>Anleitung</h2>
 
-      <h3>Schritt 1: Personenliste laden</h3>
-      <ul>
-        <li>CSV-Datei mit den Personen auswählen. (Format: `Name;Vorname`)</li>
-        <li>
-          Alternativ können Personen manuell mit Vorname und Nachname
-          hinzugefügt werden.
+      <ol>
+        <li>Liste der in Gruppen einzuteilenden Personen definieren
+          <ul>
+            <li>CSV-Datei mit Liste der Personen auswählen 
+              (Format: <code>Name;Vorname</code>)</li>
+            <li>
+            Bei Bedarf können Personen manuell mit Vorname und Nachname
+            hinzugefügt oder aus der Liste gelöscht werden.
+            </li>
+        </ul>  
         </li>
-      </ul>
 
-      <h3>Schritt 2: Anzahl Gruppen oder Gruppengrösse definieren</h3>
-      <ul>
-        <li>Gewünschte Anzahl Gruppen oder Gruppengrösse eingeben.</li>
-        <li>Der jeweils andere Wert wird automatisch berechnet.</li>
-      </ul>
+        <li>Anzahl der Gruppen oder Gruppengrössen definieren
+            <ul>
+                <li>Gewünschte Anzahl der Gruppen oder Gruppengrösse eingeben. 
+                    <br>(Hinweis: Der jeweils andere Wert wird automatisch 
+                    berechnet.)</li>
+            </ul>
+        </li>
 
-      <h3>Schritt 3: Personen aufteilen</h3>
-      <ul>
-        <li>
-          Mit "Einzelne Person zuweisen" wird jeweils eine zufällige Person
-          einer Gruppe zugeteilt.
+        <li>Personen aufteilen
+            <ul>
+                <li> Mit <em>Einzelne Person zuweisen</em> wird jeweils eine 
+                  zufällige Person zufällig einer Gruppe zugeteilt.</li>
+                <li>Mit <em>Alle Personen zuweisen</em> werden alle Personen 
+                    zufällig auf die Gruppen verteilt.</li>
+            </ul>
         </li>
-        <li>
-          Mit "Alle Personen zuweisen" werden alle Personen automatisch auf die
-          Gruppen verteilt.
-        </li>
-      </ul>
 
-      <h3>Schritt 4: Einteilung bearbeiten</h3>
-      <ul>
-        <li>
-          Personen können per Drag & Drop zwischen den Gruppen verschoben
-          werden.
+        <li>Einteilung der Gruppen bearbeiten
+            <ul>
+                <li>Personen können per Drag & Drop zwischen den Gruppen 
+                    verschoben werden.</li>
+                <li>Personen können mittels Pfeiltaste 
+                  <i class="bi bi-caret-left"></i>oder Drag & Dropwieder
+                    zurück in die Personenliste verschoben werden.</li>
+                <li>Neue Personen können manuell mittels Hinzufügetaste 
+                  <i class="bi bi-person-plus"></i> hinzugefügt werden.</li>
+                <li>Gruppen können mittels die Edittaste 
+                  <i class="bi bi-pencil"></i> umbenannt werden.</li>
+            </ul>
         </li>
-        <li>
-          Personen können wieder zurück in die Personenliste verschoben oder
-          gelöscht werden.
-        </li>
-        <li>Neue Personen können manuell hinzugefügt werden.</li>
-        <li>Gruppen können über das Stift-Symbol umbenannt werden.</li>
-      </ul>
 
-      <h3>Schritt 5: Gruppen als CSV exportieren</h3>
-      <ul>
-        <li>
-          Mit «Gruppen als CSV exportieren» wird die aktuelle Gruppeneinteilung
-          heruntergeladen.
+        <li>Einteilung der Gruppen zur Weiterverarbeitung herunterladen
+            <ul>
+                <li>Mittels <em>Gruppen als CSV exportieren</em> kann die 
+                    aktuelle Gruppeneinteilung im CSV-Format heruntergeladen 
+                    werden.
+                    <br>(Hinweis: Nicht zugewiesene Personen werden ebenfalls 
+                    in der CSV-Datei aufgeführt.)</li>
+            </ul>
         </li>
-        <li>
-          Nicht zugewiesene Personen werden ebenfalls in der CSV-Datei
-          aufgeführt.
-        </li>
-      </ul>
+      </ol>
 
       <h2>Kontakt</h2>
       <p>
@@ -164,23 +163,12 @@
             <div class="accordion-body">
               <h4>Überarbeitung der Benutzeroberfläche</h4>
               <ul>
-                <li>Benutzeroberfläche auf Bootstrap umgestellt</li>
-                <li>ZHAW-Navigation und Fusszeile hinzugefügt</li>
+                <li>Menuzeile und Fusszeile hinzugefügt</li>
                 <li>
                   Informationsseite mit Anleitung und Versionsübersicht
                   hinzugefügt
                 </li>
-                <li>Buttons und Icons überarbeitet</li>
-                <li>Gruppenkonfiguration synchronisiert</li>
-                <li>
-                  Buttons abhängig vom aktuellen Zustand aktiviert oder
-                  deaktiviert
-                </li>
-                <li>Fehlermeldungen als Bootstrap Toast umgesetzt</li>
-                <li>
-                  Bestätigungsdialog beim Löschen von Personen hinzugefügt
-                </li>
-                <li>Informationsseite erweitert</li>
+                <li>Benutzeroberfläche auf Bootstrap umgestellt</li>
               </ul>
               <p class="mb-0">01.09.2026, Kevin Wu</p>
             </div>
@@ -208,9 +196,9 @@
             <div class="accordion-body">
               <h4>Erste Version</h4>
               <ul>
+                <li>Zufällige Gruppeneinteilung</li>
                 <li>CSV-Import von Personen</li>
                 <li>Manuelles Hinzufügen und Löschen</li>
-                <li>Zufällige Gruppeneinteilung</li>
                 <li>Manuelle Umteilung per Drag & Drop</li>
                 <li>CSV-Export der Gruppeneinteilung</li>
               </ul>
@@ -255,6 +243,8 @@
       </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script 
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+    </script>
   </body>
 </html>

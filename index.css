@@ -6,12 +6,14 @@
     --zhaw-blue-active: #003d66;
     --bg-page: #f0f2f4;
     --bg-hover: #e6f2f8;
+    --fg-hover: white;
     --bg-panel: #ffffff;
     --border: #d0d5d9;
     --text: #222222;
     --text-muted: #555555;
     --radius: 4px;
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --chrome-height: 3.5rem;
 }
 
 * {
@@ -37,15 +39,23 @@ body {
 
 .navbar > .container {
     background-color: #f8f9fa;
+    min-height: var(--chrome-height);
+    align-items: stretch;
 }
 
 .program-logo {
     display: block;
-    height: 2rem;
+    height: 2.5rem;
     width: auto;
 }
 
+#appName {
+    display: flex;
+}
+
 #appName .nav-link {
+    display: flex;
+    align-items: center;
     color: var(--text);
     font-weight: 700;
     padding: 0.4rem 0.85rem 0.4rem 0.5rem;
@@ -55,12 +65,20 @@ body {
     color: var(--text);
 }
 
+.navbar-collapse,
+.navbar-nav {
+    align-items: stretch;
+}
+
 .navbar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    height: 100%;
     color: #777777;
     background-color: #f8f9fa;
     border-bottom: 4px solid transparent;
     border-radius: 0;
-    padding: 0.4rem 1.25rem;
+    padding: 0.5rem 1.25rem;
 }
 
 .navbar-nav .nav-link:hover {
@@ -113,9 +131,8 @@ body {
     cursor: grab;
 }
 
-.btn-delete-student,
 .btn-unallocate-student,
-#controls .btn-delete-student {
+.btn-delete-student {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -134,15 +151,17 @@ body {
 }
 
 .btn-delete-student:hover,
-#controls .btn-delete-student:hover,
-#controls .btn-delete-student:active {
-    color: #b00020;
-    background: #f8d7da;
+.btn-rename-group:hover,
+.btn-unallocate-student:hover {
+    color: var(--fg-hover);
+    background-color: var(--zhaw-blue-hover);
 }
 
-.btn-unallocate-student:hover {
-    color: var(--zhaw-blue-hover);
-    background-color: var(--bg-hover);
+.btn-delete-student:active,
+.btn-rename-group:active,
+.btn-unallocate-student:active {
+    color: var(--fg-hover);
+    background-color: var(--zhaw-blue-active);
 }
 
 /* ----- Buttons ----- */
@@ -180,11 +199,6 @@ body {
     color: var(--text);
 }
 
-.config-option span {
-    font-weight: 700;
-    color: var(--zhaw-blue);
-}
-
 .config-option input[type="number"] {
     width: 5rem;
 }
@@ -204,8 +218,7 @@ body {
 }
 
 #groups article h2 {
-    font-weight: 700;
-    color: var(--zhaw-blue);
+    font-weight: bold;
 }
 
 .btn-rename-group {
@@ -222,11 +235,6 @@ body {
     border: none;
     border-radius: var(--radius);
     cursor: pointer;
-}
-
-.btn-rename-group:hover {
-    color: var(--zhaw-blue-hover);
-    background-color: var(--bg-hover);
 }
 
 #groups article h2.group-name .group-name-input {
@@ -281,12 +289,20 @@ body {
     color: var(--zhaw-blue);
 }
 
+code {
+    color: black;
+    background-color: #f8f9fa;
+    border-radius: 0.25em;
+}
+
+ol > li {
+    margin-bottom: 0.75em;
+}
 .accordion {
     --bs-accordion-btn-bg: #f8f8f8;
     --bs-accordion-active-bg: #f8f8f8;
     --bs-accordion-active-color: var(--text);
     --bs-accordion-btn-focus-box-shadow: none;
-    margin-bottom: 10rem;
 }
 
 .accordion-button:not(.collapsed)::after {
@@ -296,8 +312,16 @@ body {
 /* ----- Footer ----- */
 
 footer {
+    min-height: var(--chrome-height);
+    display: flex;
+    align-items: center;
     color: #212529;
     background-color: #f8f8f8;
+    margin-top: 3em;
+}
+
+footer .container {
+    width: 100%;
 }
 
 footer a,
