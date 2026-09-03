@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { Person } from "../src/Person.js";
+import { Person } from "../js/Person.js";
 
 function runTests(){
     console.log("Starting Person.js tests ...");

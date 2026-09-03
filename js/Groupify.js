@@ -303,6 +303,11 @@ export class Groupify {
         }
 
         group.removePerson(person);
+
+        const groupCount = this.#groups.length === 0 ? 1 : this.#groups.length;
+        this.#groupSize = Math.max(
+            1, Math.ceil(this.#collectPersons().length / groupCount)
+        );
     }
 
     renameGroup(group, newName) {

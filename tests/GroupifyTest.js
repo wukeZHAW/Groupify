@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
-import { Groupify } from "../src/Groupify.js";
-import { Person } from "../src/Person.js";
-import { Group } from "../src/Group.js";
+import { Groupify } from "../js/Groupify.js";
+import { Person } from "../js/Person.js";
+import { Group } from "../js/Group.js";
 
 function runTests() {
     console.log("Starting Groupify.js tests ...");
@@ -987,6 +987,41 @@ function runTests() {
         () => groupifyStatus.getGroupStatus(new Group("Foreign")),
         Error,
         "getGroupStatus should reject a foreign group"
+    );
+
+    const deleteSizePersons = [];
+    for (let i = 1; i <= 24; i++) {
+        deleteSizePersons.push(new Person("Name" + i, "Vor" + i));
+    }
+    const groupifyDeleteSize = new Groupify(6, deleteSizePersons);
+    assert.equal(
+        groupifyDeleteSize.groupSize,
+        4,
+        "24 persons / 6 groups should start with groupSize 4"
+    );
+    groupifyDeleteSize.randAssignAll();
+
+    for (let i = 0; i < 6; i++) {
+        const sourceGroup = groupifyDeleteSize.groups[i];
+        const person = sourceGroup.getPerson(0);
+        groupifyDeleteSize.unallocate(person, sourceGroup);
+        groupifyDeleteSize.removePerson(person);
+    }
+
+    assert.equal(
+        groupifyDeleteSize.groups.length,
+        6,
+        "deleting persons should not change the number of groups"
+    );
+    assert.equal(
+        groupifyDeleteSize.groupSize,
+        3,
+        "after deleting 6 of 24 persons, groupSize should be ceil(18 / 6)"
+    );
+    assert.equal(
+        groupifyDeleteSize.getGroupStatus(groupifyDeleteSize.groups[0]),
+        "complete",
+        "groups of 3 should be complete after groupSize is recalculated"
     );
 }
 

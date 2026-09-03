@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import {Group} from '../src/Group.js'
+import {Group} from '../js/Group.js'
 
 function runTests() {
     console.log("Starting Group.js tests ...");

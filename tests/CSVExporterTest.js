@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
-import { CsvExporter } from "../src/CSVExporter.js";
-import { Groupify } from "../src/Groupify.js";
-import { Group } from "../src/Group.js";
-import { Person } from "../src/Person.js";
+import { CsvExporter } from "../js/CSVExporter.js";
+import { Groupify } from "../js/Groupify.js";
+import { Group } from "../js/Group.js";
+import { Person } from "../js/Person.js";
 
 function runTests() {
     console.log("Starting CsvExporter.js tests ...");

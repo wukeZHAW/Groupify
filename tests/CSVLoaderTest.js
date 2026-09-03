@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { CsvLoader } from "../src/CSVLoader.js";
-import { Person } from  "../src/Person.js";
+import { CsvLoader } from "../js/CSVLoader.js";
+import { Person } from  "../js/Person.js";
 
 function runTests() {
     console.log("Starting CsvLoader.js tests ...");

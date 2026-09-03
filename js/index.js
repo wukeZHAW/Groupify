@@ -478,6 +478,7 @@ function confirmDeletePerson() {
     }
 
     groupify.removePerson(personToDelete);
+    CONFIG_SIZE.value = groupify.groupSize;
     personToDelete = null;
     bootstrap.Modal.getOrCreateInstance(DELETE_STUDENT_MODAL).hide();
     render();
