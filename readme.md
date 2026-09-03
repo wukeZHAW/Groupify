@@ -7,7 +7,7 @@ Erstelle die Web-App **Groupify** um Studierende zufälligerweise in Gruppen auf
 
 * Liste der Studierenden laden (CSV-Datei im Format: `Name;Vorname`)
 * Anzahl der Gruppen oder Gruppengrösse definieren
-* Taste `aufteilen`: weist 1 zufällige:r Studierende:r 1 zufälliger Gruppe zu
+* Taste `aufteilen`: weist 1 zufällige:r Studierende:r 1 zufälligen Gruppe zu
 * darstellen aller Gruppen: Bezeichnung der Gruppe, Mitglieder der Gruppe
 * wenn alle Studierende zugeteilt sind:
   - (_Benutzer kann_) Gruppen bearbeiten
