@@ -85,6 +85,7 @@ function loadFile(event) {
 function getPositiveInt(input) {
     const value = Number(input.value);
     if (!Number.isInteger(value) || value < 1) {
+        input.value = 1;
         return 1;
     }
     return value;
@@ -245,7 +246,6 @@ function updateButtonStates() {
     const hasUnallocated = groupify && groupify.unallocated.length() > 0;
     BTN_EINZELN.disabled = !hasUnallocated;
     BTN_ALLE.disabled = !hasUnallocated;
-    BTN_EXPORT.disabled = !FILE_INPUT.value;
 
     let hasAllocated = false;
     if (groupify) {
@@ -258,6 +258,7 @@ function updateButtonStates() {
         }
     }
     BTN_ALLE_ZURUECK.disabled = !hasAllocated;
+    BTN_EXPORT.disabled = !hasUnallocated && !hasAllocated;
 }
 
 
