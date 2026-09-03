@@ -102,7 +102,7 @@
 }
 
 #groups article {
-    min-height: 140px;
+    min-height: 9em;
 }
 
 #groups article h2 {
