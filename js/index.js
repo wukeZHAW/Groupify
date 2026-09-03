@@ -1,7 +1,7 @@
-import { CsvLoader } from "./src/CSVLoader.js";
-import { CsvExporter } from "./src/CSVExporter.js";
-import { Groupify } from "./src/Groupify.js";
-import { Person } from "./src/Person.js";
+import { CsvLoader } from "./CSVLoader.js";
+import { CsvExporter } from "./CSVExporter.js";
+import { Groupify } from "./Groupify.js";
+import { Person } from "./Person.js";
 
 const FILE_INPUT = document.getElementById("csv-input");
 const OUTPUT = document.getElementById("person-list");

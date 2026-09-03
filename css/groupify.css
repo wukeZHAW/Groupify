@@ -122,6 +122,10 @@ footer .container {
     width: 100%;
 }
 
+footer img {
+    width: 120px;
+}
+
 footer a,
 footer a:hover {
     color: inherit;

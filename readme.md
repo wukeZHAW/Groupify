@@ -17,3 +17,32 @@ Erstelle die Web-App **Groupify** um Studierende zufälligerweise in Gruppen auf
     * Bezeichnung der Gruppen ändern<br>
       Bezeichnung der Gruppen: Nr. (Default), Dubletten verhindern
   - (_Benutzer kann_) Gruppenzuteilung als CSV-Datei im Format: `Name;Vorname;Gruppe` speichern
+
+
+## Deployment
+
+Folgende Dateien müssen auf den Server in die angegebene Struktur kopiert werden:
+```
+groupify/
+│
+├── index.html          (Startseite: Gruppeneinteilung)
+├── information.html    (Anleitung, Versionübersicht)
+│
+├── css/
+│   └── groupify.css    (projektweites Design)
+│   └── index.css
+│   └── information.css
+│
+├── js/                 (Ordner für Skripte / Interaktionen)
+│   └── Groupify.js
+│   └── index.js
+│   └── Group.js
+│   └── Person.js
+│   └── CSVLoader.js
+│   └── CSVExporter.js
+|
+└── assets/             (Ordner für Mediendateien)
+    └── images/
+        └── Groupify_logo.png
+        └── ZHAW_logo.png
+```
