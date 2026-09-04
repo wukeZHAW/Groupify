@@ -34,6 +34,79 @@ export class Groupify {
         }
     }
 
+    toJSON() {
+        const serializeGroup = (group) => {
+            const members = [];
+            for (let i = 0; i < group.length(); i++) {
+                const person = group.getPerson(i);
+                members.push({
+                    lastName: person.lastName,
+                    firstName: person.firstName
+                });
+            }
+            return members;
+        };
+
+        const groups = [];
+        for (const group of this.#groups) {
+            groups.push({
+                name: group.name,
+                members: serializeGroup(group)
+            });
+        }
+
+        return {
+            version: 1,
+            groupSize: this.#groupSize,
+            groups: groups,
+            unallocated: serializeGroup(this.#unallocated)
+        };
+    }
+
+    static fromJSON(data) {
+        if (data === null || typeof data !== "object") {
+            throw new TypeError("data must be an object");
+        }
+
+        if (data.version !== 1) {
+            throw new Error("unsupported state version");
+        }
+
+        if (!Array.isArray(data.groups) || !Array.isArray(data.unallocated)) {
+            throw new TypeError("groups and unallocated must be arrays");
+        }
+
+        const toPerson = (raw) => new Person(raw.lastName, raw.firstName);
+
+        const groups = data.groups.map((raw) => new Group(raw.name));
+
+        const allPersons = [];
+        for (const raw of data.unallocated) {
+            allPersons.push(toPerson(raw));
+        }
+
+        const groupMembers = data.groups.map((raw) => {
+            const persons = raw.members.map(toPerson);
+            allPersons.push(...persons);
+            return persons;
+        });
+
+        const instance = new Groupify(groups, allPersons);
+
+        for (let i = 0; i < groups.length; i++) {
+            for (const person of groupMembers[i]) {
+                instance.allocate(person, groups[i]);
+            }
+        }
+
+        if (!Number.isInteger(data.groupSize) || data.groupSize < 1) {
+            throw new RangeError("groupSize must be an integer >= 1");
+        }
+        instance.#groupSize = data.groupSize;
+
+        return instance;
+    }
+
     #validateGroups(groups){
         if (!Array.isArray(groups)){
             throw new TypeError("groups must be an array");

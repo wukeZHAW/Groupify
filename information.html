@@ -4,17 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Information – Groupify</title>
-    <link rel="icon" type="image/x-icon" href="Groupify_logo.png">
-    <link
-      href="lib/bootstrap/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="lib/bootstrap-icons/bootstrap-icons.css"
-    />
-    <link rel="stylesheet" href="css/groupify.css">
-    <link rel="stylesheet" href="css/information.css">
+    <link rel="icon" type="image/x-icon" href="Groupify_logo.png" />
+    <link href="lib/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="lib/bootstrap-icons/bootstrap-icons.css" />
+    <link rel="stylesheet" href="css/groupify.css" />
+    <link rel="stylesheet" href="css/information.css" />
   </head>
   <body>
     <nav id="header" class="navbar navbar-light navbar-expand-md py-0">
@@ -62,65 +56,105 @@
       <h2>Beschreibung</h2>
       <p>
         Personen neigen dazu, mit denselben anderen eine Gruppe zu bilden.
-        Groupify ermöglicht es, Personen zufällig in Gruppen einzuteilen. 
+        Groupify ermöglicht es, Personen zufällig in Gruppen einzuteilen.
       </p>
 
       <h2>Anleitung</h2>
 
       <ol>
-        <li>Liste der in Gruppen einzuteilenden Personen definieren
+        <li>
+          Liste der in Gruppen einzuteilenden Personen definieren
           <ul>
-            <li>CSV-Datei mit Liste der Personen auswählen 
-              (Format: <code>Name;Vorname</code>)</li>
             <li>
-            Bei Bedarf können Personen manuell mit Vorname und Nachname
-            hinzugefügt oder aus der Liste gelöscht werden.
+              CSV-Datei mit Liste der Personen auswählen (Format:
+              <code>Name;Vorname</code>) <br /><span class="hint"
+                >Hinweis: Das Laden einer neuen Liste von Personen setzt die
+                aktuelle Gruppeneinteilung zurück.
+              </span>
             </li>
-        </ul>  
+            <li>
+              Bei Bedarf können Personen manuell mit Vorname und Nachname
+              hinzugefügt oder aus der Liste gelöscht werden.
+            </li>
+          </ul>
         </li>
 
-        <li>Anzahl der Gruppen oder Gruppengrössen definieren
-            <ul>
-                <li>Gewünschte Anzahl der Gruppen oder Gruppengrösse eingeben. 
-                    <br>(Hinweis: Der jeweils andere Wert wird automatisch 
-                    berechnet.)</li>
-            </ul>
+        <li>
+          Anzahl der Gruppen oder Gruppengrössen definieren
+          <ul>
+            <li>
+              Gewünschte Anzahl der Gruppen oder Gruppengrösse eingeben.
+              <br /><span class="hint"
+                >Hinweis: Der jeweils andere Wert wird automatisch
+                berechnet.</span
+              >
+            </li>
+          </ul>
         </li>
 
-        <li>Personen aufteilen
-            <ul>
-                <li> Mit <em>Einzelne Person zuweisen</em> wird jeweils eine 
-                  zufällige Person zufällig einer Gruppe zugeteilt.</li>
-                <li>Mit <em>Alle Personen zuweisen</em> werden alle Personen 
-                    zufällig auf die Gruppen verteilt.
-                    <br>(Hinweis: Gruppen welche die maximale Anzahl Personen
-                    erreicht haben, werden grün hinterlegt, die anderen 
-                    gelb.)</li>
-            </ul>
+        <li>
+          Personen aufteilen
+          <ul>
+            <li>
+              Mit
+              <span class="button-label">Einzelne Person zuweisen</span>
+              wird jeweils eine zufällige Person zufällig einer Gruppe
+              zugeteilt.
+            </li>
+            <li>
+              Mit <span class="button-label">Alle Personen zuweisen</span>
+              werden alle Personen zufällig auf die Gruppen verteilt.
+              <br /><span class="hint"
+                >Hinweis: Gruppen welche die maximale Anzahl Personen erreicht
+                haben, werden grün hinterlegt, die anderen gelb.</span
+              >
+            </li>
+          </ul>
         </li>
 
-        <li>Einteilung der Gruppen bearbeiten
-            <ul>
-                <li>Personen können per Drag & Drop zwischen den Gruppen 
-                    verschoben werden.</li>
-                <li>Personen können mittels Pfeiltaste 
-                  <i class="bi bi-caret-left"></i>oder Drag & Dropwieder
-                    zurück in die Personenliste verschoben werden.</li>
-                <li>Neue Personen können manuell mittels Hinzufügetaste 
-                  <i class="bi bi-person-plus"></i> hinzugefügt werden.</li>
-                <li>Gruppen können mittels die Edittaste 
-                  <i class="bi bi-pencil"></i> umbenannt werden.</li>
-            </ul>
+        <li>
+          Einteilung der Gruppen bearbeiten
+          <ul>
+            <li>
+              Personen können per Drag & Drop zwischen den Gruppen verschoben
+              werden.
+            </li>
+            <li>
+              Personen können mittels Pfeiltaste
+              <span class="button-label">
+                <i class="bi bi-caret-left"></i
+              ></span>
+              oder Drag & Dropwieder zurück in die Personenliste verschoben
+              werden.
+            </li>
+            <li>
+              Neue Personen können manuell mittels Hinzufügetaste
+              <span class="button-label">
+                <i class="bi bi-person-plus"></i
+              ></span>
+              hinzugefügt werden.
+            </li>
+            <li>
+              Gruppen können mittels die Edittaste
+              <span class="button-label"> <i class="bi bi-pencil"></i></span>
+              umbenannt werden.
+            </li>
+          </ul>
         </li>
 
-        <li>Einteilung der Gruppen zur Weiterverarbeitung herunterladen
-            <ul>
-                <li>Mittels <em>Gruppen als CSV exportieren</em> kann die 
-                    aktuelle Gruppeneinteilung im CSV-Format heruntergeladen 
-                    werden.
-                    <br>(Hinweis: Nicht zugewiesene Personen werden ebenfalls 
-                    in der CSV-Datei aufgeführt.)</li>
-            </ul>
+        <li>
+          Einteilung der Gruppen zur Weiterverarbeitung herunterladen
+          <ul>
+            <li>
+              Mittels
+              <span class="button-label">Gruppen als CSV exportieren</span> kann
+              die aktuelle Gruppeneinteilung im CSV-Format heruntergeladen
+              werden. <br /><span class="hint"
+                >Hinweis: Nicht zugewiesene Personen werden ebenfalls in der
+                CSV-Datei aufgeführt.</span
+              >
+            </li>
+          </ul>
         </li>
       </ol>
 
@@ -175,7 +209,7 @@
                 </li>
                 <li>Benutzeroberfläche auf Bootstrap umgestellt</li>
               </ul>
-              <p class="mb-0">03.09.2026, Kevin Wu</p>
+              <p class="mb-0">04.09.2026, Kevin Wu</p>
             </div>
           </div>
         </div>
@@ -225,7 +259,7 @@
             >
               <img
                 src="assets/images/ZHAW_logo.png"
-                alt="ZHAW School of Engineering" 
+                alt="ZHAW School of Engineering"
               />
             </a>
           </div>
@@ -247,8 +281,6 @@
       </div>
     </footer>
 
-    <script 
-      src="lib/bootstrap/bootstrap.bundle.js">
-    </script>
+    <script src="lib/bootstrap/bootstrap.bundle.js"></script>
   </body>
 </html>

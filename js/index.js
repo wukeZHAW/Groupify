@@ -22,6 +22,7 @@ const DELETE_STUDENT_BODY = document.getElementById("delete-person-body");
 const BTN_CONFIRM_DELETE = document.getElementById("btn-confirm-delete");
 const LOADER = new CsvLoader();
 const EXPORTER = new CsvExporter();
+const STORAGE_KEY = "groupify.state.v1";
 
 let groupify = null;
 let draggedPerson = null;
@@ -49,8 +50,41 @@ OUTPUT.addEventListener("drop", onListDrop);
 
 document.addEventListener("dragend", clearDrag);
 
-groupify = createGroupify([]);
+groupify = loadState() || createGroupify([]);
+CONFIG_VALUE.value = groupify.groups.length;
+CONFIG_SIZE.value = groupify.groupSize;
 render();
+
+function saveState() {
+    try {
+        if (!groupify) {
+            localStorage.removeItem(STORAGE_KEY);
+            return;
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(groupify.toJSON()));
+    } catch (error) {
+        // Persistenz ist optional: Fehler (z. B. Quota, Privatmodus)
+        // dürfen die Anwendung nicht beeinträchtigen.
+    }
+}
+
+function loadState() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+            return null;
+        }
+        return Groupify.fromJSON(JSON.parse(raw));
+    } catch (error) {
+        // Ungültiger oder inkompatibler State: verwerfen und leer starten.
+        try {
+            localStorage.removeItem(STORAGE_KEY);
+        } catch (removeError) {
+            // ignorieren
+        }
+        return null;
+    }
+}
 
 function loadFile(event) {
     const file = event.target.files[0];
@@ -238,6 +272,7 @@ function render() {
     renderPersons();
     renderGroups();
     updateButtonStates();
+    saveState();
 }
 
 
@@ -399,6 +434,7 @@ function finishGroupRename(heading, group, input) {
     try {
         if (groupify) {
             groupify.renameGroup(group, input.value.trim());
+            saveState();
         }
     } catch (error) {
         showErrorToast(error.message);

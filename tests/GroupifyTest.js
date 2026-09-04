@@ -1023,6 +1023,173 @@ function runTests() {
         "complete",
         "groups of 3 should be complete after groupSize is recalculated"
     );
+
+    // ========================================
+    // toJSON / fromJSON (Local-Storage Persistenz)
+    // ========================================
+
+    const roundTrip = (instance) =>
+        Groupify.fromJSON(JSON.parse(JSON.stringify(instance.toJSON())));
+
+    // toJSON liefert eine rein serialisierbare Struktur (keine Instanzen)
+    const jsonPersons = [
+        new Person("Wu", "Kevin"),
+        new Person("Müller", "Max"),
+        new Person("Meier", "Anna")
+    ];
+    const jsonGroupify = new Groupify(2, jsonPersons);
+    jsonGroupify.allocate(jsonPersons[0], jsonGroupify.groups[0]);
+    jsonGroupify.allocate(jsonPersons[1], jsonGroupify.groups[1]);
+    jsonGroupify.renameGroup(jsonGroupify.groups[0], "Team Alpha");
+
+    const json = jsonGroupify.toJSON();
+    assert.equal(json.version, 1, "toJSON should include the schema version");
+    assert.equal(
+        json.groupSize,
+        jsonGroupify.groupSize,
+        "toJSON should store the exact groupSize"
+    );
+    assert.equal(json.groups.length, 2, "toJSON should store all groups");
+    assert.equal(
+        json.groups[0].name,
+        "Team Alpha",
+        "toJSON should store custom group names"
+    );
+    assert.equal(
+        json.groups[0].members[0].firstName,
+        "Kevin",
+        "toJSON should store person raw fields"
+    );
+    assert.equal(
+        json.unallocated.length,
+        1,
+        "toJSON should store unallocated persons"
+    );
+    assert.doesNotThrow(
+        () => JSON.stringify(json),
+        "toJSON output must be JSON serializable"
+    );
+
+    // fromJSON erzeugt echte Instanzen
+    const restored = roundTrip(jsonGroupify);
+    assert.ok(
+        restored instanceof Groupify,
+        "fromJSON should return a Groupify instance"
+    );
+    assert.ok(
+        restored.groups[0] instanceof Group,
+        "fromJSON should rebuild real Group instances"
+    );
+    assert.ok(
+        restored.groups[0].getPerson(0) instanceof Person,
+        "fromJSON should rebuild real Person instances"
+    );
+
+    // Round-Trip erhält Struktur, Namen, Zuteilung und groupSize
+    assert.equal(
+        restored.groups.length,
+        jsonGroupify.groups.length,
+        "round-trip should preserve the number of groups"
+    );
+    assert.equal(
+        restored.groupSize,
+        jsonGroupify.groupSize,
+        "round-trip should preserve the exact groupSize"
+    );
+    assert.equal(
+        restored.groups[0].name,
+        "Team Alpha",
+        "round-trip should preserve group names"
+    );
+    assert.equal(
+        restored.groups[0].length(),
+        1,
+        "round-trip should preserve group membership"
+    );
+    assert.equal(
+        restored.groups[0].getPerson(0).name,
+        "Kevin Wu",
+        "round-trip should preserve allocated persons"
+    );
+    assert.equal(
+        restored.unallocated.length(),
+        1,
+        "round-trip should preserve unallocated persons"
+    );
+    assert.equal(
+        restored.unallocated.getPerson(0).name,
+        "Anna Meier",
+        "round-trip should preserve the unallocated person"
+    );
+
+    // Edge: leerer Roster
+    const emptyRestored = roundTrip(new Groupify(3, []));
+    assert.equal(
+        emptyRestored.groups.length,
+        3,
+        "round-trip should preserve empty groups"
+    );
+    assert.equal(
+        emptyRestored.unallocated.length(),
+        0,
+        "round-trip should preserve an empty unallocated pool"
+    );
+
+    // Edge: exakte groupSize nach setPersonsPerGroup (nicht neu berechnet)
+    const persistSizePersons = [];
+    for (let i = 1; i <= 5; i++) {
+        persistSizePersons.push(new Person("Last" + i, "First" + i));
+    }
+    const persistSizeGroupify = new Groupify(2, persistSizePersons);
+    persistSizeGroupify.setPersonsPerGroup(4);
+    assert.equal(
+        persistSizeGroupify.groupSize,
+        4,
+        "precondition: setPersonsPerGroup should set groupSize 4"
+    );
+    const persistSizeRestored = roundTrip(persistSizeGroupify);
+    assert.equal(
+        persistSizeRestored.groupSize,
+        4,
+        "round-trip must keep the exact groupSize, not recompute it"
+    );
+
+    // Edge: alle Personen zugewiesen
+    const persistAllPersons = [
+        new Person("A", "One"),
+        new Person("B", "Two")
+    ];
+    const allGroupify = new Groupify(2, persistAllPersons);
+    allGroupify.allocate(persistAllPersons[0], allGroupify.groups[0]);
+    allGroupify.allocate(persistAllPersons[1], allGroupify.groups[1]);
+    const allRestored = roundTrip(allGroupify);
+    assert.equal(
+        allRestored.unallocated.length(),
+        0,
+        "round-trip should keep everyone allocated"
+    );
+    assert.equal(
+        allRestored.groups[0].length() + allRestored.groups[1].length(),
+        2,
+        "round-trip should preserve full allocation"
+    );
+
+    // Ungültige Daten
+    assert.throws(
+        () => Groupify.fromJSON(null),
+        TypeError,
+        "fromJSON should reject null"
+    );
+    assert.throws(
+        () => Groupify.fromJSON({ version: 99, groups: [], unallocated: [] }),
+        Error,
+        "fromJSON should reject an unsupported version"
+    );
+    assert.throws(
+        () => Groupify.fromJSON({ version: 1, groups: {}, unallocated: [] }),
+        TypeError,
+        "fromJSON should reject non-array groups"
+    );
 }
 
 runTests();
