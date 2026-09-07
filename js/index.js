@@ -7,7 +7,7 @@ const FILE_INPUT = document.getElementById("csv-input");
 const OUTPUT = document.getElementById("person-list");
 const FIRST_NAME_INPUT = document.getElementById("person-first-name");
 const LAST_NAME_INPUT = document.getElementById("person-last-name");
-const BTN_ADD_STUDENT = document.getElementById("btn-add-person");
+const BTN_ADD_PERSON = document.getElementById("btn-add-person");
 const BTN_EINZELN = document.getElementById("btn-aufteilen-einzeln");
 const BTN_ALLE = document.getElementById("btn-alle-aufteilen");
 const BTN_ALLE_ZURUECK = document.getElementById("btn-alle-zurueck");
@@ -15,10 +15,10 @@ const BTN_EXPORT = document.getElementById("btn-export");
 const CONFIG_VALUE = document.getElementById("config-value");
 const CONFIG_SIZE = document.getElementById("config-size");
 const GROUPS_CONTAINER = document.getElementById("groups");
-const STUDENT_ADD_ERROR = document.getElementById("person-add-error");
-const STUDENT_ADD_ERROR_TEXT = document.getElementById("person-add-error-text");
-const DELETE_STUDENT_MODAL = document.getElementById("delete-person-modal");
-const DELETE_STUDENT_BODY = document.getElementById("delete-person-body");
+const PERSON_ADD_ERROR = document.getElementById("person-add-error");
+const PERSON_ADD_ERROR_TEXT = document.getElementById("person-add-error-text");
+const DELETE_PERSON_MODAL = document.getElementById("delete-person-modal");
+const DELETE_PERSON_BODY = document.getElementById("delete-person-body");
 const BTN_CONFIRM_DELETE = document.getElementById("btn-confirm-delete");
 const LOADER = new CsvLoader();
 const EXPORTER = new CsvExporter();
@@ -30,7 +30,7 @@ let draggedGroup = null;
 let personToDelete = null;
 
 FILE_INPUT.addEventListener("change", loadFile);
-BTN_ADD_STUDENT.addEventListener("click", addPersonFromInput);
+BTN_ADD_PERSON.addEventListener("click", addPersonFromInput);
 BTN_CONFIRM_DELETE.addEventListener("click", confirmDeletePerson);
 BTN_EINZELN.addEventListener("click", aufteilenEinzeln);
 BTN_ALLE.addEventListener("click", aufteilenAlle);
@@ -190,15 +190,8 @@ function addPersonFromInput() {
 }
 
 function showErrorToast(message) {
-    STUDENT_ADD_ERROR_TEXT.textContent = message;
-    bootstrap.Toast.getOrCreateInstance(STUDENT_ADD_ERROR).show();
-}
-
-
-
-function onConfigChange() {
-    applyGroupConfig();
-    render();
+    PERSON_ADD_ERROR_TEXT.textContent = message;
+    bootstrap.Toast.getOrCreateInstance(PERSON_ADD_ERROR).show();
 }
 
 
@@ -504,8 +497,8 @@ function deletePerson(person) {
     }
 
     personToDelete = person;
-    DELETE_STUDENT_BODY.textContent = person.name + " wirklich löschen?";
-    bootstrap.Modal.getOrCreateInstance(DELETE_STUDENT_MODAL).show();
+    DELETE_PERSON_BODY.textContent = person.name + " wirklich löschen?";
+    bootstrap.Modal.getOrCreateInstance(DELETE_PERSON_MODAL).show();
 }
 
 function confirmDeletePerson() {
@@ -516,7 +509,7 @@ function confirmDeletePerson() {
     groupify.removePerson(personToDelete);
     CONFIG_SIZE.value = groupify.groupSize;
     personToDelete = null;
-    bootstrap.Modal.getOrCreateInstance(DELETE_STUDENT_MODAL).hide();
+    bootstrap.Modal.getOrCreateInstance(DELETE_PERSON_MODAL).hide();
     render();
 }
 

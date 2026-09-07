@@ -39,12 +39,12 @@ export class CsvLoader {
 
             const [LAST_NAME, FIRST_NAME] = ROW.split(";");
 
-            const STUDENT = new Person(
+            const PERSON = new Person(
                 LAST_NAME.trim(),
                 FIRST_NAME.trim()
             );
 
-            PERSONS.push(STUDENT);
+            PERSONS.push(PERSON);
         }
 
         return PERSONS

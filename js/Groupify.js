@@ -1,6 +1,8 @@
 import { Group } from "./Group.js";
 import { Person } from "./Person.js";
 
+const UNALLOCATED_NAME = "nicht zugewiesen";
+
 export class Groupify {
     #groups;
     #unallocated;
@@ -26,7 +28,7 @@ export class Groupify {
 
         this.#groups = groups;
 
-        this.#unallocated = new Group("nicht zugewiesen");
+        this.#unallocated = new Group(UNALLOCATED_NAME);
 
         // alle Persons in unallocated einfügen
         for (const person of persons) {
@@ -202,7 +204,7 @@ export class Groupify {
             1, Math.ceil(persons.length / numberOfGroups)
         );
         this.#groups = groups;
-        this.#unallocated = new Group("Unallocated");
+        this.#unallocated = new Group(UNALLOCATED_NAME);
 
         for (const person of persons) {
             this.#unallocated.addPerson(person);
@@ -241,7 +243,7 @@ export class Groupify {
 
         this.#groupSize = personsPerGroup;
         this.#groups = groups;
-        this.#unallocated = new Group("Unallocated");
+        this.#unallocated = new Group(UNALLOCATED_NAME);
 
         for (const person of persons) {
             this.#unallocated.addPerson(person);

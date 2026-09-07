@@ -4,7 +4,7 @@ export class CsvExporter {
 
     export(groupify) {
         if (!(groupify instanceof Groupify)) {
-            throw new TypeError("groupifiy must be a Groupify object");
+            throw new TypeError("groupify must be a Groupify object");
         }
 
         let csv = "Name;Vorname;Gruppe\n";
