@@ -68,6 +68,8 @@ function saveState() {
     }
 }
 
+
+
 function loadState() {
     try {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -85,6 +87,8 @@ function loadState() {
         return null;
     }
 }
+
+
 
 function loadFile(event) {
     const file = event.target.files[0];
@@ -154,6 +158,8 @@ function onNumberOfGroupsChange() {
     render();
 }
 
+
+
 function onGroupSizeChange() {
     if (groupify) {
         groupify.setPersonsPerGroup(getPersonsPerGroup());
@@ -189,6 +195,8 @@ function addPersonFromInput() {
     render();
 }
 
+
+
 function showErrorToast(message) {
     PERSON_ADD_ERROR_TEXT.textContent = message;
     bootstrap.Toast.getOrCreateInstance(PERSON_ADD_ERROR).show();
@@ -219,6 +227,8 @@ function aufteilenAlle() {
     render();
 }
 
+
+
 function alleZurueck() {
     if (!groupify) {
         return;
@@ -237,14 +247,13 @@ function alleZurueck() {
 
 
 function exportCsv() {
-
     try {
         const csv = EXPORTER.export(groupify);
 
         const blob = new Blob([csv], {
             type: "text/csv;charset=utf-8"
         });
-        
+
         const url = URL.createObjectURL(blob);
 
         const link = document.createElement("a");
@@ -256,7 +265,6 @@ function exportCsv() {
     } catch (error) {
         showErrorToast(error.message);
     }
-
 }
 
 
@@ -291,7 +299,7 @@ function updateButtonStates() {
 
 
 
-// render Personlist
+// Renders the list of unallocated persons
 function renderPersons() {
     OUTPUT.innerHTML = "";
     if (!groupify) {
@@ -306,7 +314,7 @@ function renderPersons() {
 
 
 
-// rendern Groupscards number of groups
+// Renders one card per group
 function renderGroups() {
     GROUPS_CONTAINER.innerHTML = "";
 
@@ -314,8 +322,7 @@ function renderGroups() {
         const groups = groupify.groups;
         for (let i = 0; i < groups.length; i++) {
             GROUPS_CONTAINER.appendChild(
-                createGroupCard(groups[i].name, 
-                groups[i])
+                createGroupCard(groups[i].name, groups[i])
             );
         }
         return;
@@ -474,7 +481,7 @@ function createPersonRow(person, group) {
         unallocateIcon.className = "bi bi-caret-left";
         unallocateIcon.setAttribute("aria-hidden", "true");
         button.appendChild(unallocateIcon);
-        let personNameDescription = person.name + " zurück zur Personenliste"
+        const personNameDescription = person.name + " zurück zur Personenliste";
         button.title = personNameDescription;
         button.setAttribute("aria-label", personNameDescription);
         button.addEventListener("click", function (event) {
