@@ -55,6 +55,8 @@ CONFIG_VALUE.value = groupify.groups.length;
 CONFIG_SIZE.value = groupify.groupSize;
 render();
 
+
+
 function saveState() {
     try {
         if (!groupify) {
@@ -447,7 +449,8 @@ function finishGroupRename(heading, group, input) {
 
 function createPersonRow(person, group) {
     const paragraph = document.createElement("p");
-    paragraph.className = "person-row d-flex align-items-center justify-content-between gap-2 my-1";
+    paragraph.className = 
+      "person-row d-flex align-items-center justify-content-between gap-2 my-1";
     paragraph.draggable = true;
     paragraph._person = person;
     paragraph._group = group;
