@@ -4,6 +4,7 @@ import { Groupify } from "./Groupify.js";
 import { Person } from "./Person.js";
 
 const FILE_INPUT = document.getElementById("csv-input");
+const CSV_DROP_ZONE = document.getElementById("csv-drop-zone");
 const OUTPUT = document.getElementById("person-list");
 const FIRST_NAME_INPUT = document.getElementById("person-first-name");
 const LAST_NAME_INPUT = document.getElementById("person-last-name");
@@ -30,6 +31,12 @@ let draggedGroup = null;
 let personToDelete = null;
 
 FILE_INPUT.addEventListener("change", loadFile);
+CSV_DROP_ZONE.addEventListener("dragenter", onCsvDragEnter);
+CSV_DROP_ZONE.addEventListener("dragover", onCsvDragOver);
+CSV_DROP_ZONE.addEventListener("dragleave", onCsvDragLeave);
+CSV_DROP_ZONE.addEventListener("drop", onCsvDrop);
+document.addEventListener("dragover", preventFileNavigation);
+document.addEventListener("drop", preventFileNavigation);
 BTN_ADD_PERSON.addEventListener("click", addPersonFromInput);
 BTN_CONFIRM_DELETE.addEventListener("click", confirmDeletePerson);
 BTN_EINZELN.addEventListener("click", aufteilenEinzeln);
@@ -95,6 +102,101 @@ function loadState() {
 function loadFile(event) {
     const file = event.target.files[0];
     if (!file) {
+        return;
+    }
+
+    importCsvFile(file);
+}
+
+
+
+function isFileDrag(event) {
+    if (!event.dataTransfer) {
+        return false;
+    }
+
+    const types = Array.from(event.dataTransfer.types);
+    return types.includes("Files") || types.includes("application/x-moz-file");
+}
+
+
+
+function preventFileNavigation(event) {
+    if (!isFileDrag(event)) {
+        return;
+    }
+
+    event.preventDefault();
+}
+
+
+
+function isCsvFile(file) {
+    const name = (file.name || "").toLowerCase();
+    if (name.endsWith(".csv")) {
+        return true;
+    }
+    const type = (file.type || "").toLowerCase();
+    return type === "text/csv";
+}
+
+
+
+function onCsvDragEnter(event) {
+    if (!isFileDrag(event)) {
+        return;
+    }
+
+    event.preventDefault();
+    CSV_DROP_ZONE.classList.add("drop-target");
+}
+
+
+
+function onCsvDragOver(event) {
+    if (!isFileDrag(event)) {
+        return;
+    }
+
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "copy";
+    CSV_DROP_ZONE.classList.add("drop-target");
+}
+
+
+
+function onCsvDragLeave(event) {
+    if (CSV_DROP_ZONE.contains(event.relatedTarget)) {
+        return;
+    }
+
+    CSV_DROP_ZONE.classList.remove("drop-target");
+}
+
+
+
+function onCsvDrop(event) {
+    if (!isFileDrag(event)) {
+        return;
+    }
+
+    event.preventDefault();
+    CSV_DROP_ZONE.classList.remove("drop-target");
+
+    const file = event.dataTransfer.files[0];
+    if (!file) {
+        return;
+    }
+
+    importCsvFile(file);
+}
+
+
+
+function importCsvFile(file) {
+    if (!isCsvFile(file)) {
+        showErrorToast("Bitte eine CSV-Datei auswählen.");
+        FILE_INPUT.value = "";
         return;
     }
 

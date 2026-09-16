@@ -63,13 +63,16 @@
           <h1>Personen</h1>
 
           <h2>Personenliste</h2>
-          <input
-            type="file"
-            id="csv-input"
-            class="form-control"
-            accept=".csv"
-            aria-labelledby="csv-input-label"
-          />
+          <label id="csv-drop-zone" class="csv-drop-zone">
+            <input
+              type="file"
+              id="csv-input"
+              class="visually-hidden"
+              accept=".csv"
+            />
+            <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i>
+            <span>CSV-Datei hierher ziehen oder auswählen</span>
+          </label>
 
           <section
             id="person-list"

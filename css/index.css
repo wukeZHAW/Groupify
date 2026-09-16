@@ -1,3 +1,44 @@
+/* ----- CSV import ----- */
+
+.csv-drop-zone {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.85rem 1rem;
+    background: var(--bg-panel);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    color: var(--text-muted);
+    text-align: center;
+    cursor: pointer;
+}
+
+.csv-drop-zone i {
+    font-size: 1.5rem;
+    color: var(--zhaw-blue);
+}
+
+.csv-drop-zone input {
+    pointer-events: none;
+}
+
+.csv-drop-zone:hover,
+.csv-drop-zone:focus-within,
+.csv-drop-zone.drop-target {
+    border-color: var(--zhaw-blue);
+    background: var(--bg-hover);
+    color: var(--text);
+}
+
+.csv-drop-zone.drop-target {
+    outline: 2px solid var(--zhaw-blue);
+    outline-offset: 2px;
+}
+
 /* ----- Person list ----- */
 
 #person-add #btn-add-person {
