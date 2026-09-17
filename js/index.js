@@ -208,7 +208,7 @@ function importCsvFile(file) {
             if (roster.length === 0) {
                 groupify = null;
             } else {
-                groupify = createGroupify(roster, LOADER.scoreBalancing);
+                groupify = createGroupify(roster, LOADER.pointsBalancing);
                 CONFIG_SIZE.value = groupify.groupSize;
             }
         } catch (error) {
@@ -247,8 +247,8 @@ function getPersonsPerGroup() {
 
 
 
-function createGroupify(persons, scoreBalancing = false) {
-    let instance = new Groupify(getNumberOfGroups(), persons, scoreBalancing);
+function createGroupify(persons, pointsBalancing = false) {
+    let instance = new Groupify(getNumberOfGroups(), persons, pointsBalancing);
     return instance;
 }
 
@@ -556,8 +556,8 @@ function createPersonRow(person, group) {
 
     const name = document.createElement("span");
     name.className = "min-w-0 flex-grow-1";
-    name.textContent = groupify.scoreBalancing
-        ? person.name + " (" + person.score + ")"
+    name.textContent = groupify.pointsBalancing
+        ? person.name + " (" + person.points + ")"
         : person.name;
     paragraph.appendChild(name);
 

@@ -2,20 +2,20 @@ export class Person {
 
     static NAME_MIN_LEN = 1;
     static NAME_MAX_LEN = 50;
-    static SCORE_MIN = 0;
-    static SCORE_MAX = 5;
+    static POINTS_MIN = 0;
+    static POINTS_MAX = 5;
 
     #lastName;
     #firstName;
-    #score;
+    #points;
 
-    constructor(lastName, firstName, score = 0){
+    constructor(lastName, firstName, points = 0){
         this.#validateName(lastName);
         this.#validateName(firstName);
-        this.#validateScore(score);
+        this.#validatePoints(points);
         this.#lastName = lastName;
         this.#firstName = firstName;
-        this.#score = score;
+        this.#points = points;
     }
 
     #validateName(name) {
@@ -27,13 +27,13 @@ export class Person {
         }
     }
 
-    #validateScore(score) {
-        if (typeof score !== "number" || !Number.isInteger(score)) {
-            throw new TypeError("score must be an integer");
+    #validatePoints(points) {
+        if (typeof points !== "number" || !Number.isInteger(points)) {
+            throw new TypeError("points must be an integer");
         }
-        if (score < Person.SCORE_MIN || score > Person.SCORE_MAX) {
+        if (points < Person.POINTS_MIN || points > Person.POINTS_MAX) {
             throw new RangeError(
-                `score must be between ${Person.SCORE_MIN} and ${Person.SCORE_MAX}`
+                `points must be between ${Person.POINTS_MIN} and ${Person.POINTS_MAX}`
             );
         }
     }
@@ -50,7 +50,7 @@ export class Person {
         return this.#firstName + " " + this.#lastName;
     }
 
-    get score() {
-        return this.#score;
+    get points() {
+        return this.#points;
     }
 }

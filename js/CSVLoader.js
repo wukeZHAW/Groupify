@@ -3,17 +3,17 @@ import { Person } from "./Person.js";
 export class CsvLoader {
     /**
      * Parses CSV content into persons.
-    *
-     * @param {string} csvText CSV in Name;Vorname or Name;Vorname;Score format
+     *
+     * @param {string} csvText CSV in Name;Vorname or Name;Vorname;Punkte format
      * @returns {Person[]} parsed persons
          * @throws {TypeError} if csvText is not a string
     * @throws {Error} if the CSV format is invalid
     */
 
-    #scoreBalancing = false;
+    #pointsBalancing = false;
 
-    get scoreBalancing() {
-        return this.#scoreBalancing;
+    get pointsBalancing() {
+        return this.#pointsBalancing;
     }
 
 
@@ -26,13 +26,13 @@ export class CsvLoader {
             .split("\n");
         
         const HEADER = LINES[0].trim();
-        const SCORE_BALANCING = this.#isScoreHeader(HEADER);
+        const POINTS_BALANCING = this.#isPointsHeader(HEADER);
 
         const PERSONS = [];
 
         //skip header
         const DATA_LINES = LINES.slice(1);
-        const EXPECTED_COLUMNS = SCORE_BALANCING ? 3 : 2;
+        const EXPECTED_COLUMNS = POINTS_BALANCING ? 3 : 2;
 
         for (let i = 0; i < DATA_LINES.length; i++) {
             const ROW = DATA_LINES[i];
@@ -47,20 +47,20 @@ export class CsvLoader {
             const COLUMNS = ROW.split(";");
             const LAST_NAME = COLUMNS[0];
             const FIRST_NAME = COLUMNS[1];
-            const SCORE = SCORE_BALANCING
-                ? this.#parseScore(COLUMNS[2])
+            const POINTS = POINTS_BALANCING
+                ? this.#parsePoints(COLUMNS[2])
                 : 0;
 
             const PERSON = new Person(
                 LAST_NAME.trim(),
                 FIRST_NAME.trim(),
-                SCORE
+                POINTS
             );
 
             PERSONS.push(PERSON);
         }
 
-        this.#scoreBalancing = SCORE_BALANCING;
+        this.#pointsBalancing = POINTS_BALANCING;
         return PERSONS
 
         
@@ -77,14 +77,14 @@ export class CsvLoader {
         }
     }
     
-    #isScoreHeader(header){
+    #isPointsHeader(header){
         if (header === "Name;Vorname"){
             return false;
         }
-        if (header === "Name;Vorname;Score"){
+        if (header === "Name;Vorname;Punkte"){
             return true;
         }
-        throw new Error("CSV header must be 'Name;Vorname' or 'Name;Vorname;Score'");
+        throw new Error("CSV header must be 'Name;Vorname' or 'Name;Vorname;Punkte'");
     }
 
     #validateRow(row, expectedColumns){
@@ -106,17 +106,17 @@ export class CsvLoader {
         }
     }
 
-    #parseScore(rawScore) {
-        const TRIMMED = rawScore.trim();
+    #parsePoints(rawPoints) {
+        const TRIMMED = rawPoints.trim();
         if (TRIMMED === "") {
             return 0;
         }
 
-        const SCORE = Number(TRIMMED);
-        if (!Number.isInteger(SCORE) || SCORE < 0 || SCORE > 5) {
-            throw new Error("Score must be an integer between 0 and 5");
+        const POINTS = Number(TRIMMED);
+        if (!Number.isInteger(POINTS) || POINTS < 0 || POINTS > 5) {
+            throw new Error("Punkte must be an integer between 0 and 5");
         }
 
-        return SCORE;
+        return POINTS;
     }
 }

@@ -7,12 +7,12 @@ export class Groupify {
     #groups;
     #unallocated;
     #groupSize;
-    #scoreBalancing;
+    #pointsBalancing;
 
     // constructor
-    constructor(groups, persons, scoreBalancing = false){
-        if (typeof scoreBalancing !== "boolean") {
-            throw new TypeError("scoreBalancing must be a boolean");
+    constructor(groups, persons, pointsBalancing = false){
+        if (typeof pointsBalancing !== "boolean") {
+            throw new TypeError("pointsBalancing must be a boolean");
         }
 
         if (typeof groups === "number") {
@@ -32,7 +32,7 @@ export class Groupify {
         }
 
         this.#groups = groups;
-        this.#scoreBalancing = scoreBalancing;
+        this.#pointsBalancing = pointsBalancing;
 
         this.#unallocated = new Group(UNALLOCATED_NAME);
 
@@ -50,7 +50,7 @@ export class Groupify {
                 members.push({
                     lastName: person.lastName,
                     firstName: person.firstName,
-                    score: person.score
+                    points: person.points
                 });
             }
             return members;
@@ -67,7 +67,7 @@ export class Groupify {
         return {
             version: 1,
             groupSize: this.#groupSize,
-            scoreBalancing: this.#scoreBalancing,
+            pointsBalancing: this.#pointsBalancing,
             groups: groups,
             unallocated: serializeGroup(this.#unallocated)
         };
@@ -89,7 +89,7 @@ export class Groupify {
         const toPerson = (raw) => new Person(
             raw.lastName,
             raw.firstName,
-            raw.score ?? 0
+            raw.points ?? raw.score ?? 0
         );
 
         const groups = data.groups.map((raw) => new Group(raw.name));
@@ -108,7 +108,7 @@ export class Groupify {
         const instance = new Groupify(
             groups,
             allPersons,
-            data.scoreBalancing === true // liefert true oder false
+            (data.pointsBalancing ?? data.scoreBalancing) === true
         );
 
         for (let i = 0; i < groups.length; i++) {
@@ -240,8 +240,8 @@ export class Groupify {
         return this.#groupSize;
     }
 
-    get scoreBalancing() {
-        return this.#scoreBalancing;
+    get pointsBalancing() {
+        return this.#pointsBalancing;
     }
 
     setPersonsPerGroup(personsPerGroup) {
@@ -341,7 +341,7 @@ export class Groupify {
             throw new Error("No available groups");
         }
 
-        if (this.#scoreBalancing) {
+        if (this.#pointsBalancing) {
             this.allocate(person, this.#weakestGroup());
             return;
         }
@@ -375,8 +375,8 @@ export class Groupify {
         }
 
         let person;
-        if (this.#scoreBalancing) {
-            person = this.#nextUnallocatedByScore();
+        if (this.#pointsBalancing) {
+            person = this.#nextUnallocatedByPoints();
         } else {
             const index = Math.floor(
                 Math.random() * this.#unallocated.length()
@@ -388,7 +388,7 @@ export class Groupify {
     }
 
     randAssignAll(){
-        if (this.#scoreBalancing) {
+        if (this.#pointsBalancing) {
             while (this.#unallocated.length() > 0){
                 this.randAssignNext();
             }
@@ -401,14 +401,14 @@ export class Groupify {
         }
     }
 
-    #nextUnallocatedByScore() {
+    #nextUnallocatedByPoints() {
         const persons = [];
         for (let i = 0; i < this.#unallocated.length(); i++) {
             persons.push(this.#unallocated.getPerson(i));
         }
 
         this.#shuffle(persons);
-        persons.sort((a, b) => b.score - a.score);
+        persons.sort((a, b) => b.points - a.points);
         return persons[0];
     }
 
@@ -422,10 +422,10 @@ export class Groupify {
         }
     }
 
-    #groupSkillTotal(group) {
+    #groupPointsTotal(group) {
         let total = 0;
         for (let i = 0; i < group.length(); i++) {
-            total += group.getPerson(i).score;
+            total += group.getPerson(i).points;
         }
         return total;
     }
@@ -461,10 +461,10 @@ export class Groupify {
         }
 
         let weakest = smallestGroups[0];
-        let lowestTotal = this.#groupSkillTotal(weakest);
+        let lowestTotal = this.#groupPointsTotal(weakest);
         for (let i = 1; i < smallestGroups.length; i++) {
             const group = smallestGroups[i];
-            const total = this.#groupSkillTotal(group);
+            const total = this.#groupPointsTotal(group);
             if (total < lowestTotal) {
                 weakest = group;
                 lowestTotal = total;

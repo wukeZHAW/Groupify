@@ -108,20 +108,20 @@ function runTests() {
         "1 character last names should export"
     );
 
-    const scoredGroup = new Group("Gruppe 1");
-    const scoredPerson = new Person("Wu", "Kevin", 5);
-    const scoredEmpty = new Person("Meier", "Anna", 0);
-    const scoredGroupify = new Groupify(
-        [scoredGroup],
-        [scoredPerson, scoredEmpty],
+    const pointsGroup = new Group("Gruppe 1");
+    const pointsPerson = new Person("Wu", "Kevin", 5);
+    const pointsEmpty = new Person("Meier", "Anna", 0);
+    const pointsGroupify = new Groupify(
+        [pointsGroup],
+        [pointsPerson, pointsEmpty],
         true
     );
-    scoredGroupify.allocate(scoredPerson, scoredGroup);
+    pointsGroupify.allocate(pointsPerson, pointsGroup);
 
     assert.equal(
-        EXPORTER.export(scoredGroupify),
-        "Name;Vorname;Score;Gruppe\nWu;Kevin;5;Gruppe 1\nMeier;Anna;0;nicht zugewiesen\n",
-        "score balancing export should add a Score column"
+        EXPORTER.export(pointsGroupify),
+        "Name;Vorname;Punkte;Gruppe\nWu;Kevin;5;Gruppe 1\nMeier;Anna;0;nicht zugewiesen\n",
+        "points balancing export should add a Punkte column"
     );
 }
 

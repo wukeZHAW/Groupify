@@ -8,7 +8,7 @@ function runTests(){
     assert.equal(person1.lastName, "Wu", "Valid person should store lastName");
     assert.equal(person1.firstName, "Kevin", "Valid person should store firstName");
     assert.equal(person1.name, "Kevin Wu", "name should be 'Vorname Nachname'");
-    assert.equal(person1.score, 0, "score should default to 0");
+    assert.equal(person1.points, 0, "points should default to 0");
 
     // einstellige Namen (z. B. 王, 김)
     const personShort = new Person("王", "小明");
@@ -77,34 +77,34 @@ function runTests(){
         `firstName must not exceed ${Person.NAME_MAX_LEN} characters`
     );
 
-    for (let score = Person.SCORE_MIN; score <= Person.SCORE_MAX; score++) {
-        const scored = new Person("Wu", "Kevin", score);
+    for (let points = Person.POINTS_MIN; points <= Person.POINTS_MAX; points++) {
+        const withPoints = new Person("Wu", "Kevin", points);
         assert.equal(
-            scored.score,
-            score,
-            `score ${score} should be stored`
+            withPoints.points,
+            points,
+            `points ${points} should be stored`
         );
     }
 
     assert.throws(
         () => new Person("Wu", "Kevin", -1),
         RangeError,
-        "score below 0 should be invalid"
+        "points below 0 should be invalid"
     );
     assert.throws(
         () => new Person("Wu", "Kevin", 6),
         RangeError,
-        "score above 5 should be invalid"
+        "points above 5 should be invalid"
     );
     assert.throws(
         () => new Person("Wu", "Kevin", 2.5),
         TypeError,
-        "non-integer score should be invalid"
+        "non-integer points should be invalid"
     );
     assert.throws(
         () => new Person("Wu", "Kevin", "3"),
         TypeError,
-        "text score should be invalid"
+        "text points should be invalid"
     );
 }
 

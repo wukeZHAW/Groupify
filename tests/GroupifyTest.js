@@ -1192,22 +1192,22 @@ function runTests() {
     );
 
     // ========================================
-    // score balancing
+    // points balancing
     // ========================================
 
-    function skillTotal(group) {
+    function pointsTotal(group) {
         let total = 0;
         for (let i = 0; i < group.length(); i++) {
-            total += group.getPerson(i).score;
+            total += group.getPerson(i).points;
         }
         return total;
     }
 
     const defaultGroupify = new Groupify(2, [new Person("Wu", "Kevin")]);
     assert.equal(
-        defaultGroupify.scoreBalancing,
+        defaultGroupify.pointsBalancing,
         false,
-        "scoreBalancing should default to false"
+        "pointsBalancing should default to false"
     );
 
     const nextPerson = new Person("Wu", "Kevin");
@@ -1223,59 +1223,59 @@ function runTests() {
     assert.equal(
         nextSmall.length(),
         1,
-        "randAssignNext without score mode should use existing smallest-group assignment"
+        "randAssignNext without points mode should use existing smallest-group assignment"
     );
     assert.equal(
         groupifyNext.unallocated.length(),
         0,
-        "randAssignNext without score mode should assign one person"
+        "randAssignNext without points mode should assign one person"
     );
 
     const high = new Person("High", "Ada", 5);
     const mid = new Person("Mid", "Ben", 3);
     const low = new Person("Low", "Cara", 1);
-    const scoreGroups = [new Group("A"), new Group("B")];
-    const groupifyScorePick = new Groupify(
-        scoreGroups,
+    const pointsGroups = [new Group("A"), new Group("B")];
+    const groupifyPointsPick = new Groupify(
+        pointsGroups,
         [low, high, mid],
         true
     );
     const orderBefore = [
-        groupifyScorePick.unallocated.getPerson(0),
-        groupifyScorePick.unallocated.getPerson(1),
-        groupifyScorePick.unallocated.getPerson(2)
+        groupifyPointsPick.unallocated.getPerson(0),
+        groupifyPointsPick.unallocated.getPerson(1),
+        groupifyPointsPick.unallocated.getPerson(2)
     ];
-    groupifyScorePick.randAssignNext();
+    groupifyPointsPick.randAssignNext();
     assert.equal(
-        high.score,
+        high.points,
         5,
-        "precondition: high person keeps score 5"
+        "precondition: high person keeps points 5"
     );
     assert.equal(
-        scoreGroups[0].length() + scoreGroups[1].length(),
+        pointsGroups[0].length() + pointsGroups[1].length(),
         1,
-        "randAssignNext in score mode should assign exactly one person"
+        "randAssignNext in points mode should assign exactly one person"
     );
-    const assignedHigh = scoreGroups[0].length() === 1
-        ? scoreGroups[0].getPerson(0)
-        : scoreGroups[1].getPerson(0);
+    const assignedHigh = pointsGroups[0].length() === 1
+        ? pointsGroups[0].getPerson(0)
+        : pointsGroups[1].getPerson(0);
     assert.equal(
-        assignedHigh.score,
+        assignedHigh.points,
         5,
-        "randAssignNext in score mode should pick a currently highest-score person"
+        "randAssignNext in points mode should pick a currently highest-points person"
     );
     assert.equal(
         assignedHigh,
         high,
-        "with a unique highest score, that person must be chosen"
+        "with a unique highest points value, that person must be chosen"
     );
     assert.equal(
-        groupifyScorePick.unallocated.getPerson(0),
+        groupifyPointsPick.unallocated.getPerson(0),
         orderBefore[0],
         "unallocated order should stay the same except for the assigned person"
     );
     assert.equal(
-        groupifyScorePick.unallocated.getPerson(1),
+        groupifyPointsPick.unallocated.getPerson(1),
         orderBefore[2],
         "unallocated order should stay the same except for the assigned person"
     );
@@ -1293,9 +1293,9 @@ function runTests() {
         ? groupifyTie.groups[0].getPerson(0)
         : groupifyTie.groups[1].getPerson(0);
     assert.equal(
-        tieAssigned.score,
+        tieAssigned.points,
         5,
-        "tied highest scores may vary but must still have the highest remaining score"
+        "tied highest points may vary but must still have the highest remaining points"
     );
     assert.equal(
         groupifyTie.unallocated.length(),
@@ -1318,12 +1318,12 @@ function runTests() {
     assert.equal(
         weakB.getPerson(0),
         incoming,
-        "randAssign in score mode should assign the given person to the weakest non-full group"
+        "randAssign in points mode should assign the given person to the weakest non-full group"
     );
     assert.equal(
         weakA.length(),
         1,
-        "randAssign in score mode should not move the given person into a stronger group"
+        "randAssign in points mode should not move the given person into a stronger group"
     );
 
     const fillPersons = [
@@ -1345,22 +1345,22 @@ function runTests() {
     assert.equal(
         groupifyFill.unallocated.length(),
         0,
-        "randAssignAll in score mode should assign all persons"
+        "randAssignAll in points mode should assign all persons"
     );
     assert.equal(
         fillA.length(),
         3,
-        "randAssignAll in score mode should keep group sizes balanced"
+        "randAssignAll in points mode should keep group sizes balanced"
     );
     assert.equal(
         fillB.length(),
         3,
-        "randAssignAll in score mode should keep group sizes balanced"
+        "randAssignAll in points mode should keep group sizes balanced"
     );
     assert.equal(
-        Math.abs(skillTotal(fillA) - skillTotal(fillB)),
+        Math.abs(pointsTotal(fillA) - pointsTotal(fillB)),
         0,
-        "randAssignAll should balance score totals when an even split exists"
+        "randAssignAll should balance points totals when an even split exists"
     );
 
     const zeroA = new Group("Zero A");
@@ -1375,9 +1375,9 @@ function runTests() {
     groupifyZero.allocate(zeroHigh, zeroA);
     groupifyZero.allocate(zeroEmpty, zeroA);
     assert.equal(
-        skillTotal(zeroA),
+        pointsTotal(zeroA),
         5,
-        "score 0 should not change a group's skill total"
+        "points 0 should not change a group's points total"
     );
 
     const occupiedA = new Group("Occ A");
@@ -1400,56 +1400,56 @@ function runTests() {
     assert.equal(
         occupiedA.length(),
         2,
-        "remaining lower score should fill the remaining slot of the occupied group"
+        "remaining lower points should fill the remaining slot of the occupied group"
     );
     assert.equal(
         occupiedA.getPerson(1),
         remainingLow,
-        "remaining lower score should fill the remaining slot of the occupied group"
+        "remaining lower points should fill the remaining slot of the occupied group"
     );
 
-    const persistScorePersons = [
+    const persistPointsPersons = [
         new Person("Wu", "Kevin", 5),
         new Person("Meier", "Anna", 0)
     ];
-    const persistScoreGroupify = new Groupify(2, persistScorePersons, true);
-    persistScoreGroupify.allocate(
-        persistScorePersons[0],
-        persistScoreGroupify.groups[0]
+    const persistPointsGroupify = new Groupify(2, persistPointsPersons, true);
+    persistPointsGroupify.allocate(
+        persistPointsPersons[0],
+        persistPointsGroupify.groups[0]
     );
-    const persistScoreJson = persistScoreGroupify.toJSON();
+    const persistPointsJson = persistPointsGroupify.toJSON();
     assert.equal(
-        persistScoreJson.scoreBalancing,
+        persistPointsJson.pointsBalancing,
         true,
-        "toJSON should store scoreBalancing"
+        "toJSON should store pointsBalancing"
     );
     assert.equal(
-        persistScoreJson.groups[0].members[0].score,
+        persistPointsJson.groups[0].members[0].points,
         5,
-        "toJSON should store person scores"
+        "toJSON should store person points"
     );
-    const persistScoreRestored = Groupify.fromJSON(persistScoreJson);
+    const persistPointsRestored = Groupify.fromJSON(persistPointsJson);
     assert.equal(
-        persistScoreRestored.scoreBalancing,
+        persistPointsRestored.pointsBalancing,
         true,
-        "fromJSON should restore scoreBalancing"
+        "fromJSON should restore pointsBalancing"
     );
     assert.equal(
-        persistScoreRestored.groups[0].getPerson(0).score,
+        persistPointsRestored.groups[0].getPerson(0).points,
         5,
-        "fromJSON should restore person scores"
+        "fromJSON should restore person points"
     );
     assert.equal(
-        persistScoreRestored.unallocated.getPerson(0).score,
+        persistPointsRestored.unallocated.getPerson(0).points,
         0,
-        "fromJSON should restore score 0"
+        "fromJSON should restore points 0"
     );
 
-    persistScoreGroupify.setNumberOfGroups(3);
+    persistPointsGroupify.setNumberOfGroups(3);
     assert.equal(
-        persistScoreGroupify.scoreBalancing,
+        persistPointsGroupify.pointsBalancing,
         true,
-        "setNumberOfGroups should keep scoreBalancing"
+        "setNumberOfGroups should keep pointsBalancing"
     );
 
     const legacyJson = {
@@ -1465,19 +1465,48 @@ function runTests() {
     };
     const legacyRestored = Groupify.fromJSON(legacyJson);
     assert.equal(
-        legacyRestored.scoreBalancing,
+        legacyRestored.pointsBalancing,
         false,
-        "legacy JSON without scoreBalancing should default to false"
+        "legacy JSON without pointsBalancing should default to false"
     );
     assert.equal(
-        legacyRestored.groups[0].getPerson(0).score,
+        legacyRestored.groups[0].getPerson(0).points,
         0,
-        "legacy JSON without score should default to 0"
+        "legacy JSON without points should default to 0"
     );
     assert.equal(
-        legacyRestored.unallocated.getPerson(0).score,
+        legacyRestored.unallocated.getPerson(0).points,
         0,
-        "legacy JSON without score should default to 0"
+        "legacy JSON without points should default to 0"
+    );
+
+    const legacyScoreJson = {
+        version: 1,
+        groupSize: 1,
+        scoreBalancing: true,
+        groups: [
+            {
+                name: "Gruppe 1",
+                members: [{ lastName: "Wu", firstName: "Kevin", score: 5 }]
+            }
+        ],
+        unallocated: [{ lastName: "Meier", firstName: "Anna", score: 0 }]
+    };
+    const legacyScoreRestored = Groupify.fromJSON(legacyScoreJson);
+    assert.equal(
+        legacyScoreRestored.pointsBalancing,
+        true,
+        "legacy JSON scoreBalancing should map to pointsBalancing"
+    );
+    assert.equal(
+        legacyScoreRestored.groups[0].getPerson(0).points,
+        5,
+        "legacy JSON score should map to points"
+    );
+    assert.equal(
+        legacyScoreRestored.unallocated.getPerson(0).points,
+        0,
+        "legacy JSON score 0 should map to points 0"
     );
 
     const overflowA = new Group("Over A");
