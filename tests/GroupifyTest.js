@@ -1190,6 +1190,317 @@ function runTests() {
         TypeError,
         "fromJSON should reject non-array groups"
     );
+
+    // ========================================
+    // score balancing
+    // ========================================
+
+    function skillTotal(group) {
+        let total = 0;
+        for (let i = 0; i < group.length(); i++) {
+            total += group.getPerson(i).score;
+        }
+        return total;
+    }
+
+    const defaultGroupify = new Groupify(2, [new Person("Wu", "Kevin")]);
+    assert.equal(
+        defaultGroupify.scoreBalancing,
+        false,
+        "scoreBalancing should default to false"
+    );
+
+    const nextPerson = new Person("Wu", "Kevin");
+    const nextOther = new Person("Meier", "Anna");
+    const nextSmall = new Group("Small");
+    const nextBig = new Group("Big");
+    const groupifyNext = new Groupify(
+        [nextSmall, nextBig],
+        [nextPerson, nextOther]
+    );
+    groupifyNext.allocate(nextOther, nextBig);
+    groupifyNext.randAssignNext();
+    assert.equal(
+        nextSmall.length(),
+        1,
+        "randAssignNext without score mode should use existing smallest-group assignment"
+    );
+    assert.equal(
+        groupifyNext.unallocated.length(),
+        0,
+        "randAssignNext without score mode should assign one person"
+    );
+
+    const high = new Person("High", "Ada", 5);
+    const mid = new Person("Mid", "Ben", 3);
+    const low = new Person("Low", "Cara", 1);
+    const scoreGroups = [new Group("A"), new Group("B")];
+    const groupifyScorePick = new Groupify(
+        scoreGroups,
+        [low, high, mid],
+        true
+    );
+    const orderBefore = [
+        groupifyScorePick.unallocated.getPerson(0),
+        groupifyScorePick.unallocated.getPerson(1),
+        groupifyScorePick.unallocated.getPerson(2)
+    ];
+    groupifyScorePick.randAssignNext();
+    assert.equal(
+        high.score,
+        5,
+        "precondition: high person keeps score 5"
+    );
+    assert.equal(
+        scoreGroups[0].length() + scoreGroups[1].length(),
+        1,
+        "randAssignNext in score mode should assign exactly one person"
+    );
+    const assignedHigh = scoreGroups[0].length() === 1
+        ? scoreGroups[0].getPerson(0)
+        : scoreGroups[1].getPerson(0);
+    assert.equal(
+        assignedHigh.score,
+        5,
+        "randAssignNext in score mode should pick a currently highest-score person"
+    );
+    assert.equal(
+        assignedHigh,
+        high,
+        "with a unique highest score, that person must be chosen"
+    );
+    assert.equal(
+        groupifyScorePick.unallocated.getPerson(0),
+        orderBefore[0],
+        "unallocated order should stay the same except for the assigned person"
+    );
+    assert.equal(
+        groupifyScorePick.unallocated.getPerson(1),
+        orderBefore[2],
+        "unallocated order should stay the same except for the assigned person"
+    );
+
+    const tieOne = new Person("Tie", "One", 5);
+    const tieTwo = new Person("Tie", "Two", 5);
+    const tieLow = new Person("Tie", "Low", 1);
+    const groupifyTie = new Groupify(
+        [new Group("A"), new Group("B")],
+        [tieLow, tieOne, tieTwo],
+        true
+    );
+    groupifyTie.randAssignNext();
+    const tieAssigned = groupifyTie.groups[0].length() === 1
+        ? groupifyTie.groups[0].getPerson(0)
+        : groupifyTie.groups[1].getPerson(0);
+    assert.equal(
+        tieAssigned.score,
+        5,
+        "tied highest scores may vary but must still have the highest remaining score"
+    );
+    assert.equal(
+        groupifyTie.unallocated.length(),
+        2,
+        "randAssignNext should leave the other persons unallocated"
+    );
+
+    const weakA = new Group("Weak A");
+    const weakB = new Group("Weak B");
+    const seated = new Person("Seat", "High", 5);
+    const incoming = new Person("In", "Mid", 3);
+    const extra = new Person("Ex", "Low", 1);
+    const groupifyWeak = new Groupify(
+        [weakA, weakB],
+        [seated, incoming, extra],
+        true
+    );
+    groupifyWeak.allocate(seated, weakA);
+    groupifyWeak.randAssign(incoming);
+    assert.equal(
+        weakB.getPerson(0),
+        incoming,
+        "randAssign in score mode should assign the given person to the weakest non-full group"
+    );
+    assert.equal(
+        weakA.length(),
+        1,
+        "randAssign in score mode should not move the given person into a stronger group"
+    );
+
+    const fillPersons = [
+        new Person("A", "One", 5),
+        new Person("B", "Two", 5),
+        new Person("C", "Three", 4),
+        new Person("D", "Four", 4),
+        new Person("E", "Five", 1),
+        new Person("F", "Six", 1)
+    ];
+    const fillA = new Group("Fill A");
+    const fillB = new Group("Fill B");
+    const groupifyFill = new Groupify(
+        [fillA, fillB],
+        fillPersons,
+        true
+    );
+    groupifyFill.randAssignAll();
+    assert.equal(
+        groupifyFill.unallocated.length(),
+        0,
+        "randAssignAll in score mode should assign all persons"
+    );
+    assert.equal(
+        fillA.length(),
+        3,
+        "randAssignAll in score mode should keep group sizes balanced"
+    );
+    assert.equal(
+        fillB.length(),
+        3,
+        "randAssignAll in score mode should keep group sizes balanced"
+    );
+    assert.equal(
+        Math.abs(skillTotal(fillA) - skillTotal(fillB)),
+        0,
+        "randAssignAll should balance score totals when an even split exists"
+    );
+
+    const zeroA = new Group("Zero A");
+    const zeroB = new Group("Zero B");
+    const zeroHigh = new Person("Zero", "High", 5);
+    const zeroEmpty = new Person("Zero", "None", 0);
+    const groupifyZero = new Groupify(
+        [zeroA, zeroB],
+        [zeroHigh, zeroEmpty],
+        true
+    );
+    groupifyZero.allocate(zeroHigh, zeroA);
+    groupifyZero.allocate(zeroEmpty, zeroA);
+    assert.equal(
+        skillTotal(zeroA),
+        5,
+        "score 0 should not change a group's skill total"
+    );
+
+    const occupiedA = new Group("Occ A");
+    const occupiedB = new Group("Occ B");
+    const occupiedHigh = new Person("Occ", "High", 5);
+    const remainingHigh = new Person("Occ", "Next", 5);
+    const remainingLow = new Person("Occ", "Low", 1);
+    const groupifyOccupied = new Groupify(
+        [occupiedA, occupiedB],
+        [occupiedHigh, remainingHigh, remainingLow],
+        true
+    );
+    groupifyOccupied.allocate(occupiedHigh, occupiedA);
+    groupifyOccupied.randAssignAll();
+    assert.equal(
+        occupiedB.getPerson(0),
+        remainingHigh,
+        "already occupied groups and their totals must be considered"
+    );
+    assert.equal(
+        occupiedA.length(),
+        2,
+        "remaining lower score should fill the remaining slot of the occupied group"
+    );
+    assert.equal(
+        occupiedA.getPerson(1),
+        remainingLow,
+        "remaining lower score should fill the remaining slot of the occupied group"
+    );
+
+    const persistScorePersons = [
+        new Person("Wu", "Kevin", 5),
+        new Person("Meier", "Anna", 0)
+    ];
+    const persistScoreGroupify = new Groupify(2, persistScorePersons, true);
+    persistScoreGroupify.allocate(
+        persistScorePersons[0],
+        persistScoreGroupify.groups[0]
+    );
+    const persistScoreJson = persistScoreGroupify.toJSON();
+    assert.equal(
+        persistScoreJson.scoreBalancing,
+        true,
+        "toJSON should store scoreBalancing"
+    );
+    assert.equal(
+        persistScoreJson.groups[0].members[0].score,
+        5,
+        "toJSON should store person scores"
+    );
+    const persistScoreRestored = Groupify.fromJSON(persistScoreJson);
+    assert.equal(
+        persistScoreRestored.scoreBalancing,
+        true,
+        "fromJSON should restore scoreBalancing"
+    );
+    assert.equal(
+        persistScoreRestored.groups[0].getPerson(0).score,
+        5,
+        "fromJSON should restore person scores"
+    );
+    assert.equal(
+        persistScoreRestored.unallocated.getPerson(0).score,
+        0,
+        "fromJSON should restore score 0"
+    );
+
+    persistScoreGroupify.setNumberOfGroups(3);
+    assert.equal(
+        persistScoreGroupify.scoreBalancing,
+        true,
+        "setNumberOfGroups should keep scoreBalancing"
+    );
+
+    const legacyJson = {
+        version: 1,
+        groupSize: 1,
+        groups: [
+            {
+                name: "Gruppe 1",
+                members: [{ lastName: "Wu", firstName: "Kevin" }]
+            }
+        ],
+        unallocated: [{ lastName: "Meier", firstName: "Anna" }]
+    };
+    const legacyRestored = Groupify.fromJSON(legacyJson);
+    assert.equal(
+        legacyRestored.scoreBalancing,
+        false,
+        "legacy JSON without scoreBalancing should default to false"
+    );
+    assert.equal(
+        legacyRestored.groups[0].getPerson(0).score,
+        0,
+        "legacy JSON without score should default to 0"
+    );
+    assert.equal(
+        legacyRestored.unallocated.getPerson(0).score,
+        0,
+        "legacy JSON without score should default to 0"
+    );
+
+    const overflowA = new Group("Over A");
+    const overflowB = new Group("Over B");
+    const overflowPersons = [
+        new Person("Oa", "One", 5),
+        new Person("Ob", "Two", 4),
+        new Person("Oc", "Three", 3)
+    ];
+    const groupifyOverflow = new Groupify(
+        [overflowA, overflowB],
+        overflowPersons.slice(0, 2),
+        true
+    );
+    groupifyOverflow.allocate(overflowPersons[0], overflowA);
+    groupifyOverflow.allocate(overflowPersons[1], overflowB);
+    groupifyOverflow.addPerson(overflowPersons[2]);
+    groupifyOverflow.randAssign(overflowPersons[2]);
+    assert.equal(
+        overflowA.length() + overflowB.length(),
+        3,
+        "if every group is already at groupSize, randAssign should still place the person"
+    );
 }
 
 runTests();

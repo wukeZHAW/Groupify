@@ -208,7 +208,7 @@ function importCsvFile(file) {
             if (roster.length === 0) {
                 groupify = null;
             } else {
-                groupify = createGroupify(roster);
+                groupify = createGroupify(roster, LOADER.scoreBalancing);
                 CONFIG_SIZE.value = groupify.groupSize;
             }
         } catch (error) {
@@ -247,8 +247,8 @@ function getPersonsPerGroup() {
 
 
 
-function createGroupify(persons) {
-    let instance = new Groupify(getNumberOfGroups(), persons);
+function createGroupify(persons, scoreBalancing = false) {
+    let instance = new Groupify(getNumberOfGroups(), persons, scoreBalancing);
     return instance;
 }
 
@@ -313,10 +313,7 @@ function aufteilenEinzeln() {
         return;
     }
 
-    const unallocated = groupify.unallocated;
-    const index = Math.floor(Math.random() * unallocated.length());
-    const person = unallocated.getPerson(index);
-    groupify.randAssign(person);
+    groupify.randAssignNext();
     render();
 }
 
@@ -559,7 +556,9 @@ function createPersonRow(person, group) {
 
     const name = document.createElement("span");
     name.className = "min-w-0 flex-grow-1";
-    name.textContent = person.name;
+    name.textContent = groupify.scoreBalancing
+        ? person.name + " (" + person.score + ")"
+        : person.name;
     paragraph.appendChild(name);
 
     const button = document.createElement("button");

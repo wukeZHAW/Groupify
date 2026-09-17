@@ -14,6 +14,8 @@ function runTests() {
 
     const PERSONS = LOADER.parse(CSV);
     assert.equal(PERSONS.length, 2, "CSV with two rows should create two persons");
+    assert.equal(LOADER.scoreBalancing, false, "two-column CSV should not enable score balancing");
+    assert.equal(PERSONS[0].score, 0, "two-column CSV should leave score at 0");
 
     assert(PERSONS[0] instanceof Person, "Parsed entries must be of type Person");
 
@@ -94,6 +96,65 @@ function runTests() {
     assert.equal(EAST_ASIAN_PERSONS[0].firstName, "小明", "1 character last names should parse");
     assert.equal(EAST_ASIAN_PERSONS[4].lastName, "김", "1 character last names should parse");
     assert.equal(EAST_ASIAN_PERSONS[4].firstName, "민준", "1 character last names should parse");
+
+    const SCORE_PERSONS = LOADER.parse(
+        "Name;Vorname;Score\nWu;Kevin;5\nMeier;Anna;3\nLang;Lisa;0\nJung;Jan;\nKurz;Klara;4"
+    );
+    assert.equal(LOADER.scoreBalancing, true, "Score header should enable score balancing");
+    assert.equal(SCORE_PERSONS.length, 5, "Score CSV should parse mixed scores including 0");
+    assert.equal(SCORE_PERSONS[0].score, 5, "Score column should parse 5");
+    assert.equal(SCORE_PERSONS[1].score, 3, "Score column should parse 3");
+    assert.equal(SCORE_PERSONS[2].score, 0, "explicit score 0 should stay 0");
+    assert.equal(SCORE_PERSONS[3].score, 0, "empty Score should become 0");
+    assert.equal(SCORE_PERSONS[4].score, 4, "Score column should parse 4");
+
+    const NO_SCORE_AFTER = LOADER.parse("Name;Vorname\nWu;Kevin");
+    assert.equal(
+        LOADER.scoreBalancing,
+        false,
+        "a later two-column CSV should disable score balancing"
+    );
+    assert.equal(NO_SCORE_AFTER[0].score, 0, "two-column CSV should not copy previous scores");
+
+    const EMPTY_SCORE_ONLY = LOADER.parse("Name;Vorname;Score\nWu;Kevin;");
+    assert.equal(LOADER.scoreBalancing, true, "Score header with empty value still enables balancing");
+    assert.equal(EMPTY_SCORE_ONLY[0].score, 0, "empty Score should become 0");
+
+    assert.throws(
+        () => LOADER.parse("Name;Vorname;Score\nWu;Kevin;-1"),
+        Error,
+        "negative Score should be invalid"
+    );
+    assert.throws(
+        () => LOADER.parse("Name;Vorname;Score\nWu;Kevin;6"),
+        Error,
+        "Score above 5 should be invalid"
+    );
+    assert.throws(
+        () => LOADER.parse("Name;Vorname;Score\nWu;Kevin;2.5"),
+        Error,
+        "non-integer Score should be invalid"
+    );
+    assert.throws(
+        () => LOADER.parse("Name;Vorname;Score\nWu;Kevin;gut"),
+        Error,
+        "text Score should be invalid"
+    );
+    assert.throws(
+        () => LOADER.parse("Name;Vorname;Score\nWu;Kevin"),
+        Error,
+        "Score CSV row must contain three columns"
+    );
+    assert.throws(
+        () => LOADER.parse("Name;Vorname;Score\nWu;Kevin;5;extra"),
+        Error,
+        "Score CSV row must not contain extra columns"
+    );
+    assert.throws(
+        () => LOADER.parse("Name;Vorname\nWu;Kevin;5"),
+        Error,
+        "two-column header must not accept a Score cell"
+    );
     }
 
 runTests();

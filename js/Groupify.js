@@ -7,9 +7,14 @@ export class Groupify {
     #groups;
     #unallocated;
     #groupSize;
+    #scoreBalancing;
 
     // constructor
-    constructor(groups, persons){
+    constructor(groups, persons, scoreBalancing = false){
+        if (typeof scoreBalancing !== "boolean") {
+            throw new TypeError("scoreBalancing must be a boolean");
+        }
+
         if (typeof groups === "number") {
             this.#validatePersons(persons);
             const numberOfGroups = groups;
@@ -27,6 +32,7 @@ export class Groupify {
         }
 
         this.#groups = groups;
+        this.#scoreBalancing = scoreBalancing;
 
         this.#unallocated = new Group(UNALLOCATED_NAME);
 
@@ -43,7 +49,8 @@ export class Groupify {
                 const person = group.getPerson(i);
                 members.push({
                     lastName: person.lastName,
-                    firstName: person.firstName
+                    firstName: person.firstName,
+                    score: person.score
                 });
             }
             return members;
@@ -60,6 +67,7 @@ export class Groupify {
         return {
             version: 1,
             groupSize: this.#groupSize,
+            scoreBalancing: this.#scoreBalancing,
             groups: groups,
             unallocated: serializeGroup(this.#unallocated)
         };
@@ -78,7 +86,11 @@ export class Groupify {
             throw new TypeError("groups and unallocated must be arrays");
         }
 
-        const toPerson = (raw) => new Person(raw.lastName, raw.firstName);
+        const toPerson = (raw) => new Person(
+            raw.lastName,
+            raw.firstName,
+            raw.score ?? 0
+        );
 
         const groups = data.groups.map((raw) => new Group(raw.name));
 
@@ -93,7 +105,11 @@ export class Groupify {
             return persons;
         });
 
-        const instance = new Groupify(groups, allPersons);
+        const instance = new Groupify(
+            groups,
+            allPersons,
+            data.scoreBalancing === true // liefert true oder false
+        );
 
         for (let i = 0; i < groups.length; i++) {
             for (const person of groupMembers[i]) {
@@ -224,6 +240,10 @@ export class Groupify {
         return this.#groupSize;
     }
 
+    get scoreBalancing() {
+        return this.#scoreBalancing;
+    }
+
     setPersonsPerGroup(personsPerGroup) {
         if (!Number.isInteger(personsPerGroup)) {
             throw new TypeError("personsPerGroup must be an integer");
@@ -321,6 +341,11 @@ export class Groupify {
             throw new Error("No available groups");
         }
 
+        if (this.#scoreBalancing) {
+            this.allocate(person, this.#weakestGroup());
+            return;
+        }
+
         let smallestSize = this.#groups[0].length();
         for (const group of this.#groups) {
             if (group.length() < smallestSize) {
@@ -344,11 +369,109 @@ export class Groupify {
         this.allocate(person, randomGroup);
     }
 
+    randAssignNext(){
+        if (this.#unallocated.length() === 0) {
+            throw new Error("No unallocated persons");
+        }
+
+        let person;
+        if (this.#scoreBalancing) {
+            person = this.#nextUnallocatedByScore();
+        } else {
+            const index = Math.floor(
+                Math.random() * this.#unallocated.length()
+            );
+            person = this.#unallocated.getPerson(index);
+        }
+
+        this.randAssign(person);
+    }
+
     randAssignAll(){
+        if (this.#scoreBalancing) {
+            while (this.#unallocated.length() > 0){
+                this.randAssignNext();
+            }
+            return;
+        }
+
         while (this.#unallocated.length() > 0){
             const person = this.#unallocated.getPerson(0);
             this.randAssign(person);
         }
+    }
+
+    #nextUnallocatedByScore() {
+        const persons = [];
+        for (let i = 0; i < this.#unallocated.length(); i++) {
+            persons.push(this.#unallocated.getPerson(i));
+        }
+
+        this.#shuffle(persons);
+        persons.sort((a, b) => b.score - a.score);
+        return persons[0];
+    }
+
+    // Fisher-Yates shuffle algorithm
+    #shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const current = array[i];
+            array[i] = array[j];
+            array[j] = current;
+        }
+    }
+
+    #groupSkillTotal(group) {
+        let total = 0;
+        for (let i = 0; i < group.length(); i++) {
+            total += group.getPerson(i).score;
+        }
+        return total;
+    }
+
+    #weakestGroup() {
+        const underCapacity = [];
+        for (const group of this.#groups) {
+            if (group.length() < this.#groupSize) {
+                underCapacity.push(group);
+            }
+        }
+
+        // fallback auf alle Gruppen, wenn keine Unterkapazität vorhanden ist
+        let pool;
+        if (underCapacity.length > 0) {
+            pool = underCapacity;
+        } else {
+            pool = this.#groups;
+        }
+
+        let smallestSize = pool[0].length();
+        for (let i = 1; i < pool.length; i++) {
+            if (pool[i].length() < smallestSize) {
+                smallestSize = pool[i].length();
+            }
+        }
+
+        const smallestGroups = [];
+        for (const group of pool) {
+            if (group.length() === smallestSize) {
+                smallestGroups.push(group);
+            }
+        }
+
+        let weakest = smallestGroups[0];
+        let lowestTotal = this.#groupSkillTotal(weakest);
+        for (let i = 1; i < smallestGroups.length; i++) {
+            const group = smallestGroups[i];
+            const total = this.#groupSkillTotal(group);
+            if (total < lowestTotal) {
+                weakest = group;
+                lowestTotal = total;
+            }
+        }
+
+        return weakest;
     }
 
     addPerson(person){

@@ -4,11 +4,17 @@ export class CsvLoader {
     /**
      * Parses CSV content into persons.
     *
-     * @param {string} csvText CSV in Name;Vorname format
+     * @param {string} csvText CSV in Name;Vorname or Name;Vorname;Score format
      * @returns {Person[]} parsed persons
          * @throws {TypeError} if csvText is not a string
     * @throws {Error} if the CSV format is invalid
     */
+
+    #scoreBalancing = false;
+
+    get scoreBalancing() {
+        return this.#scoreBalancing;
+    }
 
 
     parse(csvText){
@@ -19,13 +25,14 @@ export class CsvLoader {
             .trim()
             .split("\n");
         
-        const HEADER = LINES[0];
-        this.#validateHeader(HEADER);
+        const HEADER = LINES[0].trim();
+        const SCORE_BALANCING = this.#isScoreHeader(HEADER);
 
         const PERSONS = [];
 
         //skip header
         const DATA_LINES = LINES.slice(1);
+        const EXPECTED_COLUMNS = SCORE_BALANCING ? 3 : 2;
 
         for (let i = 0; i < DATA_LINES.length; i++) {
             const ROW = DATA_LINES[i];
@@ -35,18 +42,25 @@ export class CsvLoader {
                 continue;
             }
 
-            this.#validateRow(ROW);
+            this.#validateRow(ROW, EXPECTED_COLUMNS);
 
-            const [LAST_NAME, FIRST_NAME] = ROW.split(";");
+            const COLUMNS = ROW.split(";");
+            const LAST_NAME = COLUMNS[0];
+            const FIRST_NAME = COLUMNS[1];
+            const SCORE = SCORE_BALANCING
+                ? this.#parseScore(COLUMNS[2])
+                : 0;
 
             const PERSON = new Person(
                 LAST_NAME.trim(),
-                FIRST_NAME.trim()
+                FIRST_NAME.trim(),
+                SCORE
             );
 
             PERSONS.push(PERSON);
         }
 
+        this.#scoreBalancing = SCORE_BALANCING;
         return PERSONS
 
         
@@ -63,23 +77,46 @@ export class CsvLoader {
         }
     }
     
-    #validateHeader(header){
-        if (header.trim() !== "Name;Vorname"){
-            throw new Error("CSV header must be 'Name;Vorname'");
+    #isScoreHeader(header){
+        if (header === "Name;Vorname"){
+            return false;
         }
+        if (header === "Name;Vorname;Score"){
+            return true;
+        }
+        throw new Error("CSV header must be 'Name;Vorname' or 'Name;Vorname;Score'");
     }
 
-    #validateRow(row){
+    #validateRow(row, expectedColumns){
         const COLUMNS = row.split(";");
 
-        if (COLUMNS.length !== 2){
-            throw new Error("CSV row must contain exactly two columns");
+        if (COLUMNS.length !== expectedColumns){
+            throw new Error(
+                expectedColumns === 2
+                    ? "CSV row must contain exactly two columns"
+                    : "CSV row must contain exactly three columns"
+            );
         }
 
-        const [LAST_NAME, FIRST_NAME] = COLUMNS;
+        const LAST_NAME = COLUMNS[0];
+        const FIRST_NAME = COLUMNS[1];
 
         if (LAST_NAME.trim() === "" || FIRST_NAME.trim() === ""){
             throw new Error("Name and Vorname must not be empty");
         }
+    }
+
+    #parseScore(rawScore) {
+        const TRIMMED = rawScore.trim();
+        if (TRIMMED === "") {
+            return 0;
+        }
+
+        const SCORE = Number(TRIMMED);
+        if (!Number.isInteger(SCORE) || SCORE < 0 || SCORE > 5) {
+            throw new Error("Score must be an integer between 0 and 5");
+        }
+
+        return SCORE;
     }
 }
