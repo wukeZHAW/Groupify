@@ -7,6 +7,7 @@ const FILE_INPUT = document.getElementById("csv-input");
 const CSV_DROP_ZONE = document.getElementById("csv-drop-zone");
 const CSV_FILE_STATUS = document.getElementById("csv-file-status");
 const OUTPUT = document.getElementById("person-list");
+const PERSON_COUNT = document.getElementById("person-count");
 const FIRST_NAME_INPUT = document.getElementById("person-first-name");
 const LAST_NAME_INPUT = document.getElementById("person-last-name");
 const BTN_ADD_PERSON = document.getElementById("btn-add-person");
@@ -430,6 +431,7 @@ function updateButtonStates() {
 function renderPersons() {
     OUTPUT.innerHTML = "";
     if (!groupify) {
+        PERSON_COUNT.textContent = "Anzahl Personen: 0";
         return;
     }
 
@@ -437,6 +439,7 @@ function renderPersons() {
     for (let i = 0; i < unallocated.length(); i++) {
         OUTPUT.appendChild(createPersonRow(unallocated.getPerson(i), null));
     }
+    PERSON_COUNT.textContent = "Anzahl Personen: " + unallocated.length();
 }
 
 
