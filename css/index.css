@@ -39,6 +39,19 @@
     outline-offset: 2px;
 }
 
+.csv-file-status {
+    margin: -0.35rem 0 0;
+    padding: 0 0.25rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    word-break: break-all;
+}
+
+.csv-file-name {
+    font-family: Consolas, "Cascadia Mono", "SF Mono", ui-monospace, monospace;
+    color: var(--zhaw-blue);
+}
+
 /* ----- Person list ----- */
 
 #person-add #btn-add-person {

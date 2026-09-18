@@ -5,6 +5,7 @@ import { Person } from "./Person.js";
 
 const FILE_INPUT = document.getElementById("csv-input");
 const CSV_DROP_ZONE = document.getElementById("csv-drop-zone");
+const CSV_FILE_STATUS = document.getElementById("csv-file-status");
 const OUTPUT = document.getElementById("person-list");
 const FIRST_NAME_INPUT = document.getElementById("person-first-name");
 const LAST_NAME_INPUT = document.getElementById("person-last-name");
@@ -26,6 +27,7 @@ const EXPORTER = new CsvExporter();
 const STORAGE_KEY = "groupify.state.v1";
 
 let groupify = null;
+let loadedCsvFileName = "";
 let draggedPerson = null;
 let draggedGroup = null;
 let personToDelete = null;
@@ -70,7 +72,9 @@ function saveState() {
             localStorage.removeItem(STORAGE_KEY);
             return;
         }
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(groupify.toJSON()));
+        const data = groupify.toJSON();
+        data.csvFileName = loadedCsvFileName;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
         // Persistenz ist optional: Fehler (z. B. Quota, Privatmodus)
         // dürfen die Anwendung nicht beeinträchtigen.
@@ -85,7 +89,10 @@ function loadState() {
         if (!raw) {
             return null;
         }
-        return Groupify.fromJSON(JSON.parse(raw));
+        const data = JSON.parse(raw);
+        loadedCsvFileName = data.csvFileName ?? "";
+        setLoadedFileName(loadedCsvFileName);
+        return Groupify.fromJSON(data);
     } catch (error) {
         // Ungültiger oder inkompatibler State: verwerfen und leer starten.
         try {
@@ -193,6 +200,23 @@ function onCsvDrop(event) {
 
 
 
+function setLoadedFileName(name) {
+    CSV_FILE_STATUS.replaceChildren();
+
+    if (!name) {
+        CSV_FILE_STATUS.textContent = "Keine Datei ausgewählt";
+        return;
+    }
+
+    CSV_FILE_STATUS.append("Geladen: ");
+    const fileName = document.createElement("span");
+    fileName.className = "csv-file-name";
+    fileName.textContent = name;
+    CSV_FILE_STATUS.appendChild(fileName);
+}
+
+
+
 function importCsvFile(file) {
     if (!isCsvFile(file)) {
         showErrorToast("Bitte eine CSV-Datei auswählen.");
@@ -211,6 +235,8 @@ function importCsvFile(file) {
                 groupify = createGroupify(roster, LOADER.pointsBalancing);
                 CONFIG_SIZE.value = groupify.groupSize;
             }
+            loadedCsvFileName = file.name;
+            setLoadedFileName(loadedCsvFileName);
         } catch (error) {
             showErrorToast(error.message);
             FILE_INPUT.value = "";
